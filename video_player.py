@@ -390,36 +390,48 @@ class VideoPlayerWindow(tk.Toplevel):
                 return
 
             # 获取VLC媒体统计信息
-            media = self.player.get_media()
-            if media:
-                stats = media.get_stats()
-                current_state = self.player.get_state()
-
-                # 计算网速和缓冲状态
-                bytes_read = stats.get('input_bytes', 0)
-                if hasattr(self, 'last_bytes'):
-                    bytes_diff = bytes_read - self.last_bytes
-                    speed = bytes_diff / 1024  # 转换为KB
-                    
-                    # 更新缓冲状态
-                    self.update_buffer_status(speed, stats)
-                    
-                    # 检测网络状态
-                    if speed == 0 and self.player.is_playing():
-                        if not hasattr(self, 'zero_speed_count'):
-                            self.zero_speed_count = 0
-                        self.zero_speed_count += 1
+            try:
+                media = self.player.get_media()
+                if media:
+                    # 使用正确的VLC API获取统计信息
+                    stats = vlc.MediaStats()
+                    if media.get_stats(stats):
+                        # 计算网速 - 使用read_bytes而不是input_bytes
+                        bytes_read = getattr(stats, 'read_bytes', 0)
+                        current_time = datetime.now()
+                        time_diff = (current_time - self.last_update_time).total_seconds()
                         
-                        # 如果连续5秒没有数据，进入缓冲模式
-                        if self.zero_speed_count >= 5:
-                            self.enter_buffering_mode()
+                        if hasattr(self, 'last_bytes') and time_diff > 0:
+                            bytes_diff = bytes_read - self.last_bytes
+                            speed = bytes_diff / time_diff / 1024  # KB/s
+                            
+                            # 更新缓冲状态
+                            self.update_buffer_status(speed, stats)
+                            
+                            # 检测网络状态
+                            if speed == 0 and self.player.is_playing():
+                                if not hasattr(self, 'zero_speed_count'):
+                                    self.zero_speed_count = 0
+                                self.zero_speed_count += 1
+                                
+                                # 如果连续5秒没有数据，进入缓冲模式
+                                if self.zero_speed_count >= 5:
+                                    self.enter_buffering_mode()
+                            else:
+                                self.zero_speed_count = 0
+                                if speed > 1024:
+                                    self.network_speed_label.config(text=f"网速: {speed/1024:.1f} MB/s")
+                                else:
+                                    self.network_speed_label.config(text=f"网速: {speed:.1f} KB/s")
+                            
+                            self.last_bytes = bytes_read
+                            self.last_update_time = current_time
                     else:
-                        self.zero_speed_count = 0
-                        if speed > 1024:
-                            self.network_speed_label.config(text=f"网速: {speed/1024:.1f} MB/s")
-                        else:
-                            self.network_speed_label.config(text=f"网速: {speed:.1f} KB/s")
-                self.last_bytes = bytes_read
+                        self.network_speed_label.config(text="网速: --")
+            except Exception as e:
+                self.logger.error(f"获取网络统计信息失败: {str(e)}")
+                self.network_speed_label.config(text="网速: --")
+
 
                 # 更新状态信息
                 lost_pictures = stats.get('lost_pictures', -1)
