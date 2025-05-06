@@ -157,6 +157,16 @@ class SettingsDialog(tk.Toplevel):
 
 class VideoPlayerWindow(tk.Toplevel):
     def __init__(self, parent, video_url, video_title, video_list=None, current_index=0, subscription_data=None):
+        """初始化视频播放器窗口
+        
+        参数:
+            parent: 父窗口
+            video_url: 视频URL
+            video_title: 视频标题
+            video_list: 视频列表(可选)
+            current_index: 当前视频索引(可选)
+            subscription_data: 订阅数据(可选)
+        """
         super().__init__(parent)
         # 创建日志记录器
         self.logger = logging.getLogger(__name__)
@@ -168,9 +178,30 @@ class VideoPlayerWindow(tk.Toplevel):
         self.video_list = video_list if video_list is not None else []
         self.current_index = current_index
         self.subscription_data = subscription_data or {}
-        self.logger.info(f"视频播放器初始化完成",subscription_data)
+        self.logger.info(
+            f"视频播放器初始化完成, 参数: {{"  # ← 转义外层花括号
+            f"'video_url': '{video_url}', "  # 字符串变量需要加引号
+            f"'video_title': '{video_title}', "
+            f"'video_list_length': {len(self.video_list)}, "  # 补上逗号
+            f"'current_index': {current_index}, "
+            f"'subscription_data': {str(subscription_data)}"
+            f"}}"  # 转义外层花括号
+        )
         self.intro_duration = self.subscription_data.get('intro_duration', 90)
         self.outro_duration = self.subscription_data.get('outro_duration', 90)
+        
+        # 缓存状态变量
+        self.is_buffering = False
+        self.min_buffer_threshold = 0.2  # 最小缓冲阈值（20%）
+        self.max_buffer_threshold = 0.8  # 最大缓冲阈值（80%）
+        self.buffer_size = 0
+        self.last_buffer_update = 0
+        
+        # 自适应缓冲设置
+        self.network_quality_history = []  # 存储最近的网络质量数据
+        self.history_size = 10  # 保存最近10次的网络质量数据
+        self.network_unstable_count = 0  # 网络不稳定计数
+        self.adaptive_buffer_enabled = True  # 启用自适应缓冲
 
         # 动画相关属性
         self.control_alpha = 0.0  # 控制栏透明度(0.0-1.0)
@@ -345,13 +376,16 @@ class VideoPlayerWindow(tk.Toplevel):
             font=('微软雅黑', 9)
         )
 
+
+        
     def update_network_stats(self):
         """更新网络状态信息"""
         try:
             # 检查播放器是否已初始化且正在播放
-            if not hasattr(self, 'player') or not self.player or not self.player.is_playing():
+            if not hasattr(self, 'player') or not self.player:
                 self.network_speed_label.config(text="网速: --")
                 self.status_label.config(text="状态: 未播放")
+                self.buffer_label.config(text="缓冲: --")
                 self.after(1000, self.update_network_stats)
                 return
 
@@ -359,46 +393,240 @@ class VideoPlayerWindow(tk.Toplevel):
             media = self.player.get_media()
             if media:
                 stats = media.get_stats()
-                print("获取到的统计信息:", stats)  # 调试输出
+                current_state = self.player.get_state()
 
-                # 计算网速
+                # 计算网速和缓冲状态
                 bytes_read = stats.get('input_bytes', 0)
                 if hasattr(self, 'last_bytes'):
                     bytes_diff = bytes_read - self.last_bytes
                     speed = bytes_diff / 1024  # 转换为KB
-                    if speed > 1024:
-                        self.network_speed_label.config(text=f"网速: {speed/1024:.1f} MB/s")
+                    
+                    # 更新缓冲状态
+                    self.update_buffer_status(speed, stats)
+                    
+                    # 检测网络状态
+                    if speed == 0 and self.player.is_playing():
+                        if not hasattr(self, 'zero_speed_count'):
+                            self.zero_speed_count = 0
+                        self.zero_speed_count += 1
+                        
+                        # 如果连续5秒没有数据，进入缓冲模式
+                        if self.zero_speed_count >= 5:
+                            self.enter_buffering_mode()
                     else:
-                        self.network_speed_label.config(text=f"网速: {speed:.1f} KB/s")
+                        self.zero_speed_count = 0
+                        if speed > 1024:
+                            self.network_speed_label.config(text=f"网速: {speed/1024:.1f} MB/s")
+                        else:
+                            self.network_speed_label.config(text=f"网速: {speed:.1f} KB/s")
                 self.last_bytes = bytes_read
 
                 # 更新状态信息
                 lost_pictures = stats.get('lost_pictures', -1)
                 lost_abuffers = stats.get('lost_abuffers', -1)
-                print(f"丢失帧: {lost_pictures}, 丢失音频缓冲: {lost_abuffers}")  # 调试输出
+                demux_corrupted = stats.get('demux_corrupted', -1)
+                demux_discontinuity = stats.get('demux_discontinuity', -1)
 
-                if lost_pictures > 0 or lost_abuffers > 0:
+                # 状态判断逻辑
+                if current_state == vlc.State.Error:
+                    self.status_label.config(text="状态: 播放错误")
+                    self.attempt_recovery()
+                elif current_state == vlc.State.Buffering:
+                    self.status_label.config(text="状态: 正在缓冲...")
+                    self.is_buffering = True
+                elif self.is_buffering and self.buffer_size >= self.max_buffer_threshold:
+                    self.resume_from_buffering()
+                elif lost_pictures > 0 or lost_abuffers > 0:
                     self.status_label.config(text="状态: 播放不稳定")
-                elif lost_pictures == -1 and lost_abuffers == -1:
-                    self.status_label.config(text="状态: 统计信息不可用")
+                    if lost_pictures > 10 or lost_abuffers > 10:
+                        self.enter_buffering_mode()
                 else:
-                    self.status_label.config(text="状态: 正常播放中")
+                    if not self.is_buffering:
+                        self.status_label.config(text="状态: 正常播放")
             else:
                 self.network_speed_label.config(text="网速: --")
                 self.status_label.config(text="状态: 无媒体")
+                self.buffer_label.config(text="缓冲: --")
 
-        except AttributeError as e:
-            # 处理播放器未初始化的情况
-            self.logger.error(f"播放器未初始化: {str(e)}")
-            self.network_speed_label.config(text="网速: --")
-            self.status_label.config(text="状态: 初始化中")
         except Exception as e:
             self.logger.error(f"更新网络状态时出错: {str(e)}")
             self.network_speed_label.config(text="网速: --")
             self.status_label.config(text="状态: 错误")
+            self.buffer_label.config(text="缓冲: --")
 
         # 每秒更新一次
         self.after(1000, self.update_network_stats)
+
+    def update_buffer_status(self, speed, stats):
+        """更新缓冲状态"""
+        try:
+            # 计算缓冲大小
+            read_bytes = stats.get('read_bytes', 0)
+            input_bitrate = stats.get('input_bitrate', 0)
+            
+            if input_bitrate > 0:
+                # 估算缓冲时间（秒）
+                buffer_time = read_bytes / (input_bitrate * 128)  # 转换为秒
+                self.buffer_size = min(1.0, buffer_time / 60)  # 最大1分钟的缓冲
+                
+                # 更新缓冲显示
+                buffer_percent = int(self.buffer_size * 100)
+                self.buffer_label.config(text=f"缓冲: {buffer_percent}%")
+                
+                # 更新网络质量历史
+                if self.adaptive_buffer_enabled:
+                    self.update_network_quality(speed, stats)
+                    self.adjust_buffer_thresholds()
+                
+                # 检查缓冲状态
+                if self.buffer_size < self.min_buffer_threshold and not self.is_buffering:
+                    self.enter_buffering_mode()
+                elif self.buffer_size >= self.max_buffer_threshold and self.is_buffering:
+                    self.resume_from_buffering()
+                
+                # 显示详细缓冲信息
+                if self.is_buffering:
+                    self.buffer_label.config(
+                        text=f"缓冲: {buffer_percent}% (目标: {int(self.max_buffer_threshold * 100)}%)"
+                    )
+        except Exception as e:
+            self.logger.error(f"更新缓冲状态时出错: {str(e)}")
+            
+    def update_network_quality(self, speed, stats):
+        """更新网络质量历史"""
+        try:
+            # 计算网络质量得分 (0-100)
+            lost_pictures = stats.get('lost_pictures', 0)
+            lost_abuffers = stats.get('lost_abuffers', 0)
+            demux_corrupted = stats.get('demux_corrupted', 0)
+            
+            # 基础得分从100开始，根据各种问题扣分
+            quality_score = 100
+            
+            # 根据速度评分（假设理想速度是1MB/s）
+            speed_mb = speed / 1024  # 转换为MB/s
+            if speed_mb < 0.1:  # 低于100KB/s
+                quality_score -= 40
+            elif speed_mb < 0.5:  # 低于500KB/s
+                quality_score -= 20
+            elif speed_mb < 1.0:  # 低于1MB/s
+                quality_score -= 10
+                
+            # 根据问题扣分
+            quality_score -= lost_pictures * 2  # 每丢失一帧扣2分
+            quality_score -= lost_abuffers * 5  # 每丢失一个音频缓冲扣5分
+            quality_score -= demux_corrupted * 10  # 每次损坏扣10分
+            
+            # 确保分数在0-100之间
+            quality_score = max(0, min(100, quality_score))
+            
+            # 更新历史记录
+            self.network_quality_history.append(quality_score)
+            if len(self.network_quality_history) > self.history_size:
+                self.network_quality_history.pop(0)
+                
+            # 更新网络不稳定计数
+            if quality_score < 60:  # 如果质量分数低于60
+                self.network_unstable_count += 1
+            else:
+                self.network_unstable_count = max(0, self.network_unstable_count - 1)
+                
+        except Exception as e:
+            self.logger.error(f"更新网络质量时出错: {str(e)}")
+            
+    def adjust_buffer_thresholds(self):
+        """根据网络质量调整缓冲阈值"""
+        try:
+            if not self.network_quality_history:
+                return
+                
+            # 计算最近的平均网络质量
+            avg_quality = sum(self.network_quality_history) / len(self.network_quality_history)
+            
+            # 根据网络质量调整缓冲阈值
+            if avg_quality >= 80:  # 网络质量很好
+                self.min_buffer_threshold = 0.15  # 15%
+                self.max_buffer_threshold = 0.6   # 60%
+            elif avg_quality >= 60:  # 网络质量一般
+                self.min_buffer_threshold = 0.2   # 20%
+                self.max_buffer_threshold = 0.8   # 80%
+            else:  # 网络质量差
+                self.min_buffer_threshold = 0.3   # 30%
+                self.max_buffer_threshold = 0.9   # 90%
+                
+            # 如果检测到持续的网络不稳定
+            if self.network_unstable_count > 5:
+                # 增加缓冲区大小
+                self.min_buffer_threshold = min(0.4, self.min_buffer_threshold + 0.1)
+                self.max_buffer_threshold = min(0.95, self.max_buffer_threshold + 0.1)
+                
+        except Exception as e:
+            self.logger.error(f"调整缓冲阈值时出错: {str(e)}")
+            
+    def toggle_adaptive_buffer(self):
+        """切换自适应缓冲状态"""
+        self.adaptive_buffer_enabled = self.adaptive_buffer_var.get()
+        if self.adaptive_buffer_enabled:
+            self.logger.info("已启用自适应缓冲")
+            # 重置网络质量历史
+            self.network_quality_history = []
+            self.network_unstable_count = 0
+        else:
+            self.logger.info("已禁用自适应缓冲")
+            # 恢复默认阈值
+            self.min_buffer_threshold = 0.2
+            self.max_buffer_threshold = 0.8
+
+    def enter_buffering_mode(self):
+        """进入缓冲模式"""
+        if not self.is_buffering:
+            self.is_buffering = True
+            self.player.pause()  # 暂停播放
+            self.status_label.config(text="状态: 等待缓冲...")
+            self.logger.info("进入缓冲模式")
+
+    def resume_from_buffering(self):
+        """从缓冲模式恢复"""
+        if self.is_buffering:
+            self.is_buffering = False
+            self.player.play()  # 恢复播放
+            self.status_label.config(text="状态: 正常播放")
+            self.logger.info("从缓冲模式恢复")
+
+    def attempt_recovery(self):
+        """尝试恢复播放"""
+        try:
+            if not hasattr(self, 'recovery_attempts'):
+                self.recovery_attempts = 0
+            
+            # 最多尝试3次恢复
+            if self.recovery_attempts < 3:
+                self.recovery_attempts += 1
+                self.logger.info(f"尝试恢复播放 (第{self.recovery_attempts}次)")
+                
+                # 保存当前播放位置
+                current_time = self.player.get_time()
+                current_url = self.player.get_media().get_mrl()
+                
+                # 重新加载视频
+                self.status_label.config(text=f"状态: 正在重新连接 ({self.recovery_attempts}/3)...")
+                self.load_video(current_url)
+                
+                # 恢复播放位置
+                self.player.set_time(current_time)
+                
+                # 5秒后重置恢复计数
+                self.after(5000, self.reset_recovery_attempts)
+            else:
+                self.logger.warning("恢复尝试次数已达上限")
+                self.status_label.config(text="状态: 播放异常，请手动刷新")
+        except Exception as e:
+            self.logger.error(f"恢复播放时出错: {str(e)}")
+            self.status_label.config(text="状态: 恢复失败")
+
+    def reset_recovery_attempts(self):
+        """重置恢复尝试次数"""
+        self.recovery_attempts = 0
 
         # 配置工具提示样式
         self.style.configure('Tooltip.TLabel',
@@ -563,6 +791,7 @@ class VideoPlayerWindow(tk.Toplevel):
 
     def toggle_play(self):
         """切换播放/暂停状态"""
+        self.logger.debug("播放/暂停按钮被点击",self.player.is_playing())
         if self.player.is_playing():
             self.player.pause()
             self.play_button.config(text="▶")
@@ -602,6 +831,7 @@ class VideoPlayerWindow(tk.Toplevel):
         self._seeking = False
 
     def skip_intro(self):
+        self.logger.debug(f"跳过片头",self.player.is_playing())
         """跳过片头"""
         current_time = self.player.get_time()
         if current_time < self.intro_duration * 1000:  # 转换为毫秒
@@ -612,12 +842,10 @@ class VideoPlayerWindow(tk.Toplevel):
         total_time = self.player.get_length()
         current_time = self.player.get_time()
         outro_start = total_time - (self.outro_duration * 1000)
+        self.logger.debug(f"跳过片尾: {outro_start} / {current_time}")
         if current_time >= outro_start:
             # 如果在片尾，直接跳到下一集
             self.play_next()
-        else:
-            # 如果不在片尾，跳到片尾开始
-            self.player.set_time(outro_start)
 
     def show_settings(self):
         """显示设置对话框"""
@@ -789,6 +1017,7 @@ class VideoPlayerWindow(tk.Toplevel):
             self.status_label.config(text="状态: 播放错误")
         elif self.player.get_state() == vlc.State.Ended:
             self.status_label.config(text="状态: 播放结束")
+            self.show_controls_temporarily()
         else:
             self.status_label.config(text="状态: 已暂停")
 
@@ -863,6 +1092,7 @@ class VideoPlayerWindow(tk.Toplevel):
                         self.status_label.config(text="状态: 播放错误")
                     elif self.player.get_state() == vlc.State.Ended:
                         self.status_label.config(text="状态: 播放结束")
+                        self.show_controls_temporarily()
                     else:
                         self.status_label.config(text="状态: 已暂停")
 
@@ -1038,12 +1268,16 @@ class VideoPlayerWindow(tk.Toplevel):
             elif sys.platform.startswith('darwin'):
                 self.player.set_nsobject(self.video_frame.winfo_id())
 
-            # 创建媒体并设置网络缓存（增加缓冲时间）
+            # 创建媒体并设置网络缓存（增加缓冲时间和容错）
             media = self.instance.media_new(video_url)
-            media.add_option(':network-caching=25000')  # 增加到5秒网络缓存
-            media.add_option(':file-caching=25000')     # 增加到5秒文件缓存
-            media.add_option(':clock-jitter=0')        # 减少时钟抖动
-            media.add_option(':clock-synchro=0')       # 禁用时钟同步
+            media.add_option(':network-caching=60000')  # 增加到60秒网络缓存
+            media.add_option(':file-caching=60000')     # 增加到60秒文件缓存
+            media.add_option(':live-caching=60000')     # 直播缓存
+            media.add_option(':clock-jitter=5000')      # 增加时钟抖动容忍
+            media.add_option(':clock-synchro=1')        # 启用时钟同步
+            media.add_option(':http-reconnect=1')       # 启用HTTP重连
+            # media.add_option(':rtsp-tcp=1')             # 使用TCP而不是UDP
+            media.add_option(':network-timeout=5000')   # 网络超时时间
             self.player.set_media(media)
 
             # 开始播放
@@ -1074,10 +1308,6 @@ class VideoPlayerWindow(tk.Toplevel):
     def on_media_playing(self, event):
         """视频开始播放时的回调"""
         try:
-            # 自动跳过片头
-            if self.intro_duration > 0:
-                self.player.set_time(self.intro_duration * 1000)
-                
             # 获取视频尺寸
             video_width = self.player.video_get_width()
             video_height = self.player.video_get_height()
@@ -1088,6 +1318,9 @@ class VideoPlayerWindow(tk.Toplevel):
                 video_height = 720
 
             self.logger.info(f"视频尺寸: {video_width}x{video_height}")
+            # 自动跳过片头
+            self.skip_intro()
+
 
             # 获取屏幕尺寸
             screen_width = self.winfo_screenwidth()
@@ -1145,13 +1378,12 @@ class VideoPlayerWindow(tk.Toplevel):
     def on_time_changed(self, event):
         """视频时间变化时的回调"""
         self.update_time_display()
-        
+        current_time = self.player.get_time()
         # 检查是否到达片尾
-        if self.outro_duration > 0:
-            current_time = self.player.get_time()
+        if self.outro_duration > 0 and current_time > 0:
             total_time = self.player.get_length()
             outro_start = total_time - (self.outro_duration * 1000)
-            
+
             if current_time >= outro_start:
                 # 如果有下一集，自动播放下一集
                 if self.video_list and self.current_index < len(self.video_list) - 1:

@@ -4,22 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/视频网站.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/crawler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subscription_manager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/video_player.py" afterDir="false" />
+    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="初始化">
+      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/video_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,14 +101,28 @@
       <workItem from="1746331704420" duration="227000" />
       <workItem from="1746331943611" duration="17225000" />
       <workItem from="1746409332269" duration="5224000" />
-      <workItem from="1746422352683" duration="30544000" />
+      <workItem from="1746422352683" duration="36270000" />
+      <workItem from="1746521564288" duration="572000" />
     </task>
+    <task id="LOCAL-00001" summary="初始化">
+      <option name="closed" value="true" />
+      <created>1746512590643</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746512590643</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="初始化" />
+    <option name="LAST_COMMIT_MESSAGE" value="初始化" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1746509156640" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1746521771891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

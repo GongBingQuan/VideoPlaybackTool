@@ -3,7 +3,7 @@
     "subscriptions": [
         {
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-06 14:18:52",
+            "last_check": "2025-05-06 16:54:52",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -364,8 +364,8 @@
             "image_url": "",
             "total_episodes": 87,
             "last_update": "2025-04-27",
-            "intro_duration": 120,
-            "outro_duration": 120
+            "intro_duration": 160,
+            "outro_duration": 90
         },
         {
             "title": "万界至尊",
@@ -1230,8 +1230,10 @@
                 }
             ],
             "total_episodes": 214,
-            "last_check": "2025-05-06 14:18:53",
-            "update_time": "2025-05-04"
+            "last_check": "2025-05-06 16:54:52",
+            "update_time": "2025-05-04",
+            "intro_duration": 150,
+            "outro_duration": 90
         }
     ]
 }

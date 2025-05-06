@@ -852,14 +852,19 @@ class VideoPlayer(tk.Tk):
                     # 添加详细的调试信息
                     self.logger.debug(f"视频信息: {json.dumps(selected_video, ensure_ascii=False, indent=2)}")
 
-                    player_window = VideoPlayerWindow(
-                        self,
-                        selected_video['episodes'][0]['url'],
-                        full_title,
-                        video_list=selected_video['episodes'],
-                        current_index=current_index,
-                        subscription_data=selected_video
-                    )
+                    try:
+                        player_window = VideoPlayerWindow(
+                            self,
+                            selected_video['episodes'][0]['url'],
+                            full_title,
+                            video_list=selected_video['episodes'],
+                            current_index=current_index,
+                            subscription_data=selected_video
+                        )
+                    except Exception as e:
+                        logger.error(f"创建播放器窗口失败: {str(e)}")
+                        messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")
+                        return
                     player_window.focus()  # 将焦点设置到播放器窗口
                 except Exception as e:
                     self.logger.error(f"播放视频失败: {traceback.format_exc()}")
