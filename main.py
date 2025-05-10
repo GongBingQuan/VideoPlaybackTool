@@ -481,8 +481,8 @@ class VideoPlayer(tk.Tk):
             self.tree.delete(item)
 
         # 重新添加视频
-        for video in self.config['subscriptions']:
-            self.tree.insert('', tk.END, values=(video['title'], video['update_time']))
+        for index,video in enumerate(self.config['subscriptions']):
+            self.tree.insert('', tk.END, values=(f"{index:03d}",video['title'],f"{video['total_episodes']}", video['update_time']))
 
     def load_config(self):
         """加载配置文件"""
@@ -544,10 +544,10 @@ class VideoPlayer(tk.Tk):
                 'normal': ('Microsoft YaHei', 10)
             },
             'columns': {
-                'tree': ('episode_no', 'title', 'update_time'),
-                'display': ('剧集', '更新时间'),
-                'widths': {'剧集': 380, '更新时间': 150},
-                'min_widths': {'剧集': 200, '更新时间': 120}
+                'tree': ('id','title', 'episodes', 'update_time'),
+                'display': ('序号','剧名','剧集', '更新时间'),
+                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '更新时间': 90},
+                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '更新时间': 90}
             },
             'padding': {
                 'x_small': 3,
@@ -733,6 +733,7 @@ class VideoPlayer(tk.Tk):
 
                     self.tree.insert('', tk.END, values=(
                         f"{index:03d}",  # 格式化序号为3位数
+                        f"{video['total_episodes']}",
                         episode_title,
                         video['last_update']
                     ), tags=(str(episode_num),))
@@ -824,7 +825,7 @@ class VideoPlayer(tk.Tk):
         try:
             item = self.tree.selection()[0]
             values = self.tree.item(item, 'values')
-            episode_title = values[0]  # 剧集标题在第二列
+            episode_title = values[1]  # 剧集标题在第二列
 
             # 查找当前视频的索引和信息
             current_index = 0
@@ -925,12 +926,11 @@ class VideoPlayer(tk.Tk):
 
             # 更新历史记录，确保所有字段都有默认值
             history[series_title].update({
-                'last_played': video.get('episode_title', 'Unknown Episode'),
+                'last_played': video.get('title', 'Unknown Episode'),
                 'last_played_time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 'last_update': series_info.get('update_time', datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
-                'total_episodes': len(self.config.get('subscriptions', [])),
-                'url': video.get('url', ''),  # 添加URL信息
-                'episode_number': video.get('episode_number', 0)  # 添加集数信息
+                'total_episodes': len(self.config.get('total_episodes', [])),
+                'episode_number': 0  # 添加集数信息
             })
 
             # 确保目录存在

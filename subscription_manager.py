@@ -139,7 +139,9 @@ class SubscriptionManager(tk.Toplevel):
                 'url': url,
                 'last_update': info['update_time'],
                 'episodes': info['episodes'],
-                'total_episodes': info['total_episodes']
+                'total_episodes': info['total_episodes'],
+                "intro_duration": 150,
+                "outro_duration": 90
             })
 
             with open('subscriptions.json', 'w', encoding='utf-8') as f:

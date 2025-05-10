@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import tkinter as tk
 from tkinter import ttk, messagebox
 import vlc
@@ -7,6 +8,7 @@ import logging
 import json
 import traceback
 from datetime import datetime, timedelta
+
 try:
     import win32gui
     import win32con
@@ -207,6 +209,10 @@ class VideoPlayerWindow(tk.Toplevel):
         self.control_alpha = 0.0  # 控制栏透明度(0.0-1.0)
         self.animation_speed = 0.05  # 动画速度
         self.is_animating = False  # 是否正在动画中
+        
+        # 播放记录相关属性
+        self.last_record_time = 0  # 上次记录播放时间的时间戳
+        self.last_play_info = self._load_last_play_info()  # 加载上次播放信息
 
         # 设置最小窗口大小
         self.minsize(640, 360)  # 16:9比例的最小尺寸
@@ -380,6 +386,7 @@ class VideoPlayerWindow(tk.Toplevel):
         
     def update_network_stats(self):
         """更新网络状态信息"""
+        global stats
         try:
             # 检查播放器是否已初始化且正在播放
             if not hasattr(self, 'player') or not self.player:
@@ -438,7 +445,7 @@ class VideoPlayerWindow(tk.Toplevel):
                 lost_abuffers = stats.get('lost_abuffers', -1)
                 demux_corrupted = stats.get('demux_corrupted', -1)
                 demux_discontinuity = stats.get('demux_discontinuity', -1)
-
+                current_state = self.player.get_state()
                 # 状态判断逻辑
                 if current_state == vlc.State.Error:
                     self.status_label.config(text="状态: 播放错误")
@@ -704,7 +711,7 @@ class VideoPlayerWindow(tk.Toplevel):
             (self.left_buttons, "▶", self.toggle_play, "播放/暂停"),
             (self.left_buttons, "⏭", self.play_next, "下一集"),
             (self.center_buttons, "↷", self.skip_intro, "跳过片头"),
-            # (self.center_buttons, "⇥", self.skip_outro, "跳过片尾"),
+            (self.center_buttons, "⇥", self.skip_outro, "跳过片尾"),
             (self.right_buttons, "⚙", self.show_settings, "设置"),
             (self.right_buttons, "⛶", self.toggle_fullscreen, "全屏")
         ]
@@ -843,21 +850,57 @@ class VideoPlayerWindow(tk.Toplevel):
         self._seeking = False
 
     def skip_intro(self):
+        """跳过片头并记录播放历史"""
         self.logger.debug(f"跳过片头",self.player.is_playing())
-        """跳过片头"""
         current_time = self.player.get_time()
         if current_time < self.intro_duration * 1000:  # 转换为毫秒
-            self.player.set_time(self.intro_duration * 1000)
+            skip_to = self.intro_duration * 1000
+            self.player.set_time(skip_to)
+            # 记录跳过片头后的播放位置
+            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                video = self.video_list[self.current_index]
+                video['series_title'] = self.subscription_data.get('series_info', {}).get('title', video.get('title', 'Unknown Series'))
+                # 确保记录的是跳过片头后的实际观看时间
+                self.save_play_history(video, skip_to)
+                self.last_record_time = time.time()
+                self.logger.info(f"已跳过片头并记录播放位置: {skip_to}ms")
+                
+            # 检查是否需要自动跳过片尾
+            total_time = self.player.get_length()
+            if total_time > 0 and skip_to >= total_time - (self.outro_duration * 1000):
+                # 先记录当前播放位置
+                if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                    video = self.video_list[self.current_index]
+                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    # 确保记录的是跳过片尾后的时间点
+                    self.save_play_history(video, skip_to)
+                    self.last_record_time = time.time()
+                self.skip_outro()
 
     def skip_outro(self):
-        """跳过片尾"""
+        """跳过片尾并记录播放历史"""
         total_time = self.player.get_length()
         current_time = self.player.get_time()
         outro_start = total_time - (self.outro_duration * 1000)
         self.logger.debug(f"跳过片尾: {outro_start} / {current_time}")
         if current_time >= outro_start:
+            # 记录跳过片尾前的播放位置
+            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                video = self.video_list[self.current_index]
+                video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                # 确保记录的是跳过片尾后的时间点
+                self.save_play_history(video, outro_start)
+                self.last_record_time = time.time()
+            
             # 如果在片尾，直接跳到下一集
-            self.play_next()
+            if self.video_list and self.current_index < len(self.video_list) - 1:
+                # 先保存当前集播放状态
+                if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                    video = self.video_list[self.current_index]
+                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    self.save_play_history(video, outro_start)
+                    self.last_record_time = time.time()
+                self.play_next()
 
     def show_settings(self):
         """显示设置对话框"""
@@ -878,59 +921,22 @@ class VideoPlayerWindow(tk.Toplevel):
             os.makedirs(os.path.dirname('subscriptions.json') or '.', exist_ok=True)
 
             # 读取现有数据，处理文件不存在或格式错误的情况
-            data = {'subscriptions': []}
-            try:
-                if os.path.exists('subscriptions.json'):
-                    with open('subscriptions.json', 'r', encoding='utf-8') as f:
-                        content = f.read().strip()
-                        if content:  # 确保文件不为空
-                            try:
-                                data = json.loads(content)
-                            except json.JSONDecodeError:
-                                self.logger.warning("订阅文件格式错误，将重新创建")
-                                data = {'subscriptions': []}
-            except Exception as e:
-                self.logger.error(f"读取订阅文件失败: {str(e)}")
+            if os.path.exists('subscriptions.json'):
+                with open('subscriptions.json', 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            else:
                 data = {'subscriptions': []}
 
-            # 确保数据结构正确
-            if 'subscriptions' not in data:
-                data['subscriptions'] = []
-
             # 查找并更新订阅项
-            updated = False
             for subscription in data['subscriptions']:
                 if subscription.get('title') == self.subscription_data.get('title'):
                     subscription['intro_duration'] = self.intro_duration
                     subscription['outro_duration'] = self.outro_duration
-                    updated = True
                     break
 
-            # 如果没有找到匹配项，添加新订阅
-            if not updated:
-                new_sub = self.subscription_data.copy()
-                new_sub['intro_duration'] = self.intro_duration
-                new_sub['outro_duration'] = self.outro_duration
-                data['subscriptions'].append(new_sub)
 
-            # 使用临时文件确保写入完整性
-            temp_file = 'subscriptions.json.tmp'
-            try:
-                with open(temp_file, 'w', encoding='utf-8') as f:
-                    json.dump(data, f, ensure_ascii=False, indent=4)
-                
-                # 如果写入成功，替换原文件
-                if os.path.exists('subscriptions.json'):
-                    os.replace(temp_file, 'subscriptions.json')
-                else:
-                    os.rename(temp_file, 'subscriptions.json')
-                
-                self.logger.info("成功保存片头片尾设置")
-                messagebox.showinfo("成功", "片头片尾设置已保存")
-            except Exception as e:
-                if os.path.exists(temp_file):
-                    os.remove(temp_file)
-                raise e
+            with open('subscriptions.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
 
         except Exception as e:
             self.logger.error(f"保存设置失败: {str(e)}")
@@ -1165,16 +1171,33 @@ class VideoPlayerWindow(tk.Toplevel):
             was_fullscreen = self.is_fullscreen
             current_geometry = self.geometry()
 
+            # 检查是否有历史播放记录
+            current_episode = getattr(self, 'current_index', 0) + 1
+            seek_time = 0
+            
+            if self.last_play_info and self.last_play_info['episode_number'] == current_episode:
+                seek_time = self.last_play_info['current_time']
+                self.logger.info(f"从历史记录恢复播放: 第{current_episode}集 时间点: {seek_time}ms")
+
             # 播放新视频
             media = self.instance.media_new(video['url'])
             self.player.set_media(media)
             self.player.play()
+
+            # 设置播放位置
+            if seek_time > 0:
+                self.player.set_time(seek_time)
 
             # 恢复窗口状态
             if was_fullscreen:
                 self.attributes('-fullscreen', True)
             else:
                 self.geometry(current_geometry)
+
+            # 记录选集信息
+            video['series_title'] = self.config.get('series_info', {}).get('title', '')
+            self.save_play_history(video)
+            self.last_record_time = time.time()
 
         except Exception as e:
             self.logger.error(f"播放视频时出错: {str(e)}")
@@ -1186,7 +1209,16 @@ class VideoPlayerWindow(tk.Toplevel):
         for i, video in enumerate(self.video_list):
             if video['title'] == selected_title:
                 self.current_index = i
+                # 添加系列标题信息
+                if hasattr(self, 'subscription_data'):
+                    video['series_title'] = self.subscription_data.get('series_info', {}).get('title', video.get('title', 'Unknown Series'))
+                else:
+                    video['series_title'] = video.get('title', 'Unknown Series')
                 self.play_video(video)
+                # 记录选集信息
+                self.save_play_history(video)
+                # 重置记录时间
+                self.last_record_time = time.time()
                 break
 
     def toggle_fullscreen(self, event=None):
@@ -1391,15 +1423,28 @@ class VideoPlayerWindow(tk.Toplevel):
         """视频时间变化时的回调"""
         self.update_time_display()
         current_time = self.player.get_time()
-        # 检查是否到达片尾
-        if self.outro_duration > 0 and current_time > 0:
-            total_time = self.player.get_length()
-            outro_start = total_time - (self.outro_duration * 1000)
+        
+        try:
+            # 每10秒记录一次播放进度
+            current_timestamp = time.time()  # 使用time模块的time()函数
+            if current_timestamp - self.last_record_time >= 10:
+                if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                    video = self.video_list[self.current_index]
+                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    self.save_play_history(video, current_time)
+                    self.last_record_time = current_timestamp
+            
+            # 检查是否到达片尾
+            if self.outro_duration > 0 and current_time > 0:
+                total_time = self.player.get_length()
+                outro_start = total_time - (self.outro_duration * 1000)
 
-            if current_time >= outro_start:
-                # 如果有下一集，自动播放下一集
-                if self.video_list and self.current_index < len(self.video_list) - 1:
-                    self.play_next()
+                if current_time >= outro_start:
+                    # 如果有下一集，自动播放下一集
+                    if self.video_list and self.current_index < len(self.video_list) - 1:
+                        self.play_next()
+        except Exception as e:
+            self.logger.error(f"处理时间变化时出错: {str(e)}")
 
     def on_length_changed(self, event):
         """视频长度变化时的回调"""
@@ -1464,3 +1509,108 @@ class VideoPlayerWindow(tk.Toplevel):
         self.progress_bar.configure(cursor="")
         self.style.configure('Player.Horizontal.TScale',
                            troughcolor='#2d2d2d')
+
+    def _load_last_play_info(self):
+        """加载上次播放信息"""
+        try:
+            if not os.path.exists('play_history.json'):
+                return None
+
+            with open('play_history.json', 'r', encoding='utf-8') as f:
+                history = json.load(f)
+                if not history:
+                    return None
+
+                # 查找当前视频的历史记录
+                for series_title, series_data in history.items():
+                    if 'play_history' in series_data and series_data['play_history']:
+                        last_play = series_data['play_history'][-1]
+                        return {
+                            'episode_number': last_play.get('episode_number', 0),
+                            'current_time': last_play.get('current_time', 0)
+                        }
+        except Exception as e:
+            self.logger.error(f"加载播放历史失败: {str(e)}")
+            return None
+
+    def save_play_history(self, video, current_time=None):
+        """保存播放历史
+        Args:
+            video: 视频信息字典
+            current_time: 当前播放时间(毫秒)，可选
+        """
+        try:
+            history_file = 'play_history.json'
+            history = {}
+
+            # 读取现有历史记录
+            try:
+                if os.path.exists(history_file):
+                    with open(history_file, 'r', encoding='utf-8') as f:
+                        content = f.read().strip()
+                        if content:
+                            history = json.loads(content)
+            except Exception as e:
+                self.logger.error(f"读取历史记录失败: {str(e)}")
+                history = {}
+
+            # 确保history是字典类型
+            if not isinstance(history, dict):
+                history = {}
+
+            # 获取剧集标题
+            series_title = video.get('series_title', video.get('title', 'Unknown Series'))
+            
+            # 初始化该系列的历史记录
+            if series_title not in history:
+                history[series_title] = {
+                    'play_history': []
+                }
+
+            # 获取当前集数
+            episode_number = getattr(self, 'current_index', 0) + 1
+            
+            # 准备要保存的数据
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            play_data = {
+                'episode_title': video.get('title', 'Unknown Episode'),
+                'episode_number': episode_number,
+                'last_played_time': now,
+                'current_time': current_time if current_time else 0,
+                'total_time': self.player.get_length() if self.player else 0
+            }
+
+            # 更新历史记录
+            history[series_title].update({
+                'last_played': play_data['episode_title'],
+                'last_played_time': now,
+                'last_update': now,
+                'total_episodes': len(self.video_list) if hasattr(self, 'video_list') else 0,
+                'episode_number': episode_number,
+                'url': video.get('url', ''),
+                'play_history': history[series_title].get('play_history', []) + [play_data]
+            })
+
+            # 限制播放历史记录数量(最多保留100条)
+            if len(history[series_title]['play_history']) > 100:
+                history[series_title]['play_history'] = history[series_title]['play_history'][-100:]
+
+            # 确保目录存在并安全写入文件
+            os.makedirs(os.path.dirname(history_file) or '.', exist_ok=True)
+            temp_file = f"{history_file}.tmp"
+            try:
+                with open(temp_file, 'w', encoding='utf-8') as f:
+                    json.dump(history, f, ensure_ascii=False, indent=4)
+                
+                if os.path.exists(history_file):
+                    os.replace(temp_file, history_file)
+                else:
+                    os.rename(temp_file, history_file)
+            except Exception as e:
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                raise e
+
+            self.logger.info(f"保存播放历史: {series_title} 第{episode_number}集")
+        except Exception as e:
+            self.logger.error(f"保存播放历史失败: {str(e)}")

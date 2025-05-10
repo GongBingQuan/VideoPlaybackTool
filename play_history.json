@@ -7,8 +7,8 @@
     },
     "仙逆": {
         "last_played": "Unknown Episode",
-        "last_played_time": "2025-05-06 17:04:55",
-        "last_update": "2025-05-06 17:04:55",
+        "last_played_time": "2025-05-09 23:09:58",
+        "last_update": "2025-05-09 23:09:58",
         "total_episodes": 2,
         "url": "https://www.moduzy5.com/vod/7645/",
         "episode_number": 0
@@ -20,5 +20,69 @@
         "total_episodes": 2,
         "url": "https://www.moduzy5.com/vod/8852/",
         "episode_number": 0
+    },
+    "遮天": {
+        "last_played": "遮天",
+        "last_played_time": "2025-05-10 00:55:36",
+        "last_update": "2025-05-10 00:55:36",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7887/",
+        "episode_number": 0
+    },
+    "完美世界": {
+        "last_played": "完美世界",
+        "last_played_time": "2025-05-10 01:50:48",
+        "last_update": "2025-05-10 01:50:48",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7644/",
+        "episode_number": 0
+    },
+    "剑道第一仙": {
+        "last_played": "剑道第一仙",
+        "last_played_time": "2025-05-10 09:58:53",
+        "last_update": "2025-05-10 09:58:53",
+        "total_episodes": 0,
+        "episode_number": 0
+    },
+    "第09集": {
+        "play_history": [
+            {
+                "episode_title": "第09集",
+                "episode_number": 9,
+                "last_played_time": "2025-05-10 09:58:54",
+                "current_time": 150000,
+                "total_time": 0
+            }
+        ],
+        "last_played": "第09集",
+        "last_played_time": "2025-05-10 09:58:54",
+        "last_update": "2025-05-10 09:58:54",
+        "total_episodes": 140,
+        "episode_number": 9,
+        "url": "https://play.modujx10.com/20240308/Mwf3zWR0/index.m3u8"
+    },
+    "第140集": {
+        "play_history": [
+            {
+                "episode_title": "第140集",
+                "episode_number": 140,
+                "last_played_time": "2025-05-10 09:59:05",
+                "current_time": 150000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第140集",
+                "episode_number": 140,
+                "last_played_time": "2025-05-10 09:59:08",
+                "current_time": 0,
+                "total_time": 531625
+            }
+        ],
+        "last_played": "第140集",
+        "last_played_time": "2025-05-10 09:59:08",
+        "last_update": "2025-05-10 09:59:08",
+        "total_episodes": 140,
+        "episode_number": 140,
+        "url": "https://play.modujx11.com/20250501/SYqdsKob/index.m3u8"
     }
 }
