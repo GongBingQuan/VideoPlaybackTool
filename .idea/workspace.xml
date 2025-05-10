@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="更新设置文件中的最后检查时间戳">
-      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscription_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/subscription_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.py" afterDir="false" />
@@ -118,7 +115,7 @@
       <workItem from="1746521564288" duration="897000" />
       <workItem from="1746803390484" duration="540000" />
       <workItem from="1746804168563" duration="8639000" />
-      <workItem from="1746813310051" duration="3252000" />
+      <workItem from="1746813310051" duration="6144000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -144,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746522410637</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="更新设置文件中的最后检查时间戳">
+      <option name="closed" value="true" />
+      <created>1746842483101</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746842483101</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,6 +172,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="更新设置文件中的最后检查时间戳" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1746813042958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1746842930828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

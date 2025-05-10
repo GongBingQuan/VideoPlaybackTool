@@ -710,8 +710,6 @@ class VideoPlayerWindow(tk.Toplevel):
             (self.left_buttons, "⏮", self.play_previous, "上一集"),
             (self.left_buttons, "▶", self.toggle_play, "播放/暂停"),
             (self.left_buttons, "⏭", self.play_next, "下一集"),
-            (self.center_buttons, "↷", self.skip_intro, "跳过片头"),
-            (self.center_buttons, "⇥", self.skip_outro, "跳过片尾"),
             (self.right_buttons, "⚙", self.show_settings, "设置"),
             (self.right_buttons, "⛶", self.toggle_fullscreen, "全屏")
         ]
@@ -722,9 +720,6 @@ class VideoPlayerWindow(tk.Toplevel):
                              style='Player.TButton',
                          command=command)
             btn.pack(side=tk.LEFT, padx=3)
-
-            if text == "↷":
-                self.skip_intro_button = btn
 
             self.create_tooltip(btn, tooltip)
 
@@ -859,7 +854,7 @@ class VideoPlayerWindow(tk.Toplevel):
             # 记录跳过片头后的播放位置
             if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                 video = self.video_list[self.current_index]
-                video['series_title'] = self.subscription_data.get('series_info', {}).get('title', video.get('title', 'Unknown Series'))
+                video['series_title'] = self.subscription_data.get('title', {})
                 # 确保记录的是跳过片头后的实际观看时间
                 self.save_play_history(video, skip_to)
                 self.last_record_time = time.time()
@@ -871,7 +866,7 @@ class VideoPlayerWindow(tk.Toplevel):
                 # 先记录当前播放位置
                 if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                     video = self.video_list[self.current_index]
-                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    video['series_title'] = self.subscription_data.get('title', {})
                     # 确保记录的是跳过片尾后的时间点
                     self.save_play_history(video, skip_to)
                     self.last_record_time = time.time()
@@ -887,7 +882,7 @@ class VideoPlayerWindow(tk.Toplevel):
             # 记录跳过片尾前的播放位置
             if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                 video = self.video_list[self.current_index]
-                video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                video['series_title'] = self.subscription_data.get('title', '')
                 # 确保记录的是跳过片尾后的时间点
                 self.save_play_history(video, outro_start)
                 self.last_record_time = time.time()
@@ -897,7 +892,7 @@ class VideoPlayerWindow(tk.Toplevel):
                 # 先保存当前集播放状态
                 if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                     video = self.video_list[self.current_index]
-                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    video['series_title'] = self.subscription_data.get('title', {})
                     self.save_play_history(video, outro_start)
                     self.last_record_time = time.time()
                 self.play_next()
@@ -1195,7 +1190,7 @@ class VideoPlayerWindow(tk.Toplevel):
                 self.geometry(current_geometry)
 
             # 记录选集信息
-            video['series_title'] = self.config.get('series_info', {}).get('title', '')
+            video['series_title'] = self.subscription_data.get('title', {})
             self.save_play_history(video)
             self.last_record_time = time.time()
 
@@ -1210,10 +1205,7 @@ class VideoPlayerWindow(tk.Toplevel):
             if video['title'] == selected_title:
                 self.current_index = i
                 # 添加系列标题信息
-                if hasattr(self, 'subscription_data'):
-                    video['series_title'] = self.subscription_data.get('series_info', {}).get('title', video.get('title', 'Unknown Series'))
-                else:
-                    video['series_title'] = video.get('title', 'Unknown Series')
+                video['series_title'] = self.subscription_data.get('title', {})
                 self.play_video(video)
                 # 记录选集信息
                 self.save_play_history(video)
@@ -1430,7 +1422,7 @@ class VideoPlayerWindow(tk.Toplevel):
             if current_timestamp - self.last_record_time >= 10:
                 if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                     video = self.video_list[self.current_index]
-                    video['series_title'] = self.config.get('series_info', {}).get('title', '')
+                    video['series_title'] =  self.subscription_data.get('title', {})
                     self.save_play_history(video, current_time)
                     self.last_record_time = current_timestamp
             
