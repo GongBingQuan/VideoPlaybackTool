@@ -5,6 +5,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DataValidator:
+    @classmethod
+    def _safe_parse_datetime(cls, timestamp_str):
+        try:
+            return datetime.fromisoformat(timestamp_str) if timestamp_str else datetime.now()
+        except (TypeError, ValueError) as e:
+            logger.warning(f"时间格式错误：{timestamp_str}，错误：{str(e)}")
+            return datetime.now()
+
     @staticmethod
     def validate_url(url: str) -> bool:
         """验证订阅URL格式"""
@@ -19,7 +27,7 @@ class DataValidator:
         
         for ep in episodes:
             if not isinstance(ep, dict):
-                logger.warning("无效剧集格式，跳过")
+                logger.warning(f"无效剧集格式，类型：{type(ep)}，内容：{str(ep)[:50]}")
                 continue
             
             if required_keys - ep.keys():
@@ -29,7 +37,7 @@ class DataValidator:
             valid_episodes.append({
                 'title': ep['title'].strip(),
                 'url': ep['url'].split('?')[0],  # 去除URL参数
-                'duration': int(ep['duration'])
+                'duration': int(ep['duration']) if str(ep['duration']).isdigit() else 0
             })
         return valid_episodes
 
@@ -39,6 +47,6 @@ class DataValidator:
         return {
             'title': record.get('title', '').strip(),
             'last_position': int(record.get('last_position', 0)),
-            'timestamp': datetime.fromisoformat(record['timestamp']) if 'timestamp' in record else datetime.now(),
+            'timestamp': self._safe_parse_datetime(record.get('timestamp')),
             'total_duration': int(record.get('total_duration', 0))
         }
