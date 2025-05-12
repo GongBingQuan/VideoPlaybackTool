@@ -1,25 +1,65 @@
 {
-    "": {
-        "last_played": "",
-        "last_played_time": "2025-05-06 12:54:28",
-        "last_update": "",
-        "total_episodes": 2
-    },
     "仙逆": {
-        "last_played": "Unknown Episode",
-        "last_played_time": "2025-05-09 23:09:58",
-        "last_update": "2025-05-09 23:09:58",
-        "total_episodes": 2,
-        "url": "https://www.moduzy5.com/vod/7645/",
-        "episode_number": 0
+        "last_played": "仙逆",
+        "last_played_time": "2025-05-12 09:03:21",
+        "last_update": "2025-05-12 09:03:21",
+        "total_episodes": 0,
+        "url": "https://play.modujx11.com/20250511/FEitPWOh/index.m3u8",
+        "episode_number": 0,
+        "play_history": [
+            {
+                "episode_title": "第01集",
+                "episode_number": 1,
+                "last_played_time": "2025-05-12 09:03:03",
+                "current_time": 160000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第88集",
+                "episode_number": 88,
+                "last_played_time": "2025-05-12 09:03:12",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第88集",
+                "episode_number": 88,
+                "last_played_time": "2025-05-12 09:03:12",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第88集",
+                "episode_number": 88,
+                "last_played_time": "2025-05-12 09:03:13",
+                "current_time": 160000,
+                "total_time": 0
+            }
+        ]
     },
     "万界至尊": {
-        "last_played": "Unknown Episode",
-        "last_played_time": "2025-05-06 17:05:33",
-        "last_update": "2025-05-06 17:05:33",
-        "total_episodes": 2,
-        "url": "https://www.moduzy5.com/vod/8852/",
-        "episode_number": 0
+        "last_played": "第02集",
+        "last_played_time": "2025-05-12 09:12:53",
+        "last_update": "2025-05-12 09:12:53",
+        "total_episodes": 216,
+        "url": "https://play.modujx12.com/20240614/HeBrG8oH/index.m3u8",
+        "episode_number": 2,
+        "play_history": [
+            {
+                "episode_title": "万界至尊",
+                "episode_number": 2,
+                "last_played_time": "2025-05-12 09:12:51",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第02集",
+                "episode_number": 2,
+                "last_played_time": "2025-05-12 09:12:53",
+                "current_time": 150000,
+                "total_time": 0
+            }
+        ]
     },
     "遮天": {
         "last_played": "遮天",
@@ -30,12 +70,203 @@
         "episode_number": 0
     },
     "完美世界": {
-        "last_played": "完美世界",
-        "last_played_time": "2025-05-10 10:12:06",
-        "last_update": "2025-05-10 10:12:06",
-        "total_episodes": 0,
-        "url": "https://www.moduzy5.com/vod/7644/",
-        "episode_number": 0
+        "last_played": "第214集",
+        "last_played_time": "2025-05-12 10:50:35",
+        "last_update": "2025-05-12 10:50:35",
+        "total_episodes": 214,
+        "url": "https://play.modujx11.com/20250508/sOC5fTDQ/index.m3u8",
+        "episode_number": 214,
+        "play_history": [
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:09:49",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:09:51",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:22:45",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:22:50",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:23:04",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:23:05",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:35:44",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:35:46",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 09:35:56",
+                "current_time": 95781,
+                "total_time": 1261868
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 09:36:01",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 09:36:01",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 09:36:02",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:27:06",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:27:26",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:28",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:29",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:38",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:39",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:39",
+                "current_time": 88377,
+                "total_time": 1337468
+            },
+            {
+                "episode_title": "第207集",
+                "episode_number": 207,
+                "last_played_time": "2025-05-12 10:36:48",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第207集",
+                "episode_number": 207,
+                "last_played_time": "2025-05-12 10:36:48",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第207集",
+                "episode_number": 207,
+                "last_played_time": "2025-05-12 10:36:49",
+                "current_time": 90000,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第06集",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:36:49",
+                "current_time": 102585,
+                "total_time": 1337468
+            },
+            {
+                "episode_title": "完美世界",
+                "episode_number": 6,
+                "last_played_time": "2025-05-12 10:50:28",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 10:50:34",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 10:50:34",
+                "current_time": 0,
+                "total_time": 0
+            },
+            {
+                "episode_title": "第214集",
+                "episode_number": 214,
+                "last_played_time": "2025-05-12 10:50:35",
+                "current_time": 90000,
+                "total_time": 0
+            }
+        ]
     },
     "剑道第一仙": {
         "last_played": "剑道第一仙",

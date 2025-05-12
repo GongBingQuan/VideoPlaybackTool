@@ -158,16 +158,12 @@ class SettingsDialog(tk.Toplevel):
         self.destroy()
 
 class VideoPlayerWindow(tk.Toplevel):
-    def __init__(self, parent, video_url, video_title, video_list=None, current_index=0, subscription_data=None):
+    def __init__(self, parent, subscription_data):
         """初始化视频播放器窗口
         
         参数:
             parent: 父窗口
-            video_url: 视频URL
-            video_title: 视频标题
-            video_list: 视频列表(可选)
-            current_index: 当前视频索引(可选)
-            subscription_data: 订阅数据(可选)
+            subscription_data: 订阅数据对象，包含所有视频和配置信息
         """
         super().__init__(parent)
         # 创建日志记录器
@@ -176,17 +172,26 @@ class VideoPlayerWindow(tk.Toplevel):
         self.controls_visible = True
         self.parent = parent
 
-        # 初始化所有关键属性
-        self.video_list = video_list if video_list is not None else []
-        self.current_index = current_index
-        self.subscription_data = subscription_data or {}
+        # 从订阅数据中提取必要信息
+        self.subscription_data = subscription_data
+        self.video_list = subscription_data.get('episodes', [])
+        self.current_index = subscription_data.get('current_index', 0)
+        
+        # 获取当前视频信息
+        current_episode = self.video_list[self.current_index] if self.video_list else {}
+        video_url = current_episode.get('url')
+        video_title = f"{subscription_data.get('title', '')} - {current_episode.get('title', '')}"
+        
+        # 验证必要参数
+        if not video_url:
+            raise ValueError("无法获取视频URL")
+            
         self.logger.info(
-            f"视频播放器初始化完成, 参数: {{"  # ← 转义外层花括号
-            f"'video_url': '{video_url}', "  # 字符串变量需要加引号
+            f"视频播放器初始化完成, 参数: {{"
+            f"'video_url': '{video_url}', "
             f"'video_title': '{video_title}', "
-            f"'video_list_length': {len(self.video_list)}, "  # 补上逗号
-            f"'current_index': {current_index}, "
-            f"'subscription_data': {str(subscription_data)}"
+            f"'video_list_length': {len(self.video_list)}, "
+            f"'current_index': {self.current_index}"
             f"}}"  # 转义外层花括号
         )
         self.intro_duration = self.subscription_data.get('intro_duration', 90)
@@ -235,7 +240,10 @@ class VideoPlayerWindow(tk.Toplevel):
         self.original_geometry = self.geometry()
 
         # 窗口设置
-        self.title(f"正在播放: {video_title}")
+        # 更新窗口标题，包含集数信息
+        current_episode = self.current_index + 1
+        total_episodes = len(self.video_list) if self.video_list else 1
+        self.title(f"正在播放: {video_title} [第{current_episode}/{total_episodes}集]")
         self.configure(bg='black')  # 设置窗口背景为黑色
 
 
@@ -1121,9 +1129,13 @@ class VideoPlayerWindow(tk.Toplevel):
     def play_previous(self):
         """播放上一集"""
         if self.video_list and self.current_index > 0:
+            # 更新当前索引
             self.current_index -= 1
+            # 播放上一集
             self.play_video(self.video_list[self.current_index])
-            self.episode_combobox.set(self.video_list[self.current_index]['title'])
+            # 更新下拉框选中项
+            if hasattr(self, 'episode_combobox'):
+                self.episode_combobox.set(self.video_list[self.current_index]['title'])
 
     def play_next(self):
         """播放下一集"""
@@ -1139,11 +1151,13 @@ class VideoPlayerWindow(tk.Toplevel):
         was_fullscreen = self.is_fullscreen
         original_geometry = self.original_geometry if hasattr(self, 'original_geometry') else None
 
+        # 更新当前索引
+        self.current_index = next_index
+        
         # 播放下一集
         self.play_video(next_video)
 
-        # 更新当前索引和标题
-        self.current_index = next_index
+        # 更新下拉框选中项
         if hasattr(self, 'episode_combobox'):
             self.episode_combobox.set(next_video['title'])
 
@@ -1156,8 +1170,10 @@ class VideoPlayerWindow(tk.Toplevel):
     def play_video(self, video):
         """播放指定视频"""
         try:
-            # 更新窗口标题
-            self.title(f"正在播放: {video['title']}")
+            # 更新窗口标题，包含集数信息
+            current_episode = getattr(self, 'current_index', 0) + 1
+            total_episodes = len(self.video_list) if self.video_list else 1
+            self.title(f"正在播放: {video['title']} [第{current_episode}/{total_episodes}集]")
 
             # 停止当前播放
             self.player.stop()
@@ -1203,9 +1219,11 @@ class VideoPlayerWindow(tk.Toplevel):
         selected_title = self.episode_var.get()
         for i, video in enumerate(self.video_list):
             if video['title'] == selected_title:
+                # 更新当前索引
                 self.current_index = i
                 # 添加系列标题信息
                 video['series_title'] = self.subscription_data.get('title', {})
+                # 播放选中的视频
                 self.play_video(video)
                 # 记录选集信息
                 self.save_play_history(video)
@@ -1315,6 +1333,9 @@ class VideoPlayerWindow(tk.Toplevel):
             # media.add_option(':rtsp-tcp=1')             # 使用TCP而不是UDP
             media.add_option(':network-timeout=5000')   # 网络超时时间
             self.player.set_media(media)
+            
+            # 重新加载播放历史信息
+            self.last_play_info = self._load_last_play_info()
 
             # 开始播放
             if self.player.play() == -1:
@@ -1354,6 +1375,16 @@ class VideoPlayerWindow(tk.Toplevel):
                 video_height = 720
 
             self.logger.info(f"视频尺寸: {video_width}x{video_height}")
+            
+            # 加载播放历史位置
+            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                current_episode = self.current_index + 1
+                if self.last_play_info and self.last_play_info['episode_number'] == current_episode:
+                    seek_time = self.last_play_info['current_time']
+                    if seek_time > 0:
+                        self.logger.info(f"从历史记录恢复播放位置: {seek_time}ms")
+                        self.player.set_time(seek_time)
+            
             # 自动跳过片头
             self.skip_intro()
 
@@ -1564,12 +1595,18 @@ class VideoPlayerWindow(tk.Toplevel):
             
             # 准备要保存的数据
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # 数据验证
+            current_time = max(0, current_time) if current_time else 0
+            total_time = max(0, self.player.get_length()) if self.player else 0
+            
             play_data = {
+                'series_id': video.get('series_id', video.get('url', '')),  # 唯一标识
                 'episode_title': video.get('title', 'Unknown Episode'),
                 'episode_number': episode_number,
                 'last_played_time': now,
-                'current_time': current_time if current_time else 0,
-                'total_time': self.player.get_length() if self.player else 0
+                'current_time': current_time,
+                'total_time': total_time,
+                'update_status': 'synced'  # 新增同步状态字段
             }
 
             # 更新历史记录
@@ -1585,7 +1622,15 @@ class VideoPlayerWindow(tk.Toplevel):
 
             # 限制播放历史记录数量(最多保留100条)
             if len(history[series_title]['play_history']) > 100:
-                history[series_title]['play_history'] = history[series_title]['play_history'][-100:]
+                # 去重逻辑：根据series_id和episode_number去重
+                seen = set()
+                new_history = []
+                for item in reversed(history[series_title]['play_history']):
+                    key = (item.get('series_id', ''), item['episode_number'])
+                    if key not in seen:
+                        seen.add(key)
+                        new_history.append(item)
+                history[series_title]['play_history'] = list(reversed(new_history))[-100:]
 
             # 确保目录存在并安全写入文件
             os.makedirs(os.path.dirname(history_file) or '.', exist_ok=True)
