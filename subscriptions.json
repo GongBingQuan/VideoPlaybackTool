@@ -3,7 +3,7 @@
     "subscriptions": [
         {
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-12 14:36:43",
+            "last_check": "2025-05-16 03:39:02",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1239,11 +1239,15 @@
                 {
                     "title": "第216集",
                     "url": "https://play.modujx11.com/20250511/laQGuaol/index.m3u8"
+                },
+                {
+                    "title": "第217集",
+                    "url": "https://play.modujx11.com/20250515/S6WgdXfu/index.m3u8"
                 }
             ],
-            "total_episodes": 216,
-            "last_check": "2025-05-12 14:36:43",
-            "update_time": "2025-05-11",
+            "total_episodes": 217,
+            "last_check": "2025-05-16 03:39:02",
+            "update_time": "2025-05-15",
             "intro_duration": 150,
             "outro_duration": 90
         },
@@ -1931,11 +1935,15 @@
                 {
                     "title": "第170集",
                     "url": "https://play.modujx11.com/20250505/9d8mRsj4/index.m3u8"
+                },
+                {
+                    "title": "第171集",
+                    "url": "https://play.modujx11.com/20250512/ZVKNmtkP/index.m3u8"
                 }
             ],
-            "total_episodes": 170,
-            "last_check": "2025-05-12 14:36:43",
-            "update_time": "2025-05-05"
+            "total_episodes": 171,
+            "last_check": "2025-05-16 03:39:02",
+            "update_time": "2025-05-12"
         },
         {
             "title": "一念永恒第三季",
@@ -2133,11 +2141,15 @@
                 {
                     "title": "第48集",
                     "url": "https://play.modujx11.com/20250506/CRrq9kRC/index.m3u8"
+                },
+                {
+                    "title": "第49集",
+                    "url": "https://play.modujx11.com/20250513/bYSS7n8l/index.m3u8"
                 }
             ],
-            "total_episodes": 48,
-            "last_check": "2025-05-12 14:36:43",
-            "update_time": "2025-05-06"
+            "total_episodes": 49,
+            "last_check": "2025-05-16 03:39:03",
+            "update_time": "2025-05-13"
         },
         {
             "title": "遮天",
@@ -2575,11 +2587,15 @@
                 {
                     "title": "第108集",
                     "url": "https://play.modujx11.com/20250506/no7tsHPy/index.m3u8"
+                },
+                {
+                    "title": "第109集",
+                    "url": "https://play.modujx11.com/20250513/9XUKkUxl/index.m3u8"
                 }
             ],
-            "total_episodes": 108,
-            "last_check": "2025-05-12 14:36:43",
-            "update_time": "2025-05-06",
+            "total_episodes": 109,
+            "last_check": "2025-05-16 03:39:03",
+            "update_time": "2025-05-13",
             "intro_duration": 150,
             "outro_duration": 90
         },
@@ -3443,11 +3459,15 @@
                 {
                     "title": "第214集",
                     "url": "https://play.modujx11.com/20250508/sOC5fTDQ/index.m3u8"
+                },
+                {
+                    "title": "第215集",
+                    "url": "https://play.modujx11.com/20250515/HxCV9aF1/index.m3u8"
                 }
             ],
-            "total_episodes": 214,
-            "last_check": "2025-05-12 14:36:44",
-            "update_time": "2025-05-08"
+            "total_episodes": 215,
+            "last_check": "2025-05-16 03:39:03",
+            "update_time": "2025-05-15"
         },
         {
             "title": "斗罗大陆Ⅱ绝世唐门",
@@ -3856,7 +3876,7 @@
                 }
             ],
             "total_episodes": 100,
-            "last_check": "2025-05-12 14:36:44",
+            "last_check": "2025-05-16 03:39:03",
             "update_time": "2025-05-09"
         },
         {
@@ -4458,7 +4478,7 @@
                 }
             ],
             "total_episodes": 148,
-            "last_check": "2025-05-12 14:36:44",
+            "last_check": "2025-05-16 03:39:03",
             "update_time": "2025-05-10"
         },
         {
@@ -5030,7 +5050,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-12 14:36:44",
+            "last_check": "2025-05-16 03:39:03",
             "update_time": "2025-05-01"
         }
     ]

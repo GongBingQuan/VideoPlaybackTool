@@ -254,38 +254,7 @@ class VideoPlayer(tk.Tk):
         except Exception as e:
             self.logger.error(f"加载播放历史失败: {str(e)}")
 
-    def save_play_history(self):
-        """保存播放历史，添加数据校验和去重"""
-        try:
-            for drama, records in self.play_history.items():
-                # 字段校验
-                required_fields = ['last_played', 'last_played_time', 'episode_number']
-                if any(field not in records for field in required_fields):
-                    self.logger.warning(f"{drama} 数据不完整，已跳过保存")
-                    continue
-                
-                # 合并重复条目
-                seen = set()
-                unique_history = []
-                for entry in records.get('play_history', []):
-                    key = (entry.get('episode_number'), entry.get('episode_title'))
-                    if key not in seen:
-                        seen.add(key)
-                        # 补全缺失字段
-                        entry['current_time'] = entry.get('current_time', 0)
-                        entry['total_time'] = entry.get('total_time', 0)
-                        unique_history.append(entry)
-                
-                # 更新数据
-                records['play_history'] = unique_history[-10:]  # 保留最近10条
-                records['total_episodes'] = len(records['play_history'])
-                
-            with open('play_history.json', 'w', encoding='utf-8') as f:
-                json.dump(self.play_history, f, ensure_ascii=False, indent=2)
-            self.logger.info("播放历史保存完成")
-        except Exception as e:
-            self.logger.error(f"保存播放历史失败: {str(e)}")
-            messagebox.showerror("错误", f"保存播放历史失败: {str(e)}")
+
 
     def sort_history_tree(self, col):
         """对历史记录列表进行排序"""
@@ -908,20 +877,22 @@ class VideoPlayer(tk.Tk):
                     
                     # 保存播放历史
                     self.save_play_history(selected_video)
+                    
+                    # 准备完整的订阅数据
+                    subscription_data = {
+                        'title': selected_video.get('title', ''),
+                        'current_index': current_index,
+                        'episodes': selected_video.get('episodes', []),
+                        'intro_duration': selected_video.get('intro_duration', 90),
+                        'outro_duration': selected_video.get('outro_duration', 90)
+                    }
 
-                    # 创建新的播放器窗口
-                    series_info = self.config.get('series_info', {})
-                    full_title = f"{series_info.get('title', '')} - {episode_title}"
-                    self.logger.info(f"正在播放: {current_index}, URL: {selected_video['episodes'][0]['url']}")
-
-                    # 添加详细的调试信息
-                    self.logger.debug(f"视频信息: {json.dumps(selected_video, ensure_ascii=False, indent=2)}")
+                    self.logger.info(f"正在播放: {current_index}, URL: {selected_video.get('url', '')}")
+                    self.logger.debug(f"视频信息: {json.dumps(subscription_data, ensure_ascii=False, indent=2)}")
 
                     try:
-                        # 设置当前播放索引
-                        selected_video['current_index'] = current_index
                         # 创建播放器窗口
-                        player_window = VideoPlayerWindow(self, selected_video)
+                        player_window = VideoPlayerWindow(self, subscription_data)
                     except Exception as e:
                         logger.error(f"创建播放器窗口失败: {str(e)}")
                         messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")
@@ -986,50 +957,19 @@ class VideoPlayer(tk.Tk):
 
             # 确保该系列的历史记录存在
             if series_title not in history:
-                history[series_title] = {
-                    'play_history': []
-                }
+                history[series_title] = {}
 
             # 获取当前集数
-            episode_number = self.config.get('current_episode', 0) + 1
-            
-            # 准备要保存的数据
+            episode_number = history.get('episode_number', 0) + 1
+
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # 数据验证
-            current_time = max(0, current_time) if current_time else 0
-            total_time = max(0, self.player.get_length()) if self.player else 0
-            
-            play_data = {
-                'series_id': video.get('series_id', video.get('url', '')),
-                'episode_title': video.get('title', 'Unknown Episode'),
-                'episode_number': episode_number,
-                'last_played_time': now,
-                'current_time': current_time,
-                'total_time': total_time,
-                'update_status': 'synced'
-            }
 
             # 更新历史记录
             history[series_title].update({
-                'last_played': play_data['episode_title'],
-                'last_played_time': now,
-                'last_update': series_info.get('update_time', now),
-                'total_episodes': len(self.config.get('total_episodes', [])),
-                'episode_number': episode_number,
+                'last_update': now,
+                'total_episodes': len(self.config.get('episodes', [])),
                 'url': video.get('url', ''),
-                'play_history': history[series_title].get('play_history', []) + [play_data]
             })
-
-            # 限制播放历史记录数量并去重
-            if len(history[series_title]['play_history']) > 100:
-                seen = set()
-                new_history = []
-                for item in reversed(history[series_title]['play_history']):
-                    key = (item.get('series_id', ''), item['episode_number'])
-                    if key not in seen:
-                        seen.add(key)
-                        new_history.append(item)
-                history[series_title]['play_history'] = list(reversed(new_history))[-100:]
 
             # 确保目录存在
             os.makedirs(os.path.dirname(history_file) if os.path.dirname(history_file) else '.', exist_ok=True)
@@ -1049,7 +989,7 @@ class VideoPlayer(tk.Tk):
                     os.remove(temp_file)
                 raise e
 
-            self.logger.info(f"成功保存播放历史: {series_title} 第{episode_number}集")
+            self.logger.info(f"成功保存播放历史: {series_title}{history[series_title]}")
             # 刷新历史记录显示
             self.load_play_history()
 

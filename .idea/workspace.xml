@@ -5,13 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="增强数据验证功能：添加时间解析安全处理和改进错误日志记录">
-      <change afterPath="$PROJECT_DIR$/create_dirs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/sqlite_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/video_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,6 +134,7 @@
       <workItem from="1747031580168" duration="2122000" />
       <workItem from="1747100617648" duration="1778000" />
       <workItem from="1747105352266" duration="241000" />
+      <workItem from="1747322707434" duration="16722000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -191,7 +192,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747020687888</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="增强数据验证功能：添加时间解析安全处理和改进错误日志记录">
+      <option name="closed" value="true" />
+      <created>1747322736624</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747322736624</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,6 +237,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="增强数据验证功能：添加时间解析安全处理和改进错误日志记录" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1747031799061" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1747339807877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
