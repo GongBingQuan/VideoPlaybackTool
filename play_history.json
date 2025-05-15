@@ -1,8 +1,8 @@
 {
     "仙逆": {
         "last_played": "第88集",
-        "last_played_time": 160000,
-        "last_update": "2025-05-16 04:41:12",
+        "last_played_time": 0,
+        "last_update": "2025-05-16 06:21:21",
         "total_episodes": 88,
         "url": "https://play.modujx11.com/20250511/FEitPWOh/index.m3u8",
         "episode_number": 87
@@ -16,11 +16,27 @@
         "episode_number": 216
     },
     "吞噬星空": {
-        "last_update": "2025-05-16 05:30:53",
+        "last_update": "2025-05-16 06:21:00",
         "total_episodes": 171,
         "url": "https://play.modujx11.com/20250512/ZVKNmtkP/index.m3u8",
         "last_played": "第171集",
-        "last_played_time": 16438,
+        "last_played_time": 17261,
         "episode_number": 170
+    },
+    "完美世界": {
+        "last_update": "2025-05-16 06:40:48",
+        "total_episodes": 215,
+        "url": "https://play.modujx11.com/20250515/HxCV9aF1/index.m3u8",
+        "last_played": "第215集",
+        "last_played_time": 210100,
+        "episode_number": 214
+    },
+    "遮天": {
+        "last_update": "2025-05-16 06:27:17",
+        "total_episodes": 109,
+        "url": "https://play.modujx11.com/20250513/9XUKkUxl/index.m3u8",
+        "last_played": "第109集",
+        "last_played_time": 37167,
+        "episode_number": 108
     }
 }

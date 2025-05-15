@@ -657,9 +657,6 @@ class VideoPlayerWindow(tk.Toplevel):
                 # 重新加载视频
                 self.status_label.config(text=f"状态: 正在重新连接 ({self.recovery_attempts}/3)...")
                 self.load_video(current_url)
-
-                # 恢复播放位置
-                self.player.set_time(current_time)
                 
                 # 5秒后重置恢复计数
                 self.after(5000, self.reset_recovery_attempts)
@@ -881,37 +878,37 @@ class VideoPlayerWindow(tk.Toplevel):
 
         """跳过片头并记录播放历史"""
         self.logger.debug("跳过片头: %s", "正在播放" if self.player.is_playing() else "已暂停")
-        current_time = self.player.get_time()
-        if current_time < self.intro_duration * 1000:  # 转换为毫秒
-            skip_to = self.intro_duration * 1000
-            self.player.set_time(skip_to)
-            # 记录跳过片头后的播放位置
-            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
-                video = self.video_list[self.current_index]
-                video['series_title'] = self.subscription_data.get('title', {})
-                # 确保记录的是跳过片头后的实际观看时间
-                self.save_play_history(video, skip_to)
-                self.last_record_time = time.time()
-                self.logger.info(f"已跳过片头并记录播放位置: {skip_to}ms")
-                
-            # 检查是否需要自动跳过片尾
-            total_time = self.player.get_length()
-            if total_time > 0 and skip_to >= total_time - (self.outro_duration * 1000):
-                # 先记录当前播放位置
-                if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
-                    video = self.video_list[self.current_index]
-                    video['series_title'] = self.subscription_data.get('title', {})
-                    # 确保记录的是跳过片尾后的时间点
-                    self.save_play_history(video, skip_to)
-                    self.last_record_time = time.time()
-                self.skip_outro()
-
+        current_set_time = self.player.get_time()
+        if current_set_time < self.intro_duration :  # 转换为毫秒
+            current_set_time = self.intro_duration
 
         self.last_play_info = self._load_last_play_info()
-        current_time = self.last_play_info.get('current_time', 0) * 1000
-        self.logger.info(f"上次位置: {current_time}")
-        if current_time > self.intro_duration * 1000:  # 如果有上次播放记录，则从上次位置开始播放
-            self.player.set_time(current_time)
+        current_time = self.last_play_info.get('current_time', 0)
+        self.logger.info(f"上次位置: {current_time*1000}")
+        if current_set_time < current_time :  # 如果有上次播放记录，则从上次位置开始播放
+            current_set_time=current_time
+
+        # 记录跳过片头后的播放位置
+        video = self.video_list[self.current_index]
+        video['series_title'] = self.subscription_data.get('title', {})
+        # 确保记录的是跳过片头后的实际观看时间
+        self.player.set_time(current_set_time*1000)
+        self.save_play_history(video, current_set_time)
+        self.last_record_time = time.time()
+        self.logger.info(f"已跳过片头并记录播放位置: {current_set_time*1000}ms")
+
+
+        # 检查是否需要自动跳过片尾
+        total_time = self.player.get_length()
+        self.logger.info(f"检查长度: {current_set_time * 1000}：{total_time}ms")
+        if total_time > 0 and current_set_time >= total_time - (self.outro_duration * 1000):
+            # 先记录当前播放位置
+            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                # 确保记录的是跳过片尾后的时间点
+                self.logger.info(f"已跳过片尾: {current_set_time * 1000}：{total_time}ms")
+                self.save_play_history(video, 0)
+                self.last_record_time = time.time()
+            self.skip_outro()
 
 
 
@@ -942,7 +939,12 @@ class VideoPlayerWindow(tk.Toplevel):
     def show_settings(self):
         """显示设置对话框"""
         settings_dialog = SettingsDialog(self, self.subscription_data)
+        # 等待对话框关闭
+        self.wait_window(settings_dialog)
+        # 对话框关闭后检查结果
         if settings_dialog.result:
+            self.subscription_data.intro_duration = settings_dialog.result['intro_duration']
+            self.subscription_data.outro_duration = settings_dialog.result['outro_duration']
             self.intro_duration = settings_dialog.result['intro_duration']
             self.outro_duration = settings_dialog.result['outro_duration']
             self.save_settings()
@@ -965,15 +967,26 @@ class VideoPlayerWindow(tk.Toplevel):
                 data = {'subscriptions': []}
 
             # 查找并更新订阅项
+            found = False
+            title = self.subscription_data.get('title')
+            
             for subscription in data['subscriptions']:
-                if subscription.get('title') == self.subscription_data.get('title'):
+                if subscription.get('title') == title:
                     subscription['intro_duration'] = self.intro_duration
                     subscription['outro_duration'] = self.outro_duration
+                    found = True
+                    self.logger.info(f"更新订阅设置: {title}, 片头: {self.intro_duration}秒, 片尾: {self.outro_duration}秒")
                     break
-
-
-            with open('subscriptions.json', 'w', encoding='utf-8') as f:
+            
+            self.logger.info(f"打印保存数据{data}")
+            # 安全写入文件
+            temp_file = 'subscriptions.json.tmp'
+            with open(temp_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
+            
+            # 替换原文件
+            os.replace(temp_file, 'subscriptions.json')
+            self.logger.info("设置已保存到subscriptions.json")
 
         except Exception as e:
             self.logger.error(f"保存设置失败: {str(e)}")
@@ -1191,13 +1204,14 @@ class VideoPlayerWindow(tk.Toplevel):
             was_fullscreen = self.is_fullscreen
             current_geometry = self.geometry()
 
+
             # 播放新视频
             media = self.instance.media_new(url)
-
             self.player.set_media(media)
             self.player.play()
-            self.video_frame.lift()
-            self.skip_intro()
+
+            # 延迟500毫秒跳过片头
+            self.after(500, self.skip_intro)
 
             # 恢复窗口状态
             if was_fullscreen:
@@ -1350,13 +1364,14 @@ class VideoPlayerWindow(tk.Toplevel):
             elif sys.platform.startswith('darwin'):
                 self.player.set_nsobject(self.video_frame.winfo_id())
 
+
             # 创建媒体并设置网络缓存（增加缓冲时间和容错）
             media = self.instance.media_new(video_url)
             self.player.set_media(media)
-            self.skip_intro()
 
             # 开始播放
             if self.player.play() == -1:
+
                 if retry_count < 3:  # 最多重试3次
                     self.logger.warning(f"播放失败，尝试重连... ({retry_count+1}/3)")
                     self.after(2000, lambda: self.load_video(video_url, retry_count+1))
@@ -1390,7 +1405,10 @@ class VideoPlayerWindow(tk.Toplevel):
                 self.logger.warning("无法获取视频尺寸，使用默认尺寸")
                 video_width = 1280
                 video_height = 720
-
+            
+            # 视频开始播放时跳过片头
+            self.after(500, self.skip_intro)  # 延迟500毫秒确保视频已加载
+                
             self.logger.info(f"视频尺寸: {video_width}x{video_height}")
 
 
