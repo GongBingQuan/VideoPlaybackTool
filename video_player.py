@@ -315,7 +315,6 @@ class VideoPlayerWindow(tk.Toplevel):
         # 视频显示区域
         self.video_frame = ttk.Frame(self)  # 确保视频框架已创建
         self.video_frame.grid(row=0, column=0, sticky="nsew")
-        self.video_frame.lift()
 
         # 控制栏框架（增强稳定性）
         self.control_frame = ttk.Frame(self, style='ControlFrame.TFrame', height=50)
@@ -1282,8 +1281,29 @@ class VideoPlayerWindow(tk.Toplevel):
         """
         try:
             if not video_url or not isinstance(video_url, str):
-                raise ValueError("无效的视频URL ")
-            self.logger.info(f"播放状态：{self.player.get_state()}")
+                raise ValueError("无效的视频URL")
+
+            # 验证URL格式
+            if not (video_url.startswith('http://') or video_url.startswith('https://')):
+                raise ValueError("视频URL必须以http://或https://开头")
+
+            # 获取视频框架的句柄
+            if sys.platform.startswith('win'):
+                hwnd = self.video_frame.winfo_id()
+                self.player.set_hwnd(hwnd)
+
+                # 重新绑定事件到视频框架
+                self.video_frame.bind('<Double-Button-1>', lambda e: self.toggle_fullscreen())
+                self.video_frame.bind('<Motion>', lambda e: self.show_controls_temporarily())
+
+                # 确保视频框架在最上层但不遮挡控件
+                self.video_frame.lift()
+
+            elif sys.platform.startswith('linux'):
+                self.player.set_xwindow(self.video_frame.winfo_id())
+            elif sys.platform.startswith('darwin'):
+                self.player.set_nsobject(self.video_frame.winfo_id())
+
             # 创建媒体并设置网络缓存（增加缓冲时间和容错）
             media = self.instance.media_new(video_url)
             media.add_option(':network-caching=360000')  # 增加到60秒网络缓存
