@@ -1,10 +1,26 @@
 {
     "仙逆": {
-        "last_played": "第87集",
-        "last_played_time": 0,
-        "last_update": "2025-05-16 04:16:57",
+        "last_played": "第88集",
+        "last_played_time": 160000,
+        "last_update": "2025-05-16 04:41:12",
         "total_episodes": 88,
-        "url": "https://play.modujx11.com/20250504/WcF4qahh/index.m3u8",
-        "episode_number": 86
+        "url": "https://play.modujx11.com/20250511/FEitPWOh/index.m3u8",
+        "episode_number": 87
+    },
+    "万界至尊": {
+        "last_update": "2025-05-16 05:11:07",
+        "total_episodes": 217,
+        "url": "https://play.modujx11.com/20250515/S6WgdXfu/index.m3u8",
+        "last_played": "第217集",
+        "last_played_time": 156861,
+        "episode_number": 216
+    },
+    "吞噬星空": {
+        "last_update": "2025-05-16 05:30:53",
+        "total_episodes": 171,
+        "url": "https://play.modujx11.com/20250512/ZVKNmtkP/index.m3u8",
+        "last_played": "第171集",
+        "last_played_time": 16438,
+        "episode_number": 170
     }
 }

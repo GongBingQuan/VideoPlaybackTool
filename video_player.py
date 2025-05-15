@@ -263,7 +263,16 @@ class VideoPlayerWindow(tk.Toplevel):
         self.create_ui()
 
         # 创建VLC实例和播放器
-        self.instance = vlc.Instance()
+        self.instance = vlc.Instance([
+            '--no-xlib',  # 禁用Xlib
+            '--network-caching=5000',
+            '--clock-jitter=0',
+            '--file-caching=5000',
+            '--live-caching=5000',
+            '--sout-mux-caching=2000',
+            '--http-reconnect',
+            '--avcodec-hw=none'  # 禁用硬件加速
+        ])
         self.player = self.instance.media_player_new()
 
         # 设置事件管理器
@@ -829,12 +838,12 @@ class VideoPlayerWindow(tk.Toplevel):
 
     def toggle_play(self):
         """切换播放/暂停状态"""
-        self.logger.debug("播放/暂停按钮被点击",self.player.is_playing())
+        self.logger.info(f"播放/暂停按钮被点击: {'正在播放' if self.player.is_playing() else '已暂停'}")
         if self.player.is_playing():
             self.player.pause()
             self.play_button.config(text="▶")
         else:
-            self.player.play()
+            self.load_video(self.player.get_media().get_mrl())
             self.play_button.config(text="⏸")
 
     def seek(self, value):
@@ -869,8 +878,9 @@ class VideoPlayerWindow(tk.Toplevel):
         self._seeking = False
 
     def skip_intro(self):
+
         """跳过片头并记录播放历史"""
-        self.logger.debug(f"跳过片头",self.player.is_playing())
+        self.logger.debug("跳过片头: %s", "正在播放" if self.player.is_playing() else "已暂停")
         current_time = self.player.get_time()
         if current_time < self.intro_duration * 1000:  # 转换为毫秒
             skip_to = self.intro_duration * 1000
@@ -895,6 +905,15 @@ class VideoPlayerWindow(tk.Toplevel):
                     self.save_play_history(video, skip_to)
                     self.last_record_time = time.time()
                 self.skip_outro()
+
+
+        self.last_play_info = self._load_last_play_info()
+        current_time = self.last_play_info.get('current_time', 0) * 1000
+        self.logger.info(f"上次位置: {current_time}")
+        if current_time > self.intro_duration * 1000:  # 如果有上次播放记录，则从上次位置开始播放
+            self.player.set_time(current_time)
+
+
 
     def skip_outro(self):
         """跳过片尾并记录播放历史"""
@@ -1097,6 +1116,9 @@ class VideoPlayerWindow(tk.Toplevel):
                     elif self.player.get_state() == vlc.State.Ended:
                         self.status_label.config(text="状态: 播放结束")
                         self.show_controls_temporarily()
+                        if self.last_play_info.get('current_time', 0) > 0:
+                            self.logger.error(f"重试: {self.player.get_media().get_mrl()}")
+                            self.load_video(self.player.get_media().get_mrl())
                         self.play_button.config(text="▶")
 
                     else:
@@ -1160,7 +1182,6 @@ class VideoPlayerWindow(tk.Toplevel):
             total_episodes = len(self.video_list) if self.video_list else 1
             self.title(f"正在播放: {video['title']} [第{current_episode}/{total_episodes}集]")
 
-            seek_time = 0
             # 停止当前播放
             self.player.stop()
             url = video['url']
@@ -1176,11 +1197,7 @@ class VideoPlayerWindow(tk.Toplevel):
             self.player.set_media(media)
             self.player.play()
             self.video_frame.lift()
-            # 设置播放位置
-            if seek_time > 0:
-                self.player.set_time(seek_time)
-            else:
-                self.skip_intro()
+            self.skip_intro()
 
             # 恢复窗口状态
             if was_fullscreen:
@@ -1270,8 +1287,37 @@ class VideoPlayerWindow(tk.Toplevel):
 
     def on_closing(self):
         """窗口关闭时的处理"""
-        self.player.stop()
-        self.destroy()
+        try:
+            # 保存当前播放位置
+            if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
+                video = self.video_list[self.current_index]
+                video['series_title'] = self.subscription_data.get('title', '')
+                current_time = self.player.get_time()
+                self.save_play_history(video, current_time)
+            
+            # 分离事件管理器
+            if hasattr(self, 'event_manager'):
+                self.event_manager.event_detach(vlc.EventType.MediaPlayerPlaying)
+                self.event_manager.event_detach(vlc.EventType.MediaPlayerTimeChanged)
+                self.event_manager.event_detach(vlc.EventType.MediaPlayerLengthChanged)
+            
+            # 停止播放并释放资源
+            if hasattr(self, 'player') and self.player:
+                self.player.stop()
+                self.player.release()
+            
+            # 释放VLC实例
+            if hasattr(self, 'instance') and self.instance:
+                self.instance.release()
+            
+            self.logger.info("播放器窗口已关闭，资源已释放")
+            
+            # 销毁窗口
+            self.destroy()
+        except Exception as e:
+            self.logger.error(f"关闭窗口时出错: {str(e)}")
+            # 确保窗口被销毁
+            self.destroy()
 
     def load_video(self, video_url, retry_count=0):
         """加载视频
@@ -1306,18 +1352,8 @@ class VideoPlayerWindow(tk.Toplevel):
 
             # 创建媒体并设置网络缓存（增加缓冲时间和容错）
             media = self.instance.media_new(video_url)
-            media.add_option(':network-caching=360000')  # 增加到60秒网络缓存
-            media.add_option(':file-caching=360000')     # 增加到60秒文件缓存
-            # media.add_option(':live-caching=60000')     # 直播缓存
-            media.add_option(':clock-jitter=30000')      # 增加时钟抖动容忍
-            media.add_option(':clock-synchro=1')        # 启用时钟同步
-            media.add_option(':http-reconnect=1')       # 启用HTTP重连
-            media.add_option(':rtsp-tcp=1')             # 使用TCP而不是UDP
-            media.add_option(':network-timeout=60000')   # 网络超时时间
             self.player.set_media(media)
-            self.last_play_info = self._load_last_play_info()
-            self.player.set_time(self.last_play_info.get('current_time',1) * 1000)
-            self.logger.info(f"从: {self.last_play_info.get('current_time',1) * 1000}位置播放")
+            self.skip_intro()
 
             # 开始播放
             if self.player.play() == -1:
@@ -1530,7 +1566,7 @@ class VideoPlayerWindow(tk.Toplevel):
                 # 返回统一格式的播放历史信息
                 return {
                     'current_episode': series_data.get('episode_number', 0),
-                    'current_time': series_data.get('current_time', 0)
+                    'current_time': series_data.get('last_played_time', 0)
                 }
         except Exception as e:
             self.logger.error(f"加载播放历史失败: {str(e)}")
