@@ -31,6 +31,12 @@ class VideoPlayer(tk.Tk):
 
         # 初始化订阅管理器引用
         self._subs_manager = None
+        self.cn_week = {
+                        "Monday": "星期一", "Tuesday": "星期二",
+                        "Wednesday": "星期三", "Thursday": "星期四",
+                        "Friday": "星期五", "Saturday": "星期六",
+                        "Sunday": "星期日"
+                    }
 
         self._sort_reverse = None
         self.update_button = None
@@ -220,37 +226,7 @@ class VideoPlayer(tk.Tk):
         try:
             if os.path.exists('play_history.json'):
                 with open('play_history.json', 'r', encoding='utf-8') as f:
-                    raw_data = json.load(f)
-                
-                # 数据清洗和格式统一
-                cleaned_data = {}
-                for drama, records in raw_data.items():
-                    # 字段校验和补全
-                    if 'play_history' not in records:
-                        records['play_history'] = []
-                    
-                    # 处理播放历史记录
-                    seen = set()
-                    unique_history = []
-                    for entry in reversed(records['play_history']):
-                        key = (
-                            entry.get('episode_title', ''),
-                            entry.get('episode_number', 0)
-                        )
-                        if key not in seen:
-                            seen.add(key)
-                            # 统一标题格式
-                            if '第' not in entry.get('episode_title', ''):
-                                entry['episode_title'] = f"第{entry['episode_number']}集"
-                            unique_history.append(entry)
-                    
-                    # 更新主记录
-                    records['play_history'] = list(reversed(unique_history[-10:]))  # 保留最近10条
-                    records['total_episodes'] = len(records['play_history'])
-                    cleaned_data[drama] = records
-                
-                self.play_history = cleaned_data
-                self.logger.info("播放历史加载并清洗完成")
+                    return json.load(f)
         except Exception as e:
             self.logger.error(f"加载播放历史失败: {str(e)}")
 
@@ -468,7 +444,7 @@ class VideoPlayer(tk.Tk):
             self.load_config()
             # 刷新列表
             if hasattr(self, 'tree') and self.tree:
-                self.refresh_video_list()
+                self.update_episode_list()
 
             # 显示剧集更新通知
             if episode_updates and isinstance(episode_updates, dict):
@@ -501,18 +477,6 @@ class VideoPlayer(tk.Tk):
         btn = ttk.Button(top, text="确定", command=top.destroy)
         btn.pack(pady=10)
 
-    def refresh_video_list(self):
-        """刷新视频列表"""
-        if not hasattr(self, 'tree') or not self.tree:
-            return
-
-        # 清空现有列表
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-
-        # 重新添加视频
-        for index,video in enumerate(self.config['subscriptions']):
-            self.tree.insert('', tk.END, values=(f"{index:03d}",video['title'],f"{video['total_episodes']}", video['update_time']))
 
     def load_config(self):
         """加载配置文件"""
@@ -574,10 +538,10 @@ class VideoPlayer(tk.Tk):
                 'normal': ('Microsoft YaHei', 10)
             },
             'columns': {
-                'tree': ('id','title', 'episodes', 'update_time'),
-                'display': ('序号','剧名','剧集', '更新时间'),
-                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '更新时间': 90},
-                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '更新时间': 90}
+                'tree': ('id','title', 'episodes', 'unwatched', 'update_time'),
+                'display': ('序号','剧名','剧集', '未观看', '更新时间'),
+                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '未观看': 30, '更新时间': 90},
+                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '未观看': 30, '更新时间': 90}
             },
             'padding': {
                 'x_small': 3,
@@ -617,9 +581,9 @@ class VideoPlayer(tk.Tk):
         sort_container = ttk.LabelFrame(control_frame, text="排序方式")
         sort_container.pack(side=tk.RIGHT, padx=self.UI_CONFIG['padding']['small'])
 
-        self.sort_var = tk.StringVar(value="集数")
+        self.sort_var = tk.StringVar(value="未看集数")
         sort_options = [
-            ("按集数", "集数"),
+            ("未看集数", "未看集数"),
             ("按更新时间", "更新时间")
         ]
 
@@ -713,33 +677,44 @@ class VideoPlayer(tk.Tk):
         pass
 
     def resort_episodes(self):
-        """重新排序剧集列表"""
+        """重新排序剧集列表（修复列标识符和数据类型问题）"""
         try:
             sort_by = self.sort_var.get()
             items = []
 
+            # 列名映射（与Treeview初始化时的columns参数一致）
+            COLUMN_MAP = {
+                "集数": "episodes",
+                "更新时间": "update_time"
+            }
+
             for item in self.tree.get_children():
                 values = self.tree.item(item)['values']
-                if sort_by == "集数":
-                    # 提取集数进行排序
-                    episode_num = int(''.join(filter(str.isdigit, values[1])))
-                    items.append((episode_num, values, item))
-                else:
-                    # 按更新时间排序
-                    items.append((values[2], values, item))
 
-            # 排序
+                # 获取排序键值（注意：values[0]是序号，不参与排序）
+                if sort_by == "未看集数":
+                    # 提取集数字符串并转为整数（处理可能的空值）
+                    sort_key = int(values[3])
+                else:
+                    # 提取星期几并转为可排序的数字（周一=0，周日=6）
+                    weekday_str = values[4]
+                    weekday_num = list(self.cn_week.values()).index(weekday_str)
+                    sort_key = weekday_num
+
+                items.append((sort_key, values, item))
+
+            # 排序（默认升序）
             items.sort()
 
-            # 重新插入项目
+            # 重新插入并更新序号
             for index, (_, values, item) in enumerate(items, 1):
                 self.tree.move(item, '', index)
-                # 更新序号
-                self.tree.set(item, '序号', f"{index:03d}")
+                # 更新序号列（使用Treeview实际的列标识符"id"）
+                self.tree.set(item, "id", f"{index:03d}")
 
         except Exception as e:
-            self.logger.error(f"重新排序失败: {str(e)}")
-            messagebox.showerror("错误", f"重新排序失败: {str(e)}")
+            self.logger.error(f"排序异常: {str(e)}")
+            messagebox.showerror("错误", f"排序失败: {str(e)}")
 
     def update_episode_list(self):
         """更新剧集列表(显示所有剧集)"""
@@ -749,23 +724,25 @@ class VideoPlayer(tk.Tk):
             # 清空现有列表
             for item in self.tree.get_children():
                 self.tree.delete(item)
-
             # 确保config是字典且包含subscriptions键
             if isinstance(self.config, dict) and 'subscriptions' in self.config and self.config['subscriptions']:
                 # 按集数排序
                 episodes = sorted(self.config['subscriptions'],
-                                  key=lambda x: self.extract_episode_number(x.get('episode_title', '')))
-
+                                  key=lambda x: datetime.strptime(x.get('update_time', ''), "%Y-%m-%d").strftime("%A"))
+                play_history = self.load_play_history()
                 # 添加所有剧集到列表
                 for index, video in enumerate(episodes, 1):
-                    episode_title = video.get('episode_title', '')
-                    episode_num = self.extract_episode_number(episode_title)
+                    episode_title = video.get('title', '')
+                    episode_num =video['total_episodes']
+                    history=play_history.get(video.get('title', ''),{})
+                    en_week=datetime.strptime(video.get('update_time', ''), "%Y-%m-%d").strftime("%A")
 
                     self.tree.insert('', tk.END, values=(
                         f"{index:03d}",  # 格式化序号为3位数
-                        f"{video['total_episodes']}",
                         episode_title,
-                        video['last_update']
+                        f"{video['total_episodes']}",
+                        f"{video['total_episodes']-history.get('episode_number',0)+1}",  # 显示未观看集数
+                        self.cn_week[en_week]
                     ), tags=(str(episode_num),))
 
             # 应用当前排序方式
@@ -778,14 +755,6 @@ class VideoPlayer(tk.Tk):
             self.logger.error(f"更新剧集列表失败: {str(e)}")
             messagebox.showerror("错误", f"更新剧集列表失败: {str(e)}")
 
-    def extract_episode_number(self, title):
-        """从剧集标题中提取集数"""
-        try:
-            # 提取数字部分
-            num_str = ''.join(filter(str.isdigit, title))
-            return int(num_str) if num_str else 0
-        except Exception:
-            return 0
 
     def filter_episodes(self, *args):
         """根据搜索条件过滤剧集"""
@@ -805,7 +774,9 @@ class VideoPlayer(tk.Tk):
                     self.tree.item(item, values=(
                         f"{visible_count + 1:03d}",  # 更新序号
                         values[1],
-                        values[2]
+                        values[2],
+                        values[3],
+                        values[4]
                     ))
                     visible_count += 1
                     self.tree.reattach(item, '', tk.END)  # 移动到末尾
@@ -817,26 +788,7 @@ class VideoPlayer(tk.Tk):
         except Exception as e:
             self.logger.error(f"过滤剧集失败: {str(e)}")
 
-    def sort_tree(self, column):
-        """排序树形视图"""
-        items = [(self.tree.set(item, column), item) for item in self.tree.get_children('')]
 
-        # 检查当前排序方向
-        if not hasattr(self, '_sort_reverse'):
-            self._sort_reverse = {}
-        self._sort_reverse[column] = not self._sort_reverse.get(column, False)
-
-        # 特殊处理序号和剧集列的排序
-        if column in ['序号', '剧集']:
-            # 使用tag中存储的数字进行排序
-            items = [(int(self.tree.item(item)['tags'][0]), item) for _, item in items]
-
-        # 排序
-        items.sort(reverse=self._sort_reverse[column])
-
-        # 重新插入项目
-        for index, (_, item) in enumerate(items):
-            self.tree.move(item, '', index)
 
     def schedule_update_check(self):
         """安排定时更新检查"""

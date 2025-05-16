@@ -2,8 +2,9 @@
     "config_version": 2,
     "subscriptions": [
         {
+            "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-16 10:00:05",
+            "last_check": "2025-05-16 16:59:16",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -362,7 +363,6 @@
                     "url": "https://play.modujx11.com/20250511/FEitPWOh/index.m3u8"
                 }
             ],
-            "title": "仙逆",
             "update_status": "",
             "update_time": "2025-05-11",
             "image_url": "",
@@ -1246,7 +1246,7 @@
                 }
             ],
             "total_episodes": 217,
-            "last_check": "2025-05-16 10:00:05",
+            "last_check": "2025-05-16 16:59:16",
             "update_time": "2025-05-15",
             "intro_duration": 150,
             "outro_duration": 90
@@ -1942,7 +1942,7 @@
                 }
             ],
             "total_episodes": 171,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:16",
             "update_time": "2025-05-12",
             "intro_duration": 160,
             "outro_duration": 90
@@ -2150,7 +2150,7 @@
                 }
             ],
             "total_episodes": 49,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:16",
             "update_time": "2025-05-13"
         },
         {
@@ -2596,7 +2596,7 @@
                 }
             ],
             "total_episodes": 109,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:16",
             "update_time": "2025-05-13",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3468,7 +3468,7 @@
                 }
             ],
             "total_episodes": 215,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:17",
             "update_time": "2025-05-15"
         },
         {
@@ -3878,7 +3878,7 @@
                 }
             ],
             "total_episodes": 100,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:17",
             "update_time": "2025-05-09"
         },
         {
@@ -4480,7 +4480,7 @@
                 }
             ],
             "total_episodes": 148,
-            "last_check": "2025-05-16 09:22:34",
+            "last_check": "2025-05-16 16:59:17",
             "update_time": "2025-05-10"
         },
         {
@@ -5052,7 +5052,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-16 09:22:35",
+            "last_check": "2025-05-16 16:59:17",
             "update_time": "2025-05-01"
         }
     ]
