@@ -167,6 +167,7 @@ class VideoPlayerWindow(tk.Toplevel):
         """
         super().__init__(parent)
         # 创建日志记录器
+        self.style = None
         self.logger = logging.getLogger(__name__)
         self.auto_hide_timer = None
         self.controls_visible = True
@@ -212,6 +213,11 @@ class VideoPlayerWindow(tk.Toplevel):
         self.max_buffer_threshold = 0.8  # 最大缓冲阈值（80%）
         self.buffer_size = 0
         self.last_buffer_update = 0
+
+        # 倍速播放设置
+        self.playback_rate = 1.0  # 默认正常速度
+        self.rate_options = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]  # 支持的倍速选项
+        self.skip_seconds = 10  # 快进/快退秒数
         
         # 自适应缓冲设置
         self.network_quality_history = []  # 存储最近的网络质量数据
@@ -292,10 +298,6 @@ class VideoPlayerWindow(tk.Toplevel):
         self.bind('<Configure>', self.on_window_configure)
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.hide_controls()
-
-        # 倍速播放设置
-        self.playback_rate = 1.0  # 默认正常速度
-        self.rate_options = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]  # 支持的倍速选项
 
 
 
@@ -387,14 +389,6 @@ class VideoPlayerWindow(tk.Toplevel):
         """配置全局样式"""
         self.style = ttk.Style()
 
-        # 预定义0-100的所有透明度样式
-        for alpha in range(0, 101):
-            self.style.configure(
-                f'ControlFrame.TFrame.{alpha}',
-                background=self._rgba_to_hex(45, 45, 45, alpha/100),
-                borderwidth=0,
-                relief='flat'
-            )
 
         # 配置控制栏基础样式
         self.style.configure(
@@ -613,19 +607,7 @@ class VideoPlayerWindow(tk.Toplevel):
         except Exception as e:
             self.logger.error(f"调整缓冲阈值时出错: {str(e)}")
             
-    def toggle_adaptive_buffer(self):
-        """切换自适应缓冲状态"""
-        self.adaptive_buffer_enabled = self.adaptive_buffer_var.get()
-        if self.adaptive_buffer_enabled:
-            self.logger.info("已启用自适应缓冲")
-            # 重置网络质量历史
-            self.network_quality_history = []
-            self.network_unstable_count = 0
-        else:
-            self.logger.info("已禁用自适应缓冲")
-            # 恢复默认阈值
-            self.min_buffer_threshold = 0.2
-            self.max_buffer_threshold = 0.8
+
 
     def enter_buffering_mode(self):
         """进入缓冲模式"""
@@ -745,15 +727,23 @@ class VideoPlayerWindow(tk.Toplevel):
         self.rate_menu.pack(side=tk.LEFT, padx=5)
         self.create_tooltip(self.rate_menu, "播放速度")
 
-        # 播放控制按钮 - 使用Text控件实现
+
+        # 播放控制按钮
         buttons_data = [
             (self.left_buttons, "⏮", self.play_previous, "上一集"),
             (self.left_buttons, "▶", self.toggle_play, "播放/暂停"),
             (self.left_buttons, "⏭", self.play_next, "下一集"),
-            (self.center_buttons, "⏩", self.skip_intro, "跳过片头"),  # 添加跳过片头按钮
+            (self.center_buttons, "▷", self.skip_intro, "跳过片头"),
+            # (self.right_buttons, "⏪", self.skip_backward, f"快退 {self.skip_seconds}秒 (快捷键: →)"),
+            # (self.right_buttons, "⏩", self.skip_forward, f"快进 {self.skip_seconds}秒 (快捷键: →)"),
             (self.right_buttons, "⚙", self.show_settings, "设置"),
             (self.right_buttons, "⛶", self.toggle_fullscreen, "全屏")
         ]
+
+        # 添加快捷键绑定
+        self.bind("<Left>", lambda e: self.skip_backward())
+        self.bind("<Right>", lambda e: self.skip_forward())
+
 
         for frame, text, command, tooltip in buttons_data:
             btn = ttk.Button(frame,
@@ -767,10 +757,10 @@ class VideoPlayerWindow(tk.Toplevel):
         # 保存按钮引用
         self.play_button = [btn for btn in self.left_buttons.winfo_children()
                           if isinstance(btn, ttk.Button) and btn.cget('text') == "▶"][0]
-        
+
         # 保存跳过片头按钮引用
         self.skip_intro_button = [btn for btn in self.center_buttons.winfo_children()
-                                if isinstance(btn, ttk.Button) and btn.cget('text') == "⏩"][0]
+                                if isinstance(btn, ttk.Button) and btn.cget('text') == "▷"][0]
 
         # 选集下拉菜单
         if self.video_list and len(self.video_list) > 0 and hasattr(self.video_list[0], '__getitem__'):
@@ -927,6 +917,60 @@ class VideoPlayerWindow(tk.Toplevel):
             self.skip_outro()
 
 
+
+    def set_playback_rate(self, rate_str):
+        """设置播放速度"""
+        try:
+            if not hasattr(self, 'player'):
+                raise AttributeError("播放器未初始化")
+                
+            if not hasattr(self, 'playback_rate'):
+                self.playback_rate = 1.0
+                
+            rate = float(rate_str.rstrip('x'))
+            self.player.set_rate(rate)
+            self.playback_rate = rate
+            self.logger.info(f"设置播放速度为: {rate}x")
+        except Exception as e:
+            self.logger.error(f"设置播放速度失败: {str(e)}")
+            messagebox.showerror("错误", f"设置播放速度失败: {str(e)}")
+
+    def skip_forward(self):
+        """快进
+        Args:
+            seconds: 快进秒数，默认为self.skip_seconds
+        """
+        try:
+            if not hasattr(self, 'player'):
+                raise AttributeError("播放器未初始化")
+
+
+            current_time = self.player.get_time()
+            new_time = current_time + (self.skip_seconds * 1000)
+            total_time = self.player.get_length()
+            if new_time > total_time:
+                new_time = total_time
+            self.player.set_time(new_time)
+            self.logger.info(f"快进 {self.skip_seconds}秒: {current_time} -> {new_time}")
+        except Exception as e:
+            self.logger.error(f"快进失败: {str(e)}")
+            messagebox.showerror("错误", f"快进失败: {str(e)}")
+
+    def skip_backward(self):
+        """快退"""
+        try:
+            if not hasattr(self, 'player'):
+                raise AttributeError("播放器未初始化")
+                
+            current_time = self.player.get_time()
+            new_time = current_time - (self.skip_seconds * 1000)
+            if new_time < 0:
+                new_time = 0
+            self.player.set_time(new_time)
+            self.logger.info(f"快退 {self.skip_seconds}秒: {current_time} -> {new_time}")
+        except Exception as e:
+            self.logger.error(f"快退失败: {str(e)}")
+            messagebox.showerror("错误", f"快退失败: {str(e)}")
 
     def skip_outro(self):
         """跳过片尾并记录播放历史"""
@@ -1321,6 +1365,12 @@ class VideoPlayerWindow(tk.Toplevel):
     def on_closing(self):
         """窗口关闭时的处理"""
         try:
+            # 解绑快捷键
+            self.unbind("<Left>")
+            self.unbind("<Right>")
+            self.unbind("<F11>")
+            self.unbind("<Escape>")
+            
             # 保存当前播放位置
             if hasattr(self, 'current_index') and 0 <= self.current_index < len(self.video_list):
                 video = self.video_list[self.current_index]
