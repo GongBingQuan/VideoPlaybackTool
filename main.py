@@ -741,7 +741,7 @@ class VideoPlayer(tk.Tk):
                         f"{index:03d}",  # 格式化序号为3位数
                         episode_title,
                         f"{video['total_episodes']}",
-                        f"{video['total_episodes']-history.get('episode_number',0)+1}",  # 显示未观看集数
+                        f"{video['total_episodes']-history.get('episode_number',0)-1}",  # 显示未观看集数
                         self.cn_week[en_week]
                     ), tags=(str(episode_num),))
 

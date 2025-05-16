@@ -271,13 +271,16 @@ class VideoPlayerWindow(tk.Toplevel):
         # 创建VLC实例和播放器
         self.instance = vlc.Instance([
             '--no-xlib',  # 禁用Xlib
-            '--network-caching=5000',
+            '--network-caching=2000',  # 更小的缓存时间提高响应速度
             '--clock-jitter=0',
-            '--file-caching=5000',
-            '--live-caching=5000',
-            '--sout-mux-caching=2000',
+            '--file-caching=2000',
+            '--live-caching=2000',
+            '--sout-mux-caching=800',
             '--http-reconnect',
-            '--avcodec-hw=none'  # 禁用硬件加速
+            '--avcodec-hw=dxva2',  # 使用DXVA2硬件加速
+            '--adaptive-logic=high',  # 启用高级自适应逻辑
+            '--drop-late-frames',  # 丢弃延迟帧
+            '--skip-frames'  # 跳过帧以保持同步
         ])
         self.player = self.instance.media_player_new()
 
@@ -507,23 +510,40 @@ class VideoPlayerWindow(tk.Toplevel):
             # 计算缓冲大小
             read_bytes = stats.get('read_bytes', 0)
             input_bitrate = stats.get('input_bitrate', 0)
+            lost_pictures = stats.get('lost_pictures', 0)
+            lost_abuffers = stats.get('lost_abuffers', 0)
             
             if input_bitrate > 0:
-                # 估算缓冲时间（秒）
+                # 更精确的缓冲时间计算（考虑丢包率）
                 buffer_time = read_bytes / (input_bitrate * 128)  # 转换为秒
-                self.buffer_size = min(1.0, buffer_time / 60)  # 最大1分钟的缓冲
+                # 根据丢包情况调整缓冲时间估算
+                if lost_pictures > 0 or lost_abuffers > 0:
+                    buffer_time *= 1.2  # 增加20%缓冲时间补偿
+                self.buffer_size = min(1.0, buffer_time / 45)  # 最大45秒的缓冲
                 
-                # 更新缓冲显示
+                # 更新缓冲显示（带颜色指示）
                 buffer_percent = int(self.buffer_size * 100)
-                self.buffer_label.config(text=f"缓冲: {buffer_percent}%")
+                if buffer_percent < 30:
+                    color = "red"
+                elif buffer_percent < 60:
+                    color = "orange"
+                else:
+                    color = "green"
+                self.buffer_label.config(
+                    text=f"缓冲: {buffer_percent}%",
+                    foreground=color
+                )
                 
                 # 更新网络质量历史
                 if self.adaptive_buffer_enabled:
                     self.update_network_quality(speed, stats)
                     self.adjust_buffer_thresholds()
                 
-                # 检查缓冲状态
-                if self.buffer_size < self.min_buffer_threshold and not self.is_buffering:
+                # 智能缓冲状态检查
+                stability_factor = 1.0 - (lost_pictures * 0.01 + lost_abuffers * 0.02)
+                adjusted_threshold = self.min_buffer_threshold * stability_factor
+                
+                if self.buffer_size < adjusted_threshold and not self.is_buffering:
                     self.enter_buffering_mode()
                 elif self.buffer_size >= self.max_buffer_threshold and self.is_buffering:
                     self.resume_from_buffering()
@@ -531,10 +551,12 @@ class VideoPlayerWindow(tk.Toplevel):
                 # 显示详细缓冲信息
                 if self.is_buffering:
                     self.buffer_label.config(
-                        text=f"缓冲: {buffer_percent}% (目标: {int(self.max_buffer_threshold * 100)}%)"
+                        text=f"缓冲: {buffer_percent}% (目标: {int(self.max_buffer_threshold * 100)}%)",
+                        foreground="orange"
                     )
         except Exception as e:
             self.logger.error(f"更新缓冲状态时出错: {str(e)}")
+            self.buffer_label.config(text="缓冲: --", foreground="red")
             
     def update_network_quality(self, speed, stats):
         """更新网络质量历史"""
@@ -579,33 +601,65 @@ class VideoPlayerWindow(tk.Toplevel):
             self.logger.error(f"更新网络质量时出错: {str(e)}")
             
     def adjust_buffer_thresholds(self):
-        """根据网络质量调整缓冲阈值"""
+        """根据网络质量动态调整缓冲阈值"""
         try:
             if not self.network_quality_history:
                 return
                 
-            # 计算最近的平均网络质量
+            # 计算网络质量统计
             avg_quality = sum(self.network_quality_history) / len(self.network_quality_history)
+            min_quality = min(self.network_quality_history)
+            max_quality = max(self.network_quality_history)
             
-            # 根据网络质量调整缓冲阈值
-            if avg_quality >= 80:  # 网络质量很好
-                self.min_buffer_threshold = 0.15  # 15%
-                self.max_buffer_threshold = 0.6   # 60%
-            elif avg_quality >= 60:  # 网络质量一般
-                self.min_buffer_threshold = 0.2   # 20%
-                self.max_buffer_threshold = 0.8   # 80%
+            # 计算网络抖动(质量变化幅度)
+            quality_jitter = max_quality - min_quality
+            
+            # 动态调整因子
+            stability_factor = 1.0 - min(quality_jitter * 2, 0.5)  # 抖动越大，稳定性越低
+            
+            # 基础阈值设置
+            if avg_quality >= 85:  # 网络质量极好
+                base_min = 0.1
+                base_max = 0.5
+            elif avg_quality >= 70:  # 网络质量良好
+                base_min = 0.15
+                base_max = 0.6
+            elif avg_quality >= 50:  # 网络质量一般
+                base_min = 0.2
+                base_max = 0.7
             else:  # 网络质量差
-                self.min_buffer_threshold = 0.3   # 30%
-                self.max_buffer_threshold = 0.9   # 90%
+                base_min = 0.3
+                base_max = 0.9
                 
-            # 如果检测到持续的网络不稳定
+            # 应用稳定性调整
+            adjusted_min = min(0.4, base_min * (1.5 - 0.5 * stability_factor))
+            adjusted_max = min(0.95, base_max * (1.3 + 0.2 * stability_factor))
+            
+            # 平滑过渡(避免阈值突变)
+            self.min_buffer_threshold = 0.7 * self.min_buffer_threshold + 0.3 * adjusted_min
+            self.max_buffer_threshold = 0.7 * self.max_buffer_threshold + 0.3 * adjusted_max
+            
+            # 确保最小保护
+            self.min_buffer_threshold = max(0.1, self.min_buffer_threshold)
+            self.max_buffer_threshold = min(0.95, self.max_buffer_threshold)
+            
+            # 如果检测到持续的网络不稳定(连续5次质量低于50)
             if self.network_unstable_count > 5:
-                # 增加缓冲区大小
-                self.min_buffer_threshold = min(0.4, self.min_buffer_threshold + 0.1)
-                self.max_buffer_threshold = min(0.95, self.max_buffer_threshold + 0.1)
+                # 增加缓冲区大小但不超过上限
+                self.min_buffer_threshold = min(0.5, self.min_buffer_threshold + 0.05)
+                self.max_buffer_threshold = min(0.95, self.max_buffer_threshold + 0.05)
                 
+            self.logger.info(
+                f"调整缓冲阈值: min={self.min_buffer_threshold:.2f}, "
+                f"max={self.max_buffer_threshold:.2f} (质量={avg_quality:.2f}, "
+                f"抖动={quality_jitter:.2f}, 稳定度={stability_factor:.2f})"
+            )
+            
         except Exception as e:
             self.logger.error(f"调整缓冲阈值时出错: {str(e)}")
+            # 设置安全默认值
+            self.min_buffer_threshold = 0.2
+            self.max_buffer_threshold = 0.7
             
 
 
@@ -1351,7 +1405,7 @@ class VideoPlayerWindow(tk.Toplevel):
             self.controls_visible = True
 
         # 设置3秒后自动隐藏
-        self.mouse_idle_timer = self.after(3000, self.hide_controls)
+        self.mouse_idle_timer = self.after(10000, self.hide_controls)
 
     def hide_controls(self):
         """自动隐藏控制栏"""

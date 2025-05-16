@@ -24,11 +24,11 @@
         "episode_number": 170
     },
     "完美世界": {
-        "last_update": "2025-05-16 06:44:58",
+        "last_update": "2025-05-16 19:30:30",
         "total_episodes": 215,
         "url": "https://play.modujx11.com/20250515/HxCV9aF1/index.m3u8",
         "last_played": "第215集",
-        "last_played_time": 460086,
+        "last_played_time": 152868000,
         "episode_number": 214
     },
     "遮天": {
@@ -40,11 +40,27 @@
         "episode_number": 108
     },
     "斗破苍穹 年番": {
-        "last_update": "2025-05-16 15:29:11",
+        "last_update": "2025-05-16 20:37:35",
         "total_episodes": 148,
-        "url": "https://play.modujx10.com/20240229/4HZBxyXt/index.m3u8",
+        "url": "https://play.modujx11.com/20250503/lEZtGLDK/index.m3u8",
+        "last_played": "第145集",
+        "last_played_time": 0,
+        "episode_number": 146
+    },
+    "斗罗大陆Ⅱ绝世唐门": {
+        "last_update": "2025-05-16 19:34:38",
+        "total_episodes": 100,
+        "url": "https://play.modujx11.com/20250509/WnZ5x2QF/index.m3u8",
+        "last_played": "第100集",
+        "last_played_time": 93100,
+        "episode_number": 99
+    },
+    "剑道第一仙": {
+        "last_update": "2025-05-16 20:37:00",
+        "total_episodes": 140,
+        "url": "https://play.modujx10.com/20240308/QGBbUd21/index.m3u8",
         "last_played": "第01集",
-        "last_played_time": 90000,
+        "last_played_time": 235580,
         "episode_number": 0
     }
 }

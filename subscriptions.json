@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-16 16:59:16",
+            "last_check": "2025-05-16 20:35:08",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1246,7 +1246,7 @@
                 }
             ],
             "total_episodes": 217,
-            "last_check": "2025-05-16 16:59:16",
+            "last_check": "2025-05-16 20:35:08",
             "update_time": "2025-05-15",
             "intro_duration": 150,
             "outro_duration": 90
@@ -1942,7 +1942,7 @@
                 }
             ],
             "total_episodes": 171,
-            "last_check": "2025-05-16 16:59:16",
+            "last_check": "2025-05-16 20:35:08",
             "update_time": "2025-05-12",
             "intro_duration": 160,
             "outro_duration": 90
@@ -2150,7 +2150,7 @@
                 }
             ],
             "total_episodes": 49,
-            "last_check": "2025-05-16 16:59:16",
+            "last_check": "2025-05-16 20:35:09",
             "update_time": "2025-05-13"
         },
         {
@@ -2596,7 +2596,7 @@
                 }
             ],
             "total_episodes": 109,
-            "last_check": "2025-05-16 16:59:16",
+            "last_check": "2025-05-16 20:35:09",
             "update_time": "2025-05-13",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3468,7 +3468,7 @@
                 }
             ],
             "total_episodes": 215,
-            "last_check": "2025-05-16 16:59:17",
+            "last_check": "2025-05-16 20:35:10",
             "update_time": "2025-05-15"
         },
         {
@@ -3875,11 +3875,15 @@
                 {
                     "title": "第100集",
                     "url": "https://play.modujx11.com/20250509/WnZ5x2QF/index.m3u8"
+                },
+                {
+                    "title": "第101集",
+                    "url": "https://play.modujx11.com/20250516/k5UiZ7JV/index.m3u8"
                 }
             ],
-            "total_episodes": 100,
-            "last_check": "2025-05-16 16:59:17",
-            "update_time": "2025-05-09"
+            "total_episodes": 101,
+            "last_check": "2025-05-16 20:35:10",
+            "update_time": "2025-05-16"
         },
         {
             "title": "斗破苍穹 年番",
@@ -4480,7 +4484,7 @@
                 }
             ],
             "total_episodes": 148,
-            "last_check": "2025-05-16 16:59:17",
+            "last_check": "2025-05-16 20:35:10",
             "update_time": "2025-05-10"
         },
         {
@@ -5052,7 +5056,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-16 16:59:17",
+            "last_check": "2025-05-16 20:35:11",
             "update_time": "2025-05-01"
         }
     ]
