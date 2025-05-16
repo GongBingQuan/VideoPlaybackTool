@@ -293,6 +293,10 @@ class VideoPlayerWindow(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.hide_controls()
 
+        # 倍速播放设置
+        self.playback_rate = 1.0  # 默认正常速度
+        self.rate_options = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]  # 支持的倍速选项
+
 
 
     def create_ui(self):
@@ -729,6 +733,18 @@ class VideoPlayerWindow(tk.Toplevel):
         self.right_buttons = ttk.Frame(self.button_frame, style='PlayerContainer.TFrame')
         self.right_buttons.pack(side=tk.RIGHT, padx=10)
 
+        # 倍速选择下拉菜单
+        self.rate_var = tk.StringVar(value="1.0x")
+        self.rate_menu = ttk.OptionMenu(
+            self.left_buttons,
+            self.rate_var,
+            "1.0x",
+            *[f"{rate}x" for rate in self.rate_options],
+            command=self.set_playback_rate
+        )
+        self.rate_menu.pack(side=tk.LEFT, padx=5)
+        self.create_tooltip(self.rate_menu, "播放速度")
+
         # 播放控制按钮 - 使用Text控件实现
         buttons_data = [
             (self.left_buttons, "⏮", self.play_previous, "上一集"),
@@ -938,16 +954,19 @@ class VideoPlayerWindow(tk.Toplevel):
 
     def show_settings(self):
         """显示设置对话框"""
-        settings_dialog = SettingsDialog(self, self.subscription_data)
-        # 等待对话框关闭
-        self.wait_window(settings_dialog)
-        # 对话框关闭后检查结果
-        if settings_dialog.result:
-            self.subscription_data.intro_duration = settings_dialog.result['intro_duration']
-            self.subscription_data.outro_duration = settings_dialog.result['outro_duration']
-            self.intro_duration = settings_dialog.result['intro_duration']
-            self.outro_duration = settings_dialog.result['outro_duration']
-            self.save_settings()
+        try:
+            settings_dialog = SettingsDialog(self, self.subscription_data)
+            # 等待对话框关闭
+            self.wait_window(settings_dialog)
+            # 对话框关闭后检查结果
+            if settings_dialog.result:
+                self.subscription_data['intro_duration]'] = settings_dialog.result['intro_duration']
+                self.subscription_data['outro_duration'] = settings_dialog.result['outro_duration']
+                self.intro_duration = settings_dialog.result['intro_duration']
+                self.outro_duration = settings_dialog.result['outro_duration']
+                self.save_settings()
+        except Exception as e:
+            self.logger.info(f"显示设置对话框失败: {str(e)}")
 
     def save_settings(self):
         """保存设置到subscriptions.json"""
