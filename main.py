@@ -844,12 +844,11 @@ class VideoPlayer(tk.Tk):
 
                     try:
                         # 创建播放器窗口
-                        player_window = VideoPlayerWindow(self, subscription_data)
+                        VideoPlayerWindow(self, subscription_data)
                     except Exception as e:
                         logger.error(f"创建播放器窗口失败: {str(e)}")
                         messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")
                         return
-                    player_window.focus()  # 将焦点设置到播放器窗口
                 except Exception as e:
                     self.logger.error(f"播放视频失败: {traceback.format_exc()}")
                     messagebox.showerror("播放错误",

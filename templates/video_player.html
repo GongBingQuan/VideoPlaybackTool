@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>视频播放器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+        }
+        #video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        #video-player {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+        #controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.3s;
+        }
+        #progress-container {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        #progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #555;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        #progress {
+            height: 100%;
+            background: #4a90e2;
+            border-radius: 2px;
+            width: 0%;
+        }
+        #time-display {
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #left-buttons, #center-buttons, #right-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        button:hover {
+            color: #4a90e2;
+        }
+        #speed-select {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        #status {
+            color: white;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <video id="video-player" controls>
+            <source src="{{ video_url }}" type="video/mp4">
+            您的浏览器不支持HTML5视频
+        </video>
+
+        <div id="controls">
+            <div id="progress-container">
+                <div id="progress-bar">
+                    <div id="progress"></div>
+                </div>
+                <div id="time-display">
+                    <span id="current-time">00:00</span>
+                    <span id="total-time">00:00</span>
+                </div>
+            </div>
+
+            <div id="button-container">
+                <div id="left-buttons">
+                    <button id="prev-btn" title="上一集">⏮</button>
+                    <button id="play-btn" title="播放/暂停">▶</button>
+                    <button id="next-btn" title="下一集">⏭</button>
+                </div>
+
+                <div id="center-buttons">
+                    <button id="skip-intro-btn" title="跳过片头">▷</button>
+                </div>
+
+                <div id="right-buttons">
+                    <select id="speed-select">
+                        <option value="0.5">0.5x</option>
+                        <option value="0.75">0.75x</option>
+                        <option value="1.0" selected>1.0x</option>
+                        <option value="1.25">1.25x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2.0">2.0x</option>
+                    </select>
+                    <button id="fullscreen-btn" title="全屏">⛶</button>
+                </div>
+            </div>
+
+            <div id="status">
+                <span id="network-status">状态: 就绪</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video-player');
+        const playBtn = document.getElementById('play-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progress = document.getElementById('progress');
+        const currentTimeDisplay = document.getElementById('current-time');
+        const totalTimeDisplay = document.getElementById('total-time');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const skipIntroBtn = document.getElementById('skip-intro-btn');
+        const speedSelect = document.getElementById('speed-select');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const networkStatus = document.getElementById('network-status');
+        const controls = document.getElementById('controls');
+
+        // 初始化播放器
+        video.controls = false;
+
+        // 播放/暂停切换
+        playBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playBtn.textContent = '⏸';
+            } else {
+                video.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        // 更新进度条
+        video.addEventListener('timeupdate', () => {
+            const percent = (video.currentTime / video.duration) * 100;
+            progress.style.width = percent + '%';
+
+            // 更新时间显示
+            currentTimeDisplay.textContent = formatTime(video.currentTime);
+            totalTimeDisplay.textContent = formatTime(video.duration);
+
+            // 与Python后端通信更新播放进度
+            window.pywebview.api.updatePlayTime(video.currentTime);
+        });
+
+        // 点击进度条跳转
+        progressBar.addEventListener('click', (e) => {
+            const percent = e.offsetX / progressBar.offsetWidth;
+            video.currentTime = percent * video.duration;
+        });
+
+        // 倍速播放
+        speedSelect.addEventListener('change', () => {
+            video.playbackRate = parseFloat(speedSelect.value);
+            window.pywebview.api.setPlaybackRate(parseFloat(speedSelect.value));
+        });
+
+        // 全屏处理
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                video.requestFullscreen().catch(err => {
+                    console.error('全屏错误:', err);
+                    networkStatus.textContent = '全屏失败: ' + err.message;
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // 全屏按钮
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // 全屏状态变化监听
+        document.addEventListener('fullscreenchange', () => {
+            const isFullscreen = !!document.fullscreenElement;
+            fullscreenBtn.textContent = isFullscreen ? '⛶' : '⛶';
+            window.pywebview.api.onFullscreen(isFullscreen.toString());
+        });
+
+        // 双击全屏
+        video.addEventListener('dblclick', toggleFullscreen);
+
+        // 跳过片头
+        skipIntroBtn.addEventListener('click', () => {
+            window.pywebview.api.skipIntro();
+        });
+
+        // 上一集/下一集
+        prevBtn.addEventListener('click', () => {
+            window.pywebview.api.playPrevious();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            window.pywebview.api.playNext();
+        });
+
+        // 鼠标移动显示控制栏
+        video.addEventListener('mousemove', () => {
+            controls.style.opacity = '1';
+            clearTimeout(window.controlsTimeout);
+            window.controlsTimeout = setTimeout(() => {
+                controls.style.opacity = '0';
+            }, 3000);
+        });
+
+        // 格式化时间显示
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 初始化显示控制栏
+        controls.style.opacity = '1';
+        window.controlsTimeout = setTimeout(() => {
+            controls.style.opacity = '0';
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-16 20:35:08",
+            "last_check": "2025-05-18 00:28:25",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1246,7 +1246,7 @@
                 }
             ],
             "total_episodes": 217,
-            "last_check": "2025-05-16 20:35:08",
+            "last_check": "2025-05-18 00:28:25",
             "update_time": "2025-05-15",
             "intro_duration": 150,
             "outro_duration": 90
@@ -1942,7 +1942,7 @@
                 }
             ],
             "total_episodes": 171,
-            "last_check": "2025-05-16 20:35:08",
+            "last_check": "2025-05-18 00:28:25",
             "update_time": "2025-05-12",
             "intro_duration": 160,
             "outro_duration": 90
@@ -2150,7 +2150,7 @@
                 }
             ],
             "total_episodes": 49,
-            "last_check": "2025-05-16 20:35:09",
+            "last_check": "2025-05-18 00:28:26",
             "update_time": "2025-05-13"
         },
         {
@@ -2596,7 +2596,7 @@
                 }
             ],
             "total_episodes": 109,
-            "last_check": "2025-05-16 20:35:09",
+            "last_check": "2025-05-18 00:28:26",
             "update_time": "2025-05-13",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3468,7 +3468,7 @@
                 }
             ],
             "total_episodes": 215,
-            "last_check": "2025-05-16 20:35:10",
+            "last_check": "2025-05-18 00:28:26",
             "update_time": "2025-05-15"
         },
         {
@@ -3882,7 +3882,7 @@
                 }
             ],
             "total_episodes": 101,
-            "last_check": "2025-05-16 20:35:10",
+            "last_check": "2025-05-18 00:28:26",
             "update_time": "2025-05-16"
         },
         {
@@ -4481,11 +4481,15 @@
                 {
                     "title": "第146集",
                     "url": "https://play.modujx11.com/20250510/n5whliKT/index.m3u8"
+                },
+                {
+                    "title": "第147集",
+                    "url": "https://play.modujx11.com/20250517/fq6JjCO4/index.m3u8"
                 }
             ],
-            "total_episodes": 148,
-            "last_check": "2025-05-16 20:35:10",
-            "update_time": "2025-05-10"
+            "total_episodes": 149,
+            "last_check": "2025-05-18 00:28:27",
+            "update_time": "2025-05-17"
         },
         {
             "title": "剑道第一仙",
@@ -5056,7 +5060,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-16 20:35:11",
+            "last_check": "2025-05-18 00:28:27",
             "update_time": "2025-05-01"
         }
     ]
