@@ -66,16 +66,16 @@ class VideoPlayerWindow():
             f"从历史文件加载播放历史: 第{self.current_index+1}集, 时间点: {self.last_play_info.get('current_time', 0)}ms")
         # 获取当前视频信息
         current_episode = self.video_list[self.current_index] if self.video_list else {}
-        video_url = current_episode.get('url')
+        self.video_url = current_episode.get('url')
         video_title = f"{subscription_data.get('title', '')} - {current_episode.get('title', '')}"
 
         # 验证必要参数
-        if not video_url:
+        if not self.video_url:
             raise ValueError("无法获取视频URL")
 
         self.logger.info(
             f"视频播放器初始化完成, 参数: {{"
-            f"'video_url': '{video_url}', "
+            f"'video_url': '{self.video_url}', "
             f"'video_title': '{video_title}', "
             f"'video_list_length': {len(self.video_list)}, "
             f"'current_index': {self.current_index+1}"
@@ -91,220 +91,47 @@ class VideoPlayerWindow():
             self.intro_duration,
             self.toggle_fullscreen
         )
-        artplayer_config = {
-            'container': '.artplayer-app',
-            'url': video_url,
-            'customType': {
-                'm3u8': self._get_hls_handler()
-            },
-            # 其他配置...
-        }
-        self._init_webview(artplayer_config)
+
+        self._init_webview()
 
 
-    def _get_hls_handler(self):
-        """返回HLS处理函数"""
-        return """
-        function(video, url, art) {
-            if (Hls.isSupported()) {
-                if (art.hls) art.hls.destroy();
-                const hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                art.hls = hls;
-                art.on('destroy', () => hls.destroy());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-            } else {
-                art.notice.show = '不支持播放m3u8格式';
-            }
-        }
-        """
 
     def toggle_fullscreen(self, state):
         """切换全屏模式"""
         print(f'全屏模式切换: {state}')
         self.webview.toggle_fullscreen()
 
-    def _init_webview(self, artplayer_config):
+    def _init_webview(self):
         """初始化webview和播放器"""
-        html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-            <script src="https://cdn.jsdelivr.net/npm/artplayer@latest/dist/artplayer.js"></script>
-            <style>
-                * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-            html, body {{ width: 100%; height: 100%; overflow: hidden; }}
-            #container {{ 
-                width: 100%;
-                height: 100%;
-                display: flex;
-                background: #000;
-            }}
-            #playlist {{
-                width: 300px;
-                background: #1a1a1a;
-                color: #fff;
-                overflow-y: auto;
-                padding: 10px;
-            }}
-            #player-container {{
-                flex: 1;
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-            }}
-            .artplayer-app {{
-                width: 100%;
-                max-width: 1200px;
-                aspect-ratio: 16/9;
-            }}
-            .episode-item {{
-                padding: 10px;
-                margin: 5px 0;
-                background: #333;
-                color: #fff;
-                cursor: pointer;
-                border-radius: 4px;
-            }}
-            .episode-item:hover {{
-                background: #444;
-            }}
-            .episode-item.active {{
-                background: #23ade5;
-            }}
-            </style>
-        </head>
-        <body>
-            <div id="container">
-                <div id="playlist">
-                    <h3 style="color:#fff; margin-bottom:15px;">播放列表</h3>
-                    <div id="episode-list"></div>
-                </div>
-                <div id="player-container">
-                    <div class="artplayer-app"></div>
-                </div>
-            </div>
-
-            <script>
-                // 等待所有资源加载完成
-                document.addEventListener('DOMContentLoaded', function() {{
-                    // 初始化播放器
-                    const art = new Artplayer({{
-                        container: '.artplayer-app',
-                        url: '{artplayer_config['url']}',
-                        autoplay: true,
-                        isLive: false,
-                        muted: false,
-                        pip: true,
-                        autoSize: true,
-                        autoMini: true,
-                        screenshot: true,
-                        setting: true,
-                        loop: true,
-                        flip: true,
-                        playbackRate: true,
-                        aspectRatio: true,
-                        fullscreen: true,
-                        fullscreenWeb: true,
-                        subtitleOffset: true,
-                        miniProgressBar: true,
-                        mutex: true,
-                        backdrop: true,
-                        playsInline: true,
-                        autoPlayback: true,
-                        airplay: true,
-                        theme: '#23ade5',
-                        customType: {{
-                            m3u8: function(video, url, art) {{
-                                if (Hls.isSupported()) {{
-                                    const hls = new Hls();
-                                    hls.loadSource(url);
-                                    hls.attachMedia(video);
-                                    art.on('destroy', () => hls.destroy());
-                                }} else if (video.canPlayType('application/vnd.apple.mpegurl')) {{
-                                    video.src = url;
-                                }} else {{
-                                    art.notice.show = '不支持播放m3u8格式';
-                                }}
+        try:
+            # 尝试从模板文件读取HTML内容
+            template_path = os.path.join(os.path.dirname(__file__), 'video_player.html')
+            with open(template_path, 'r', encoding='utf-8') as f:
+                html = f.read()
+            
+            # 替换模板中的占位符
+            html = html.replace('{video_url}', self.video_url)
+            html = html.replace('{video_list_json}', json.dumps(self.video_list, ensure_ascii=False))
+        except Exception as e:
+            self.logger.error(f"读取HTML模板失败: {str(e)}, 使用内置HTML")
+            # 回退到内置HTML
+            html = f"""<!DOCTYPE html><html><head><!-- 简化的HTML内容作为回退 --></head><body>
+                <div id="container"><div id="player-container"><div class="artplayer-app"></div></div></div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {{
+                        const art = new Artplayer({{
+                            container: '.artplayer-app',
+                            url: '{self.video_url}',
+                            // 简化的配置
+                        }});
+                        art.on('ready', () => {{
+                            if (window.pywebview && window.pywebview.api) {{
+                                window.pywebview.api.onPlayerReady();
                             }}
-                        }},
-                        controls: [
-                            {{
-                                position: 'right',
-                                html: '选集',
-                                click: function () {{
-                                    art.fullscreen = !art.fullscreen;
-                                    
-                                }},
-                            }},
-                        ],
-                        
+                        }});
                     }});
-
-                    // 存储播放器实例
-                    window.artplayer = art;
-
-                    // 初始化播放列表
-                    updatePlaylist({json.dumps(self.video_list, ensure_ascii=False)});
-
-                    // 播放器准备就绪回调
-                    art.on('ready', () => {{
-                        if (window.pywebview && window.pywebview.api) {{
-                            window.pywebview.api.onPlayerReady();
-                        }}
-                    }});
-                    art.on('fullscreen', (state) => {{
-                        window.pywebview.api.onFullscreen(state);
-                        console.info('fullscreen', state);
-                    }});
-                }});
-
-                // 更新播放列表
-                function updatePlaylist(data) {{
-                    const listElement = document.getElementById('episode-list');
-                    listElement.innerHTML = '';
-
-                    data.forEach((episode, index) => {{
-                        const item = document.createElement('div');
-                        item.className = 'episode-item';
-                        item.textContent = episode.title;
-                        item.onclick = function() {{
-                            // 更新当前选中项样式
-                            document.querySelectorAll('.episode-item').forEach(el => {{
-                                el.classList.remove('active');
-                            }});
-                            this.classList.add('active');
-
-                            // 播放选中剧集
-                            playEpisode(episode, index);
-                        }};
-                        listElement.appendChild(item);
-                    }});
-                }}
-
-                // 播放指定剧集
-                function playEpisode(episode, index) {{
-                    if (window.artplayer) {{
-                        window.artplayer.switchUrl(episode.url);
-                        window.artplayer.play();
-
-                        // 通知Python端
-                        if (window.pywebview && window.pywebview.api) {{
-                            window.pywebview.api.playEpisode(index);
-                        }}
-                    }}
-                }}
-            </script>
-        </body>
-        </html>
-        """
+                </script>
+            </body></html>"""
 
         # 创建webview窗口
         self.webview = webview.create_window(
