@@ -22,12 +22,20 @@ class JSBridge:
 
     def playEpisode(self, index):
         """播放指定剧集"""
-        print(index)
+        print(f"播放剧集索引: {index}")
+        self.current_index = index
+        # 立即保存当前索引
+        print(f"设置当前播放索引: {index}")
+
+    def getCurrentIndex(self):
+        """获取当前播放索引"""
+        current_index = getattr(self, 'current_index', 0)
+        print( f"当前播放索引: {current_index}")
+        return current_index
 
     def onFullscreen(self, status):
         print(f"全屏状态变化: {'进入全屏' if status else '退出全屏'}")
         self.toggle_fullscreen(status)
-
 
     def onPlayerReady(self):
         """播放器准备就绪回调"""
@@ -79,14 +87,16 @@ class VideoPlayerWindow():
             f"'video_title': '{video_title}', "
             f"'video_list_length': {len(self.video_list)}, "
             f"'current_index': {self.current_index+1}"
+            
             f"}}"  # 转义外层花括号
         )
+        self.logger.info(f"video_list: {self.video_list}")
 
         self.intro_duration = self.subscription_data.get('intro_duration', 90)
         self.outro_duration = self.subscription_data.get('outro_duration', 90)
 
         self.js_bridge = JSBridge(
-            json.dumps(self.video_list, ensure_ascii=False),
+            json.dumps(self.video_list, ensure_ascii=True),
             self.current_index,
             self.intro_duration,
             self.toggle_fullscreen
@@ -108,8 +118,23 @@ class VideoPlayerWindow():
             template_path = os.path.join(os.path.dirname(__file__), 'video_player.html')
             with open(template_path, 'r', encoding='utf-8') as f:
                 html = f.read()
+            # 读取JS文件并嵌入
+            with open('js/hls.js', 'r', encoding='utf-8') as f:
+                hls_js = f.read()
+            with open('js/artplayer.js', 'r', encoding='utf-8') as f:
+                artplayer_js = f.read()
+                # 替换脚本标签为内联代码
+                html = html.replace(
+                    '<script src="js/hls.js"></script>',
+                    f'<script>{hls_js}</script>'
+                )
+                html = html.replace(
+                    '<script src="js/artplayer.js"></script>',
+                    f'<script>{artplayer_js}</script>'
+                )
             
             # 替换模板中的占位符
+            html = html.replace('{currentIndex}', str(self.current_index))
             html = html.replace('{video_url}', self.video_url)
             html = html.replace('{video_list_json}', json.dumps(self.video_list, ensure_ascii=False))
         except Exception as e:
