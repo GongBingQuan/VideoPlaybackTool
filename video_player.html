@@ -237,7 +237,6 @@
 <script>
     var intro_duration = {intro_duration};
     var outro_duration = {outro_duration};
-    // 获取当前播放索引并滚动到该位置
     var currentIndex = {currentIndex};
     var video_list = {video_list};
     var last_play_info = {last_play_info}
@@ -536,13 +535,14 @@
             if (window.pywebview && window.pywebview.api) {
                 window.pywebview.api.playEpisode(index);
             }
+            updatePlaylist();
         }
     }
 
     function nextEpisode() {
-        if (currentIndex > video_list.length) {
-            currentIndex++;
-            playEpisode(video_list[currentIndex], currentIndex);
+        if (currentIndex < video_list.length) {
+            let index = currentIndex + 1;
+            playEpisode(video_list[index], index);
         }
     }
 

@@ -1,99 +1,35 @@
-2025-05-19 00:02:59,163 - INFO - 日志系统初始化完成
-2025-05-19 00:02:59,184 - INFO - 开始初始化视频播放器
-2025-05-19 00:02:59,201 - INFO - 开始创建标签页
-2025-05-19 00:02:59,210 - INFO - 开始创建视频列表界面
-2025-05-19 00:02:59,229 - INFO - 开始更新剧集列表
-2025-05-19 00:02:59,229 - INFO - 剧集列表更新完成，显示所有剧集
-2025-05-19 00:02:59,229 - INFO - 视频列表界面创建完成
-2025-05-19 00:02:59,239 - INFO - 标签页创建完成
-2025-05-19 00:02:59,239 - INFO - 开始加载配置文件
-2025-05-19 00:02:59,242 - INFO - 配置文件加载成功
-2025-05-19 00:02:59,242 - INFO - 视频播放器初始化完成
-2025-05-19 00:03:00,249 - INFO - 跳过更新 仙逆: 距离上次更新不足1小时
-2025-05-19 00:03:00,249 - INFO - 跳过更新 万界至尊: 距离上次更新不足1小时
-2025-05-19 00:03:00,249 - INFO - 跳过更新 吞噬星空: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 一念永恒第三季: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 遮天: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 完美世界: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 斗罗大陆Ⅱ绝世唐门: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 斗破苍穹 年番: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 剑道第一仙: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 凡人修仙传: 距离上次更新不足1小时
-2025-05-19 00:03:00,250 - INFO - 跳过更新 牧神记: 距离上次更新不足1小时
-2025-05-19 00:03:00,268 - INFO - 开始加载配置文件
-2025-05-19 00:03:00,270 - INFO - 配置文件加载成功
-2025-05-19 00:03:00,270 - INFO - 开始更新剧集列表
-2025-05-19 00:03:00,272 - INFO - 剧集列表更新完成，显示所有剧集
-2025-05-19 00:03:02,134 - INFO - 成功保存播放历史: 仙逆{'last_played': '第88集', 'last_played_time': 736.140882, 'last_update': '2025-05-19 00:03:02', 'total_episodes': 0, 'url': 'https://www.moduzy5.com/vod/7645/', 'episode_number': 87}
-2025-05-19 00:03:02,136 - INFO - 正在播放: 0, URL: https://www.moduzy5.com/vod/7645/
-2025-05-19 00:03:02,136 - INFO - Player正在播放: 仙逆
-2025-05-19 00:03:02,137 - INFO - 找到播放历史记录: 第88集, 时间点: 736.140882ms
-2025-05-19 00:03:02,137 - INFO - 从历史文件加载播放历史: 第88集, 时间点: 736.140882ms
-2025-05-19 00:03:02,137 - INFO - 视频播放器初始化完成, 参数: {'video_url': 'https://play.modujx11.com/20250511/FEitPWOh/index.m3u8', 'video_title': '仙逆 - 第88集', 'video_list_length': 89, 'current_index': 88}
-2025-05-19 00:03:02,137 - INFO - video_list: [{'title': '第01集', 'url': 'https://play.modujx10.com/20240304/6aJSbktn/index.m3u8'}, {'title': '第02集', 'url': 'https://play.modujx10.com/20240304/fPd34j4o/index.m3u8'}, {'title': '第03集', 'url': 'https://play.modujx10.com/20240304/FE2MSZDW/index.m3u8'}, {'title': '第04集', 'url': 'https://play.modujx10.com/20240304/jpO44LnA/index.m3u8'}, {'title': '第05集', 'url': 'https://play.modujx10.com/20240304/qjIDIgNX/index.m3u8'}, {'title': '第06集', 'url': 'https://play.modujx10.com/20240304/q8PBYuem/index.m3u8'}, {'title': '第07集', 'url': 'https://play.modujx10.com/20240304/rwtjUkO0/index.m3u8'}, {'title': '第08集', 'url': 'https://play.modujx10.com/20240304/aK4PrtTl/index.m3u8'}, {'title': '第09集', 'url': 'https://play.modujx10.com/20240304/FvkDvklM/index.m3u8'}, {'title': '第10集', 'url': 'https://play.modujx10.com/20240304/jun0dA59/index.m3u8'}, {'title': '第11集', 'url': 'https://play.modujx10.com/20240304/jkAGqlcF/index.m3u8'}, {'title': '第12集', 'url': 'https://play.modujx10.com/20240304/QNfRjHlV/index.m3u8'}, {'title': '第13集', 'url': 'https://play.modujx10.com/20240304/tWM18xM4/index.m3u8'}, {'title': '第14集', 'url': 'https://play.modujx10.com/20240304/Ii76MXFn/index.m3u8'}, {'title': '第15集', 'url': 'https://play.modujx10.com/20240304/7834HVIT/index.m3u8'}, {'title': '第16集', 'url': 'https://play.modujx10.com/20240304/oUs0zF0x/index.m3u8'}, {'title': '第17集', 'url': 'https://play.modujx10.com/20240304/J2t68Jpx/index.m3u8'}, {'title': '第18集', 'url': 'https://play.modujx10.com/20240304/4ZaUeSe4/index.m3u8'}, {'title': '第19集', 'url': 'https://play.modujx10.com/20240304/bM1mopgI/index.m3u8'}, {'title': '第20集', 'url': 'https://play.modujx10.com/20240304/1CZzE3GB/index.m3u8'}, {'title': '第21集', 'url': 'https://play.modujx10.com/20240304/mFZZnFQd/index.m3u8'}, {'title': '第22集', 'url': 'https://play.modujx10.com/20240304/XvFNnPUe/index.m3u8'}, {'title': '第23集', 'url': 'https://play.modujx10.com/20240304/3mW75hEk/index.m3u8'}, {'title': '第24集', 'url': 'https://play.modujx10.com/20240304/jN6OI8s6/index.m3u8'}, {'title': '第25集', 'url': 'https://play.modujx10.com/20240304/ZnN0VvDB/index.m3u8'}, {'title': '第26集', 'url': 'https://play.modujx10.com/20240318/71MIlaY4/index.m3u8'}, {'title': '第27集', 'url': 'https://play.modujx10.com/20240318/6qvkWOjw/index.m3u8'}, {'title': '第28集', 'url': 'https://play.modujx10.com/20240402/mBaAWFlh/index.m3u8'}, {'title': '第29集', 'url': 'https://play.modujx10.com/20240402/wo23qcwM/index.m3u8'}, {'title': '第30集', 'url': 'https://play.modujx10.com/20240402/TWgUkCzG/index.m3u8'}, {'title': '第31集', 'url': 'https://play.modujx10.com/20240411/BoKtEphj/index.m3u8'}, {'title': '第32集', 'url': 'https://play.modujx10.com/20240429/khNvYgVZ/index.m3u8'}, {'title': '第33集', 'url': 'https://play.modujx10.com/20240429/IgdToN3D/index.m3u8'}, {'title': '第34集', 'url': 'https://play.modujx10.com/20240429/6YGXf1Bu/index.m3u8'}, {'title': '第35集', 'url': 'https://play.modujx10.com/20240515/oDLSIzFx/index.m3u8'}, {'title': '第36集', 'url': 'https://play.modujx10.com/20240515/lv968b3C/index.m3u8'}, {'title': '第37集', 'url': 'https://play.modujx12.com/20240525/LkLUjdGM/index.m3u8'}, {'title': '第38集', 'url': 'https://play.modujx12.com/20240603/ykzVXo50/index.m3u8'}, {'title': '第39集', 'url': 'https://play.modujx12.com/20240603/VwjFmYAh/index.m3u8'}, {'title': '第40集', 'url': 'https://play.modujx12.com/20240616/TSDEbjNx/index.m3u8'}, {'title': '第41集', 'url': 'https://play.modujx12.com/20240616/61ob9Ewu/index.m3u8'}, {'title': '第42集', 'url': 'https://play.modujx12.com/20240623/tWbPC4uo/index.m3u8'}, {'title': '第43集', 'url': 'https://play.modujx12.com/20240630/0RfdKiKX/index.m3u8'}, {'title': '第44集', 'url': 'https://play.modujx12.com/20240707/PWejOwcr/index.m3u8'}, {'title': '第45集', 'url': 'https://play.modujx13.com/20240714/tfkDH6l9/index.m3u8'}, {'title': '第46集', 'url': 'https://play.modujx13.com/20240721/5AjyMuBt/index.m3u8'}, {'title': '第47集', 'url': 'https://play.modujx13.com/20240728/aJEZarnn/index.m3u8'}, {'title': '第48集', 'url': 'https://play.modujx13.com/20240804/P8nJKpzZ/index.m3u8'}, {'title': '第49集', 'url': 'https://play.modujx14.com/20240811/mvpc0Qye/index.m3u8'}, {'title': '第50集', 'url': 'https://play.modujx15.com/20240818/PBoMdDhd/index.m3u8'}, {'title': '第51集', 'url': 'https://play.modujx15.com/20240825/LJKsgUms/index.m3u8'}, {'title': '第52集', 'url': 'https://play.modujx15.com/20240901/Cty9LFE0/index.m3u8'}, {'title': '第53集', 'url': 'https://play.modujx15.com/20240908/OrcbL1tl/index.m3u8'}, {'title': '第54集', 'url': 'https://play.modujx16.com/20240915/eMKQMYSC/index.m3u8'}, {'title': '第55集', 'url': 'https://play.modujx16.com/20240922/r0dc31ec/index.m3u8'}, {'title': '第56集', 'url': 'https://play.modujx16.com/20240929/qink8Dzs/index.m3u8'}, {'title': '第57集', 'url': 'https://play.modujx16.com/20241006/vUaR4T1U/index.m3u8'}, {'title': '第58集', 'url': 'https://play.modujx16.com/20241013/bfZIz2mB/index.m3u8'}, {'title': '第59集', 'url': 'https://play.modujx16.com/20241020/aIoZGtrM/index.m3u8'}, {'title': '第60集', 'url': 'https://play.modujx16.com/20241027/CjMaV15o/index.m3u8'}, {'title': '第61集', 'url': 'https://play.modujx16.com/20241103/3exRTOnz/index.m3u8'}, {'title': '第62集', 'url': 'https://play.modujx16.com/20241110/qLXCOjUQ/index.m3u8'}, {'title': '第63集', 'url': 'https://play.modujx16.com/20241117/yEXr1QKg/index.m3u8'}, {'title': '第64集', 'url': 'https://play.modujx16.com/20241124/FfzyvclN/index.m3u8'}, {'title': '第65集', 'url': 'https://play.modujx16.com/20241201/SFL6bj83/index.m3u8'}, {'title': '第66集', 'url': 'https://play.modujx16.com/20241208/VPsla3sq/index.m3u8'}, {'title': '第67集', 'url': 'https://play.modujx16.com/20241215/FPTf7pyl/index.m3u8'}, {'title': '第68集', 'url': 'https://play.modujx16.com/20241222/unZvW46e/index.m3u8'}, {'title': '第69集', 'url': 'https://play.modujx11.com/20241229/L5DTGpkB/index.m3u8'}, {'title': '第70集', 'url': 'https://play.modujx11.com/20250105/UkeM9Cg9/index.m3u8'}, {'title': '第71集', 'url': 'https://play.modujx11.com/20250112/vPoAgmKG/index.m3u8'}, {'title': '第72集', 'url': 'https://play.modujx11.com/20250119/AwZsWpov/index.m3u8'}, {'title': '第73集', 'url': 'https://play.modujx11.com/20250126/vZ5nlmB6/index.m3u8'}, {'title': '第74集', 'url': 'https://play.modujx11.com/20250202/XiSAfWwR/index.m3u8'}, {'title': '第75集', 'url': 'https://play.modujx11.com/20250209/g7DDZZtI/index.m3u8'}, {'title': '第76集', 'url': 'https://play.modujx11.com/20250216/6nELHVGr/index.m3u8'}, {'title': '第77集', 'url': 'https://play.modujx11.com/20250223/FO192vxJ/index.m3u8'}, {'title': '第78集', 'url': 'https://play.modujx11.com/20250302/zpk59ctk/index.m3u8'}, {'title': '第79集', 'url': 'https://play.modujx11.com/20250309/dKf6gDSB/index.m3u8'}, {'title': '第80集', 'url': 'https://play.modujx11.com/20250316/hExbR4JV/index.m3u8'}, {'title': '第81集', 'url': 'https://play.modujx11.com/20250323/R9SYOzve/index.m3u8'}, {'title': '第82集', 'url': 'https://play.modujx11.com/20250330/XS30a6aP/index.m3u8'}, {'title': '第83集', 'url': 'https://play.modujx11.com/20250406/ThA4e3Xj/index.m3u8'}, {'title': '第84集', 'url': 'https://play.modujx11.com/20250413/mc5uUZ4r/index.m3u8'}, {'title': '第85集', 'url': 'https://play.modujx11.com/20250420/rRowAMUe/index.m3u8'}, {'title': '第86集', 'url': 'https://play.modujx11.com/20250427/j3mRoc88/index.m3u8'}, {'title': '第87集', 'url': 'https://play.modujx11.com/20250504/WcF4qahh/index.m3u8'}, {'title': '第88集', 'url': 'https://play.modujx11.com/20250511/FEitPWOh/index.m3u8'}, {'title': '第89集', 'url': 'https://play.modujx11.com/20250518/tV1VKqiA/index.m3u8'}]
-2025-05-19 00:03:11,633 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:14,291 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:16,954 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:19,603 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:22,270 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:24,913 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:27,572 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:30,228 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:32,883 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:35,542 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:38,200 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:40,854 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:43,509 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:46,163 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:48,823 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:51,477 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:54,134 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:56,790 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:03:59,453 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:02,101 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:04,765 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:07,418 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:10,071 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:12,728 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:15,387 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:18,042 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:20,702 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:23,355 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:26,011 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:28,664 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:31,321 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:33,980 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:36,682 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:39,338 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:41,997 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:44,648 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:47,304 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:49,972 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:52,620 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:55,284 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:04:57,932 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:00,586 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:03,251 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:05,898 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:08,555 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:11,493 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:14,150 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:16,805 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:19,460 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:22,117 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:24,773 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:27,429 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:30,088 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:32,741 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:35,399 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:38,055 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:40,720 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:43,367 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:46,034 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:48,687 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:51,337 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:53,991 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:56,656 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:05:59,307 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:06:01,961 - INFO - 保存播放历史: 仙逆
-2025-05-19 00:06:04,616 - INFO - 保存播放历史: 仙逆
+2025-05-19 00:28:42,361 - INFO - 日志系统初始化完成
+2025-05-19 00:28:42,382 - INFO - 开始初始化视频播放器
+2025-05-19 00:28:42,398 - INFO - 开始创建标签页
+2025-05-19 00:28:42,402 - INFO - 开始创建视频列表界面
+2025-05-19 00:28:42,422 - INFO - 开始更新剧集列表
+2025-05-19 00:28:42,422 - INFO - 剧集列表更新完成，显示所有剧集
+2025-05-19 00:28:42,422 - INFO - 视频列表界面创建完成
+2025-05-19 00:28:42,427 - INFO - 标签页创建完成
+2025-05-19 00:28:42,427 - INFO - 开始加载配置文件
+2025-05-19 00:28:42,429 - INFO - 配置文件加载成功
+2025-05-19 00:28:42,430 - INFO - 视频播放器初始化完成
+2025-05-19 00:28:43,438 - INFO - 跳过更新 仙逆: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 万界至尊: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 吞噬星空: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 一念永恒第三季: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 遮天: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 完美世界: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 斗罗大陆Ⅱ绝世唐门: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 斗破苍穹 年番: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 剑道第一仙: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 凡人修仙传: 距离上次更新不足1小时
+2025-05-19 00:28:43,438 - INFO - 跳过更新 牧神记: 距离上次更新不足1小时
+2025-05-19 00:28:43,452 - INFO - 开始加载配置文件
+2025-05-19 00:28:43,454 - INFO - 配置文件加载成功
+2025-05-19 00:28:43,454 - INFO - 开始更新剧集列表
+2025-05-19 00:28:43,456 - INFO - 剧集列表更新完成，显示所有剧集
+2025-05-19 00:28:49,712 - INFO - 成功保存播放历史: 仙逆{'last_played': '第89集', 'last_played_time': 264.582972, 'last_update': '2025-05-19 00:28:49', 'total_episodes': 0, 'url': 'https://www.moduzy5.com/vod/7645/', 'episode_number': 88}
+2025-05-19 00:28:49,714 - INFO - 正在播放: 0, URL: https://www.moduzy5.com/vod/7645/
+2025-05-19 00:28:49,714 - INFO - Player正在播放: 仙逆
+2025-05-19 00:28:49,715 - INFO - 找到播放历史记录: 第89集, 时间点: 264.582972ms
+2025-05-19 00:28:49,715 - INFO - 从历史文件加载播放历史: 第89集, 时间点: 264.582972ms
+2025-05-19 00:28:49,715 - INFO - 视频播放器初始化完成, 参数: {'video_url': 'https://play.modujx11.com/20250518/tV1VKqiA/index.m3u8', 'video_title': '仙逆 - 第89集', 'video_list_length': 89, 'current_index': 89}
+2025-05-19 00:28:49,715 - INFO - video_list: [{'title': '第01集', 'url': 'https://play.modujx10.com/20240304/6aJSbktn/index.m3u8'}, {'title': '第02集', 'url': 'https://play.modujx10.com/20240304/fPd34j4o/index.m3u8'}, {'title': '第03集', 'url': 'https://play.modujx10.com/20240304/FE2MSZDW/index.m3u8'}, {'title': '第04集', 'url': 'https://play.modujx10.com/20240304/jpO44LnA/index.m3u8'}, {'title': '第05集', 'url': 'https://play.modujx10.com/20240304/qjIDIgNX/index.m3u8'}, {'title': '第06集', 'url': 'https://play.modujx10.com/20240304/q8PBYuem/index.m3u8'}, {'title': '第07集', 'url': 'https://play.modujx10.com/20240304/rwtjUkO0/index.m3u8'}, {'title': '第08集', 'url': 'https://play.modujx10.com/20240304/aK4PrtTl/index.m3u8'}, {'title': '第09集', 'url': 'https://play.modujx10.com/20240304/FvkDvklM/index.m3u8'}, {'title': '第10集', 'url': 'https://play.modujx10.com/20240304/jun0dA59/index.m3u8'}, {'title': '第11集', 'url': 'https://play.modujx10.com/20240304/jkAGqlcF/index.m3u8'}, {'title': '第12集', 'url': 'https://play.modujx10.com/20240304/QNfRjHlV/index.m3u8'}, {'title': '第13集', 'url': 'https://play.modujx10.com/20240304/tWM18xM4/index.m3u8'}, {'title': '第14集', 'url': 'https://play.modujx10.com/20240304/Ii76MXFn/index.m3u8'}, {'title': '第15集', 'url': 'https://play.modujx10.com/20240304/7834HVIT/index.m3u8'}, {'title': '第16集', 'url': 'https://play.modujx10.com/20240304/oUs0zF0x/index.m3u8'}, {'title': '第17集', 'url': 'https://play.modujx10.com/20240304/J2t68Jpx/index.m3u8'}, {'title': '第18集', 'url': 'https://play.modujx10.com/20240304/4ZaUeSe4/index.m3u8'}, {'title': '第19集', 'url': 'https://play.modujx10.com/20240304/bM1mopgI/index.m3u8'}, {'title': '第20集', 'url': 'https://play.modujx10.com/20240304/1CZzE3GB/index.m3u8'}, {'title': '第21集', 'url': 'https://play.modujx10.com/20240304/mFZZnFQd/index.m3u8'}, {'title': '第22集', 'url': 'https://play.modujx10.com/20240304/XvFNnPUe/index.m3u8'}, {'title': '第23集', 'url': 'https://play.modujx10.com/20240304/3mW75hEk/index.m3u8'}, {'title': '第24集', 'url': 'https://play.modujx10.com/20240304/jN6OI8s6/index.m3u8'}, {'title': '第25集', 'url': 'https://play.modujx10.com/20240304/ZnN0VvDB/index.m3u8'}, {'title': '第26集', 'url': 'https://play.modujx10.com/20240318/71MIlaY4/index.m3u8'}, {'title': '第27集', 'url': 'https://play.modujx10.com/20240318/6qvkWOjw/index.m3u8'}, {'title': '第28集', 'url': 'https://play.modujx10.com/20240402/mBaAWFlh/index.m3u8'}, {'title': '第29集', 'url': 'https://play.modujx10.com/20240402/wo23qcwM/index.m3u8'}, {'title': '第30集', 'url': 'https://play.modujx10.com/20240402/TWgUkCzG/index.m3u8'}, {'title': '第31集', 'url': 'https://play.modujx10.com/20240411/BoKtEphj/index.m3u8'}, {'title': '第32集', 'url': 'https://play.modujx10.com/20240429/khNvYgVZ/index.m3u8'}, {'title': '第33集', 'url': 'https://play.modujx10.com/20240429/IgdToN3D/index.m3u8'}, {'title': '第34集', 'url': 'https://play.modujx10.com/20240429/6YGXf1Bu/index.m3u8'}, {'title': '第35集', 'url': 'https://play.modujx10.com/20240515/oDLSIzFx/index.m3u8'}, {'title': '第36集', 'url': 'https://play.modujx10.com/20240515/lv968b3C/index.m3u8'}, {'title': '第37集', 'url': 'https://play.modujx12.com/20240525/LkLUjdGM/index.m3u8'}, {'title': '第38集', 'url': 'https://play.modujx12.com/20240603/ykzVXo50/index.m3u8'}, {'title': '第39集', 'url': 'https://play.modujx12.com/20240603/VwjFmYAh/index.m3u8'}, {'title': '第40集', 'url': 'https://play.modujx12.com/20240616/TSDEbjNx/index.m3u8'}, {'title': '第41集', 'url': 'https://play.modujx12.com/20240616/61ob9Ewu/index.m3u8'}, {'title': '第42集', 'url': 'https://play.modujx12.com/20240623/tWbPC4uo/index.m3u8'}, {'title': '第43集', 'url': 'https://play.modujx12.com/20240630/0RfdKiKX/index.m3u8'}, {'title': '第44集', 'url': 'https://play.modujx12.com/20240707/PWejOwcr/index.m3u8'}, {'title': '第45集', 'url': 'https://play.modujx13.com/20240714/tfkDH6l9/index.m3u8'}, {'title': '第46集', 'url': 'https://play.modujx13.com/20240721/5AjyMuBt/index.m3u8'}, {'title': '第47集', 'url': 'https://play.modujx13.com/20240728/aJEZarnn/index.m3u8'}, {'title': '第48集', 'url': 'https://play.modujx13.com/20240804/P8nJKpzZ/index.m3u8'}, {'title': '第49集', 'url': 'https://play.modujx14.com/20240811/mvpc0Qye/index.m3u8'}, {'title': '第50集', 'url': 'https://play.modujx15.com/20240818/PBoMdDhd/index.m3u8'}, {'title': '第51集', 'url': 'https://play.modujx15.com/20240825/LJKsgUms/index.m3u8'}, {'title': '第52集', 'url': 'https://play.modujx15.com/20240901/Cty9LFE0/index.m3u8'}, {'title': '第53集', 'url': 'https://play.modujx15.com/20240908/OrcbL1tl/index.m3u8'}, {'title': '第54集', 'url': 'https://play.modujx16.com/20240915/eMKQMYSC/index.m3u8'}, {'title': '第55集', 'url': 'https://play.modujx16.com/20240922/r0dc31ec/index.m3u8'}, {'title': '第56集', 'url': 'https://play.modujx16.com/20240929/qink8Dzs/index.m3u8'}, {'title': '第57集', 'url': 'https://play.modujx16.com/20241006/vUaR4T1U/index.m3u8'}, {'title': '第58集', 'url': 'https://play.modujx16.com/20241013/bfZIz2mB/index.m3u8'}, {'title': '第59集', 'url': 'https://play.modujx16.com/20241020/aIoZGtrM/index.m3u8'}, {'title': '第60集', 'url': 'https://play.modujx16.com/20241027/CjMaV15o/index.m3u8'}, {'title': '第61集', 'url': 'https://play.modujx16.com/20241103/3exRTOnz/index.m3u8'}, {'title': '第62集', 'url': 'https://play.modujx16.com/20241110/qLXCOjUQ/index.m3u8'}, {'title': '第63集', 'url': 'https://play.modujx16.com/20241117/yEXr1QKg/index.m3u8'}, {'title': '第64集', 'url': 'https://play.modujx16.com/20241124/FfzyvclN/index.m3u8'}, {'title': '第65集', 'url': 'https://play.modujx16.com/20241201/SFL6bj83/index.m3u8'}, {'title': '第66集', 'url': 'https://play.modujx16.com/20241208/VPsla3sq/index.m3u8'}, {'title': '第67集', 'url': 'https://play.modujx16.com/20241215/FPTf7pyl/index.m3u8'}, {'title': '第68集', 'url': 'https://play.modujx16.com/20241222/unZvW46e/index.m3u8'}, {'title': '第69集', 'url': 'https://play.modujx11.com/20241229/L5DTGpkB/index.m3u8'}, {'title': '第70集', 'url': 'https://play.modujx11.com/20250105/UkeM9Cg9/index.m3u8'}, {'title': '第71集', 'url': 'https://play.modujx11.com/20250112/vPoAgmKG/index.m3u8'}, {'title': '第72集', 'url': 'https://play.modujx11.com/20250119/AwZsWpov/index.m3u8'}, {'title': '第73集', 'url': 'https://play.modujx11.com/20250126/vZ5nlmB6/index.m3u8'}, {'title': '第74集', 'url': 'https://play.modujx11.com/20250202/XiSAfWwR/index.m3u8'}, {'title': '第75集', 'url': 'https://play.modujx11.com/20250209/g7DDZZtI/index.m3u8'}, {'title': '第76集', 'url': 'https://play.modujx11.com/20250216/6nELHVGr/index.m3u8'}, {'title': '第77集', 'url': 'https://play.modujx11.com/20250223/FO192vxJ/index.m3u8'}, {'title': '第78集', 'url': 'https://play.modujx11.com/20250302/zpk59ctk/index.m3u8'}, {'title': '第79集', 'url': 'https://play.modujx11.com/20250309/dKf6gDSB/index.m3u8'}, {'title': '第80集', 'url': 'https://play.modujx11.com/20250316/hExbR4JV/index.m3u8'}, {'title': '第81集', 'url': 'https://play.modujx11.com/20250323/R9SYOzve/index.m3u8'}, {'title': '第82集', 'url': 'https://play.modujx11.com/20250330/XS30a6aP/index.m3u8'}, {'title': '第83集', 'url': 'https://play.modujx11.com/20250406/ThA4e3Xj/index.m3u8'}, {'title': '第84集', 'url': 'https://play.modujx11.com/20250413/mc5uUZ4r/index.m3u8'}, {'title': '第85集', 'url': 'https://play.modujx11.com/20250420/rRowAMUe/index.m3u8'}, {'title': '第86集', 'url': 'https://play.modujx11.com/20250427/j3mRoc88/index.m3u8'}, {'title': '第87集', 'url': 'https://play.modujx11.com/20250504/WcF4qahh/index.m3u8'}, {'title': '第88集', 'url': 'https://play.modujx11.com/20250511/FEitPWOh/index.m3u8'}, {'title': '第89集', 'url': 'https://play.modujx11.com/20250518/tV1VKqiA/index.m3u8'}]
+2025-05-19 00:28:59,064 - INFO - 保存播放历史: 仙逆
+2025-05-19 00:29:01,714 - INFO - 保存播放历史: 仙逆
