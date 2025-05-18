@@ -7,6 +7,7 @@
     <script src="js/hls.js"></script>
     <script src="js/artplayer.js"></script>
     <script src="js/tesseract.min.js"></script>
+    <script src="js/worker.min.js"></script>
     <style>
         .modal {
             display: none;
@@ -160,6 +161,24 @@
             transform: translateY(-50%);
         }
 
+        #screenshotContainer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+        }
+
+        #screenshotContainer canvas {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
         .close {
             position: absolute;
             right: 15px;
@@ -169,19 +188,35 @@
             cursor: pointer;
         }
 
+        #info {
+            position: absolute;
+            top: 10px;
+            left: auto;
+            right: auto;
+            border: white solid 1px;
+            min-width: 100px;
+            z-index: 1000;
+            line-height: 20px;
+            min-height: 20px;
+            background: #2a2a2a;
+            color: #fff;
+            display: none;
+        }
+
     </style>
 </head>
 <body>
 <div id="container">
     <div id="playlist">
-        <p id="info"></p>
         <h3 style="color:#fff; margin-bottom:15px;">播放列表</h3>
         <div id="episode-list"></div>
     </div>
     <div id="player-container">
+        <p id="info"></p>
         <div class="artplayer-app"></div>
     </div>
 </div>
+<div id="screenshotContainer"></div>
 <div id="settingsModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -211,16 +246,17 @@
 
     let ocrInterval;
     const OCR_CONFIG = {
-        lang: 'chi_sim+eng', // 识别中英文
+        lang: 'chi_sim', // 识别中英文
         region: {            // 字幕区域（底部15%）
-            y: 0.90,         // 纵轴起始位置
-            height: 0.1      // 区域高度
+            y: 0.85,         // 纵轴起始位置
+            height: 0.15      // 区域高度
         }
     };
 
 
     // 等待所有资源加载完成
     document.addEventListener('DOMContentLoaded', function () {
+
         // 弹窗控制逻辑
         const modal = document.getElementById('settingsModal');
         const span = document.querySelector('.close');
@@ -242,7 +278,7 @@
         }
 
         const saveSettings = (event) => {
-            if (event.target === modal) {
+            if (event?.target === modal) {
                 modal.style.display = 'none';
                 // 更新全局时长参数
                 intro_duration = parseInt(introRange.value);
@@ -318,12 +354,14 @@
                 window.pywebview.api.onPlayerReady();
             }
             jumpOver(art)
-            // 启动 OCR 捕获
-            startOCRCapture(art);
+            // 启动 OCR 捕获 放弃，无法识别广告，那么大的字就是识别不了
+            // startOCRCapture(art);
         })
 
         // 时间更新监听
+        var index = 0;
         art.on('video:timeupdate', () => {
+            if (!art.playing) return;
             const currentTime = art.currentTime;
             const duration = art.duration;
 
@@ -333,14 +371,16 @@
                 nextEpisode();
             }
             // 触发保存播放进度
-            if (window.pywebview && window.pywebview.api) {
+            index++
+            if (window.pywebview && window.pywebview.api && index % 10 === 0) {
                 let video = video_list[currentIndex]
                 window.pywebview.api.save_play_history(currentTime, video.title, currentIndex);
             }
         });
-        art.on('subtitleBeforeUpdate', (cues) => {
-            info.innerHTML = cues.map((cue) => cue.text).join('\n');
-        });
+        art.on('fullscreen',(state) => {
+            console.info('fullscreen', state);
+            window.pywebview.api.onFullscreen(state);
+        })
         art.on('restart', (url) => {
             jumpOver(art)
         });
@@ -351,25 +391,147 @@
         });
 
         function jumpOver(art) {
-            if (last_play_info > intro_duration) {
+            console.log('跳过片头', last_play_info, intro_duration)
+            if (last_play_info.current_time > intro_duration) {
                 // 调到历史播放进度
                 art.seek = intro_duration;
                 setTimeout(() => {
-                    last_play_info = 0
+                    last_play_info.current_time = 0
                 }, 1000)
             } else {
                 // 跳过片头
                 art.seek = intro_duration;
             }
         }
+
+        // 视频帧捕获和识别
+        var ocrWorker, ctx, canvas
+        var video = {}
+
+        async function startOCRCapture(art) {
+            const {createWorker} = Tesseract;
+            ocrWorker = await createWorker('chi_sim');
+            await ocrWorker.setParameters({
+              tessedit_min_confidence: 85,           // 置信度阈值
+              tessedit_pageseg_mode: '7',            // 页面分割模式
+              'tessedit_ocr_engine_mode': '3',       // OCR引擎模式
+              'textord_noise_removal': '2',          // 降噪级别
+              'edges_max_children_per_area': '0.5',  // 边缘子区域控制
+              'language_model_penalty_non_freq_dict_word': '0.8' // 非常用词惩罚
+            });
+            console.log('OCR初始化完成')
+            canvas = document.createElement('canvas');
+            canvas.style.position = 'absolute';
+            canvas.style.bottom = '0';
+            canvas.style.left = 'auto';
+            canvas.style.right = 'auto';
+            canvas.style.zIndex = '9999999';
+            canvas.style.border = '1px solid #ccc';
+            canvas.style.width = '100%';
+            document.body.appendChild(canvas);
+            ctx = canvas.getContext('2d');
+            video = art.template.$video;
+            console.log('开始OCR', video.paused, video.ended)
+            restartOCR(500)
+        }
+
+        // 状态管理
+        let isProcessing = false;
+        let lastProcessTime = 0;
+        let currentInterval = 2000;
+        let task = 0;
+
+        async function ocrTask() {
+            if (video.paused || video.ended || isProcessing) return;
+
+            // OCR初始化
+            isProcessing = true;
+            const startTime = Date.now();
+
+            try {
+                // 截取字幕区域
+                const regionHeight = Math.floor(video.videoHeight * OCR_CONFIG.region.height);
+                const regionY = Math.floor(video.videoHeight * OCR_CONFIG.region.y);
+
+                canvas.width = video.videoWidth*0.5;
+                canvas.height = regionHeight*0.5;
+                console.log('分辨率', canvas.width, canvas.height)
+
+                ctx.drawImage(video, 0, regionY, video.videoWidth, regionHeight, 0, 0, canvas.width, canvas.height);
+                ctx.getImageData(0, 0, canvas.width, canvas.height);
+                // 带超时的OCR识别
+                const result = await Promise.race([
+                    ocrWorker.recognize(canvas),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject('OCR超时'), 1500)
+                    )
+                ]);
+
+                if (result.data.confidence > 20) {
+                    updateSubtitleDisplay(result.data.text);
+                }
+                // 动态调节频率
+                const costTime = Date.now() - startTime;
+                currentInterval = costTime > 1000 ? costTime > 2000 ? 3000 : 2000 : 1000;
+
+                task++
+                if (task % 10 === 0) {
+                    restartOCR(currentInterval);
+                }
+                console.log('OCrecognize', result.data.text, result.data.confidence, costTime, currentInterval);
+            } catch (error) {
+                console.warn(error === 'OCR超时' ? '处理超时，自动跳过' : `识别错误: ${error}`);
+            } finally {
+                isProcessing = false;
+                lastProcessTime = Date.now();
+            }
+        }
+
+        var ocrIntervalId; // 定时器句柄
+        function restartOCR(newInterval) {
+            clearInterval(ocrIntervalId);
+            ocrIntervalId = setInterval(ocrTask, newInterval);  // 重建定时器[1,4](@ref)
+        }
+
+        function updateSubtitleDisplay(text) {
+            // 综合过滤策略
+            const formattedText = text
+                // 基础清理（保留原有逻辑）
+                .replace(/\n+/g, '\n')
+                .trim()
+
+                // 新增过滤逻辑
+                .replace(
+                    // 匹配常见乱码模式：
+                    /([^\u4E00-\u9FA5\d\s，。！？（）《》“”：；])|(\b(?:[A-Z]{3,}|\d{4,})\b)|[\x00-\x1F\x7F]+|(.)1{3,}/g,
+                    (_, p1, p2) => p1 ? '' : (p2 ? '' : _[0])
+                )
+                // 语义过滤
+                .split('\n')
+                .filter(line =>
+                    !/(字幕|水印|版本说明)/i.test(line) &&  // 排除特定关键词[3](@ref)
+                    line.length <= 20 &&                    // 过滤超长行（广告特征）
+                    /[\u4E00-\u9FA5]/.test(line)            // 必须包含汉字[1](@ref)
+                )
+                .join('\n')
+                .replace(/([^\u4E00-\u9FA5])\n/g, '$1') // 连接被误分割的句子
+                .replace(/([\。\！\？])\s+/g, '$1\n')    // 按中文标点分段;
+
+            // 更新条件优化
+            if (info.innerHTML !== formattedText && formattedText.length > 1) {
+                info.innerHTML = formattedText;
+            }
+        }
     });
+
 
     // 播放指定剧集
     function playEpisode(episode, index) {
         currentIndex = index;
         if (window.artplayer) {
+            window.artplayer.pause();
             window.artplayer.switchUrl(episode.url);
-            window.artplayer.play();
+            window.artplayer.on('ready', () => window.artplayer.play());
             // 通知Python端
             if (window.pywebview && window.pywebview.api) {
                 window.pywebview.api.playEpisode(index);
@@ -419,79 +581,6 @@
     }
 
     updatePlaylist();
-
-
-    // 视频帧捕获和识别
-    async function startOCRCapture(art) {
-        const video = art.template.$video;
-
-        const canvas = document.createElement('canvas');
-        canvas.style.position = 'absolute';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.backgroundColor = '#ffffff';
-
-        document.body.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
-        console.log('OCR ocrWorker');
-        // 新增 OCR 相关变量
-        try {
-            const {createWorker} = Tesseract
-            const ocrWorker = await createWorker();
-            // await ocrWorker.loadLanguage('eng');  // 确保语言包加载
-            await ocrWorker.initialize('eng');
-        } catch (error) {
-            console.log(error);
-        }
-        console.log('OCR worker ready');
-
-        // 设置截图频率（每秒2次）
-        ocrInterval = setInterval(async () => {
-            if (video.paused || video.ended) return;
-            try {
-                // 2. 截取字幕区域
-                const regionHeight = Math.floor(video.videoHeight * OCR_CONFIG.region.height);
-                const regionY = Math.floor(video.videoHeight * OCR_CONFIG.region.y);
-                // 1. 捕获视频帧
-                canvas.width = video.videoWidth / 2;
-                canvas.height = regionHeight / 2;
-
-                ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, regionY / 2, canvas.width / 2, regionHeight / 2);
-
-
-                // const imageData = ctx.getImageData(
-                //     0,
-                //     regionY,
-                //     canvas.width,
-                //     regionHeight
-                // );
-                //
-                console.log('截取字幕区域', canvas.toDataURL('image/png'))
-                // 3. OCR 识别
-
-
-                const {data: {text}} = await ocrWorker.recognize(canvas);
-                console.log('text', text)
-                updateSubtitleDisplay(text);
-            } catch (error) {
-                console.log('error', error)
-            }
-
-        }, 5000);
-    }
-
-    function updateSubtitleDisplay(text) {
-        const infoElement = document.getElementById('info');
-        // 简单处理换行和空格
-        const formattedText = text
-            .replace(/\n+/g, '\n')
-            .trim();
-
-        // 对比新旧文本避免频繁更新
-        if (infoElement.textContent !== formattedText) {
-            infoElement.textContent = formattedText;
-        }
-    }
 
 
 </script>

@@ -8,6 +8,17 @@ from datetime import datetime, timedelta
 
 class JSBridge:
 
+    def handleOCRResult(self, text):
+        """处理OCR识别结果"""
+        try:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f'ocr_result_{timestamp}.txt'
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(text)
+            print(f'OCR结果已保存至: {filename}')
+        except Exception as e:
+            print(f'OCR结果保存失败: {str(e)}')
+
     def __init__(self, video_list, current_index, intro_duration, toggle_fullscreen, outro_duration, subscription_data):
         self.video_list = video_list if isinstance(video_list, list) else json.loads(video_list)
         self.subscription_data = subscription_data
@@ -56,6 +67,7 @@ class JSBridge:
                 'last_played_time': current_time,
                 'last_update': datetime.now().isoformat()
             })
+            logging.info(f"保存播放历史: {self.subscription_data.get('title')}")
 
             with open('play_history.json', 'w', encoding='utf-8') as f:
                 json.dump(history, f, ensure_ascii=False, indent=2)
@@ -231,7 +243,7 @@ class VideoPlayerWindow():
             text_select=True
         )
         # 启动webview
-        webview.start(debug=True)
+        webview.start(debug=False)
 
 
 

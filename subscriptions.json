@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-18 12:15:27",
+            "last_check": "2025-05-18 23:46:23",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -361,12 +361,16 @@
                 {
                     "title": "第88集",
                     "url": "https://play.modujx11.com/20250511/FEitPWOh/index.m3u8"
+                },
+                {
+                    "title": "第89集",
+                    "url": "https://play.modujx11.com/20250518/tV1VKqiA/index.m3u8"
                 }
             ],
             "update_status": "",
-            "update_time": "2025-05-11",
+            "update_time": "2025-05-18",
             "image_url": "",
-            "total_episodes": 88,
+            "total_episodes": 89,
             "last_update": "2025-04-27",
             "intro_duration": 160,
             "outro_duration": 90
@@ -1243,11 +1247,15 @@
                 {
                     "title": "第217集",
                     "url": "https://play.modujx11.com/20250515/S6WgdXfu/index.m3u8"
+                },
+                {
+                    "title": "第218集",
+                    "url": "https://play.modujx11.com/20250518/Ic1cTnfw/index.m3u8"
                 }
             ],
-            "total_episodes": 217,
-            "last_check": "2025-05-18 12:15:27",
-            "update_time": "2025-05-15",
+            "total_episodes": 218,
+            "last_check": "2025-05-18 23:46:23",
+            "update_time": "2025-05-18",
             "intro_duration": 150,
             "outro_duration": 90
         },
@@ -1942,7 +1950,7 @@
                 }
             ],
             "total_episodes": 171,
-            "last_check": "2025-05-18 12:15:28",
+            "last_check": "2025-05-18 23:46:23",
             "update_time": "2025-05-12",
             "intro_duration": 160,
             "outro_duration": 90
@@ -2150,7 +2158,7 @@
                 }
             ],
             "total_episodes": 49,
-            "last_check": "2025-05-18 12:15:28",
+            "last_check": "2025-05-18 23:46:23",
             "update_time": "2025-05-13"
         },
         {
@@ -2596,7 +2604,7 @@
                 }
             ],
             "total_episodes": 109,
-            "last_check": "2025-05-18 12:15:28",
+            "last_check": "2025-05-18 23:46:24",
             "update_time": "2025-05-13",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3468,8 +3476,10 @@
                 }
             ],
             "total_episodes": 215,
-            "last_check": "2025-05-18 12:15:28",
-            "update_time": "2025-05-15"
+            "last_check": "2025-05-18 23:46:24",
+            "update_time": "2025-05-15",
+            "intro_duration": 147,
+            "outro_duration": 151
         },
         {
             "title": "斗罗大陆Ⅱ绝世唐门",
@@ -3882,7 +3892,7 @@
                 }
             ],
             "total_episodes": 101,
-            "last_check": "2025-05-18 12:15:28",
+            "last_check": "2025-05-18 23:46:24",
             "update_time": "2025-05-16"
         },
         {
@@ -4488,7 +4498,7 @@
                 }
             ],
             "total_episodes": 149,
-            "last_check": "2025-05-18 12:15:29",
+            "last_check": "2025-05-18 23:46:24",
             "update_time": "2025-05-17"
         },
         {
@@ -5060,7 +5070,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 152,
-            "last_check": "2025-05-18 12:15:29",
+            "last_check": "2025-05-18 23:46:24",
             "update_time": "2025-05-01"
         },
         {
@@ -5652,7 +5662,7 @@
             "total_episodes": 145,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-18 12:26:54",
+            "last_check": "2025-05-18 23:46:25",
             "update_time": "2025-05-17"
         },
         {
@@ -5788,7 +5798,7 @@
             "total_episodes": 31,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-18 12:26:55",
+            "last_check": "2025-05-18 23:46:25",
             "update_time": "2025-05-18"
         }
     ]
