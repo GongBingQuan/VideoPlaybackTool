@@ -836,13 +836,14 @@ class VideoPlayer(tk.Tk):
                         'current_index': current_index,
                         'episodes': selected_video.get('episodes', []),
                         'intro_duration': selected_video.get('intro_duration', 90),
-                        'outro_duration': selected_video.get('outro_duration', 90)
+                        'outro_duration': selected_video.get('outro_duration', 90),
                     }
 
                     self.logger.info(f"正在播放: {current_index}, URL: {selected_video.get('url', '')}")
                     self.logger.debug(f"视频信息: {json.dumps(subscription_data, ensure_ascii=False, indent=2)}")
 
                     try:
+
                         # 创建播放器窗口
                         VideoPlayerWindow(self, subscription_data)
                     except Exception as e:
@@ -950,5 +951,7 @@ class VideoPlayer(tk.Tk):
 
 
 if __name__ == '__main__':
-    app = VideoPlayer()
-    app.mainloop()
+    status = os.system("python api.py")
+    print('启动',status)
+    vp = VideoPlayer()
+    vp.mainloop()

@@ -1,24 +1,66 @@
 import os
+import subprocess
 import sys
-import time
-import tkinter as tk
-from tkinter import ttk, messagebox
-from tkinterweb import HtmlFrame
 import webview
-import webbrowser
 import logging
 import json
-import traceback
 from datetime import datetime, timedelta
 
 class JSBridge:
-    def __init__(self, video_list, current_index, intro_duration, toggle_fullscreen):
+
+    def __init__(self, video_list, current_index, intro_duration, toggle_fullscreen, outro_duration, subscription_data):
         self.video_list = video_list if isinstance(video_list, list) else json.loads(video_list)
+        self.subscription_data = subscription_data
         self.current_index = current_index
         self.intro_duration = intro_duration
+        self.outro_duration = outro_duration
         self.player = None  # 将用于存储Artplayer实例
         self.toggle_fullscreen = toggle_fullscreen
+        self._is_alive = True  # 实例存活性标志
 
+    def __del__(self):
+        """析构时标记实例不可用"""
+        self._is_alive = False
+
+    def save_subscription_data(self, intro_duration, outro_duration):
+        """保存订阅数据到JSON文件"""
+        try:
+            if os.path.exists('subscriptions.json'):
+                with open('subscriptions.json', 'r', encoding='utf-8') as f:
+                    subscription_list = json.load(f)
+                    for sub in subscription_list['subscriptions']:
+                        if sub['title'] == self.subscription_data.get('title'):
+                            sub.update({
+                                'intro_duration': intro_duration,
+                                'outro_duration': outro_duration
+                            })
+                            break
+            print(f"保存跳过片头片尾: {str(outro_duration)}|{intro_duration}")
+            with open('subscriptions.json', 'w', encoding='utf-8') as f:
+                json.dump(subscription_list, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"保存订阅数据失败: {str(e)}:{self.subscription_data.get('title')}")
+
+    def save_play_history(self, current_time, current_episode, current_index):
+        """保存播放进度到历史记录"""
+        self.current_index = current_index
+        try:
+            history = {}
+            if os.path.exists('play_history.json'):
+                with open('play_history.json', 'r', encoding='utf-8') as f:
+                    history = json.load(f)
+
+            history[self.subscription_data.get('title')].update({
+                'episode_number': current_index,
+                'last_played': current_episode,
+                'last_played_time': current_time,
+                'last_update': datetime.now().isoformat()
+            })
+
+            with open('play_history.json', 'w', encoding='utf-8') as f:
+                json.dump(history, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"保存播放历史失败: {str(e)},history: {self.subscription_data.get('title')}")
 
     def playEpisode(self, index):
         """播放指定剧集"""
@@ -30,7 +72,7 @@ class JSBridge:
     def getCurrentIndex(self):
         """获取当前播放索引"""
         current_index = getattr(self, 'current_index', 0)
-        print( f"当前播放索引: {current_index}")
+        print(f"当前播放索引: {current_index}")
         return current_index
 
     def onFullscreen(self, status):
@@ -39,11 +81,22 @@ class JSBridge:
 
     def onPlayerReady(self):
         """播放器准备就绪回调"""
+        if not hasattr(self, '_is_alive') or not self._is_alive:
+            return
         print("Player ready")
 
-class VideoPlayerWindow():
 
+class VideoPlayerWindow():
     logger = None
+
+    def __del__(self):
+        """析构函数确保销毁webview实例"""
+        try:
+            if hasattr(self, 'webview') and self.webview:
+                self.webview.destroy()
+                self.webview = None
+        except Exception as e:
+            self.logger.error(f"销毁webview实例失败: {str(e)}")
 
     def __init__(self, parent, subscription_data):
         """初始化视频播放器窗口
@@ -53,6 +106,7 @@ class VideoPlayerWindow():
             subscription_data: 订阅数据对象，包含所有视频和配置信息
         """
         # super().__init__(parent)
+
         # 创建日志记录器
         self.style = None
         self.logger = logging.getLogger(__name__)
@@ -68,10 +122,11 @@ class VideoPlayerWindow():
         self.logger.info(f"Player正在播放: {subscription_data.get('title', '')}")
         # 尝试从play_history.json加载播放历史
         self.last_play_info = self._load_last_play_info()
+        self.history_player_time = self.last_play_info.get('current_time', 0)
         # 如果找到历史记录，更新当前索引
         self.current_index = self.last_play_info.get('current_episode', 0)
         self.logger.info(
-            f"从历史文件加载播放历史: 第{self.current_index+1}集, 时间点: {self.last_play_info.get('current_time', 0)}ms")
+            f"从历史文件加载播放历史: 第{self.current_index + 1}集, 时间点: {self.last_play_info.get('current_time', 0)}ms")
         # 获取当前视频信息
         current_episode = self.video_list[self.current_index] if self.video_list else {}
         self.video_url = current_episode.get('url')
@@ -86,25 +141,26 @@ class VideoPlayerWindow():
             f"'video_url': '{self.video_url}', "
             f"'video_title': '{video_title}', "
             f"'video_list_length': {len(self.video_list)}, "
-            f"'current_index': {self.current_index+1}"
-            
+            f"'current_index': {self.current_index + 1}"
+
             f"}}"  # 转义外层花括号
         )
         self.logger.info(f"video_list: {self.video_list}")
 
         self.intro_duration = self.subscription_data.get('intro_duration', 90)
+
         self.outro_duration = self.subscription_data.get('outro_duration', 90)
 
         self.js_bridge = JSBridge(
             json.dumps(self.video_list, ensure_ascii=True),
             self.current_index,
             self.intro_duration,
-            self.toggle_fullscreen
+            self.toggle_fullscreen,
+            self.outro_duration,
+            self.subscription_data
         )
 
         self._init_webview()
-
-
 
     def toggle_fullscreen(self, state):
         """切换全屏模式"""
@@ -123,20 +179,29 @@ class VideoPlayerWindow():
                 hls_js = f.read()
             with open('js/artplayer.js', 'r', encoding='utf-8') as f:
                 artplayer_js = f.read()
-                # 替换脚本标签为内联代码
-                html = html.replace(
-                    '<script src="js/hls.js"></script>',
-                    f'<script>{hls_js}</script>'
-                )
-                html = html.replace(
-                    '<script src="js/artplayer.js"></script>',
-                    f'<script>{artplayer_js}</script>'
-                )
-            
+            with open('js/tesseract.min.js', 'r', encoding='utf-8') as f:
+                tesseract_js = f.read()
+
+            # 替换脚本标签为内联代码
+            html = html.replace(
+                '<script src="js/hls.js"></script>',
+                f'<script>{hls_js}</script>'
+            )
+            html = html.replace(
+                '<script src="js/artplayer.js"></script>',
+                f'<script>{artplayer_js}</script>'
+            )
+            html = html.replace(
+                '<script src="js/tesseract.min.js"></script>',
+                f'<script>{tesseract_js}</script>')
+
             # 替换模板中的占位符
+            html = html.replace('{last_play_info}', str(self.last_play_info))
             html = html.replace('{currentIndex}', str(self.current_index))
             html = html.replace('{video_url}', self.video_url)
-            html = html.replace('{video_list_json}', json.dumps(self.video_list, ensure_ascii=False))
+            html = html.replace('{video_list}', json.dumps(self.video_list, ensure_ascii=False))
+            html = html.replace('{intro_duration}', str(self.intro_duration))
+            html = html.replace('{outro_duration}', str(self.outro_duration))
         except Exception as e:
             self.logger.error(f"读取HTML模板失败: {str(e)}, 使用内置HTML")
             # 回退到内置HTML
@@ -157,19 +222,16 @@ class VideoPlayerWindow():
                     }});
                 </script>
             </body></html>"""
-
-        # 创建webview窗口
         self.webview = webview.create_window(
-            "视频播放器",
+            f"{self.subscription_data.get('title', '')}",
             html=html,
             js_api=self.js_bridge,
             width=1200,
-            height=800
+            height=800,
+            text_select=True
         )
-
         # 启动webview
-        webview.start()
-
+        webview.start(debug=True)
 
 
 
@@ -207,73 +269,3 @@ class VideoPlayerWindow():
         except Exception as e:
             self.logger.error(f"加载播放历史失败: {str(e)}")
             return None
-
-    def save_play_history(self, video, current_time=None):
-        """保存播放历史
-        Args:
-            video: 视频信息字典
-            current_time: 当前播放时间(毫秒)，可选
-        """
-        try:
-            history_file = 'play_history.json'
-            history = {}
-
-            # 读取现有历史记录
-            try:
-                if os.path.exists(history_file):
-                    with open(history_file, 'r', encoding='utf-8') as f:
-                        content = f.read().strip()
-                        if content:
-                            history = json.loads(content)
-            except Exception as e:
-                self.logger.error(f"读取历史记录失败: {str(e)}")
-                history = {}
-
-            # 确保history是字典类型
-            if not isinstance(history, dict):
-                history = {}
-
-            # 获取剧集标题
-            series_title = self.subscription_data.get('title', '')
-
-            # 初始化该系列的历史记录
-            if series_title not in history:
-                history[series_title] = {}
-
-            # 获取当前集数
-            episode_number = getattr(self, 'current_index', 0)
-
-            # 准备要保存的数据
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # 数据验证
-            current_time = max(0, current_time) if current_time else 0
-
-            # 更新历史记录
-            history[series_title].update({
-                'last_played': video.get('title', 'Unknown Video'),
-                'last_played_time': current_time,
-                'last_update': now,
-                'total_episodes': len(self.video_list) if hasattr(self, 'video_list') else 0,
-                'episode_number': episode_number,
-                'url': video.get('url', '')
-            })
-
-            # 确保目录存在并安全写入文件
-            os.makedirs(os.path.dirname(history_file) or '.', exist_ok=True)
-            temp_file = f"{history_file}.tmp"
-            try:
-                with open(temp_file, 'w', encoding='utf-8') as f:
-                    json.dump(history, f, ensure_ascii=False, indent=4)
-
-                if os.path.exists(history_file):
-                    os.replace(temp_file, history_file)
-                else:
-                    os.rename(temp_file, history_file)
-            except Exception as e:
-                if os.path.exists(temp_file):
-                    os.remove(temp_file)
-                raise e
-
-            self.logger.info(f"保存播放历史: {series_title} 第{episode_number + 1}集")
-        except Exception as e:
-            self.logger.error(f"保存播放历史失败: {str(e)}")

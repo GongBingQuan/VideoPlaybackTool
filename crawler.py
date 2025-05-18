@@ -185,6 +185,20 @@ class VideoCrawler:
                 "error": str(e),
                 "updated_subscriptions": {}
             }
+    def fetch_page_with_retry(self, url: str, max_retries: int = 3, retry_delay: int = 2) -> Optional[str]:
+        """获取页面内容，带重试机制"""
+        for attempt in range(max_retries):
+            try:
+                html = self.fetch_page(url)
+                if not html:
+                    return None
+                return html
+            except requests.RequestException as e:
+                self.logger.warning(f"第 {attempt + 1} 次请求失败: {str(e)}")
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay * (attempt + 1))
+                continue
+        return None
 
 if __name__ == '__main__':
 

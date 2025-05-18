@@ -6,36 +6,120 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="js/hls.js"></script>
     <script src="js/artplayer.js"></script>
+    <script src="js/tesseract.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            position: absolute;
+            left: auto;
+            top: auto;
+            transform: translate(-50%, -50%);
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         #container {
             width: 100%;
             height: 100%;
             display: flex;
             background: #000;
         }
+
         #playlist {
-            width: 300px;
+            width: 320px;
             background: #1a1a1a;
             color: #fff;
             overflow-y: auto;
-            padding: 10px;
-            height: 100%;       /* 确保高度足够 */
+            padding: 15px;
+            height: 100vh;
         }
+
+        .time-settings {
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        .time-control {
+            margin: 10px 0;
+        }
+
+        .time-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 5px;
+            background: #333;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #23ade5;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
         #player-container {
             flex: 1;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
+            height: 100vh;
         }
+
         .artplayer-app {
             width: 100%;
-            max-width: 1200px;
             aspect-ratio: 16/9;
         }
+
         .episode-item {
             padding: 10px;
             margin: 5px 0;
@@ -44,148 +128,373 @@
             cursor: pointer;
             border-radius: 4px;
         }
+
         .episode-item:hover {
             background: #444;
         }
+
         .episode-item.active {
             background: #23ade5;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            position: relative;
+            margin: auto;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            color: #fff;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="playlist">
-            <h3 style="color:#fff; margin-bottom:15px;">播放列表</h3>
-            <div id="episode-list"></div>
-        </div>
-        <div id="player-container">
-            <div class="artplayer-app"></div>
+<div id="container">
+    <div id="playlist">
+        <p id="info"></p>
+        <h3 style="color:#fff; margin-bottom:15px;">播放列表</h3>
+        <div id="episode-list"></div>
+    </div>
+    <div id="player-container">
+        <div class="artplayer-app"></div>
+    </div>
+</div>
+<div id="settingsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="time-settings">
+            <h4>时间设置</h4>
+            <div class="time-control">
+                <label>片头时长：<span id="introValue">0</span>秒</label>
+                <input type="range" id="introRange" min="0" max="180" value="0" class="slider">
+            </div>
+            <div class="time-control">
+                <label>片尾时长：<span id="outroValue"><script></script></span>秒</label>
+                <input type="range" id="outroRange" min="0" max="240" value="0" class="slider">
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // 等待所有资源加载完成
-        document.addEventListener('DOMContentLoaded', function() {
-            // 初始化播放器
-            const art = new Artplayer({
-                container: '.artplayer-app',
-                url: '{video_url}',
-                autoplay: true,
-                isLive: false,
-                muted: false,
-                pip: true,
-                autoSize: true,
-                autoMini: true,
-                screenshot: true,
-                setting: true,
-                loop: true,
-                flip: true,
-                playbackRate: true,
-                aspectRatio: true,
-                fullscreen: true,
-                fullscreenWeb: true,
-                subtitleOffset: true,
-                miniProgressBar: true,
-                mutex: true,
-                backdrop: true,
-                playsInline: true,
-                autoPlayback: true,
-                airplay: true,
-                theme: '#23ade5',
-                customType: {
-                    m3u8: function(video, url, art) {
-                        if (Hls.isSupported()) {
-                            const hls = new Hls();
-                            hls.loadSource(url);
-                            hls.attachMedia(video);
-                            art.on('destroy', () => hls.destroy());
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                            video.src = url;
-                        } else {
-                            art.notice.show = '不支持播放m3u8格式';
-                        }
-                    }
-                },
-                controls: [
-                    {
-                        position: 'right',
-                        html: '选集',
-                        click: function () {
-                            art.fullscreen = !art.fullscreen;
-
-                        },
-                    },
-                ],
-
-            });
-
-            // 存储播放器实例
-            window.artplayer = art;
-            // 初始化播放列表
-            updatePlaylist({video_list_json});
-            
-
-            // 播放器准备就绪回调
-            art.on('ready', () => {
-                if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.onPlayerReady();
-                }
-            });
-            art.on('fullscreen', (state) => {
-                window.pywebview.api.onFullscreen(state);
-                console.info('fullscreen', state);
-            });
-        });
+<script>
+    var intro_duration = {intro_duration};
+    var outro_duration = {outro_duration};
+    // 获取当前播放索引并滚动到该位置
+    var currentIndex = {currentIndex};
+    var video_list = {video_list};
+    var last_play_info = {last_play_info}
+    var videoUrl = '{video_url}'
 
 
-        function updatePlaylist(data) {
-            const listElement = document.getElementById('episode-list');
-            listElement.innerHTML = ''
+    let ocrInterval;
+    const OCR_CONFIG = {
+        lang: 'chi_sim+eng', // 识别中英文
+        region: {            // 字幕区域（底部15%）
+            y: 0.90,         // 纵轴起始位置
+            height: 0.1      // 区域高度
+        }
+    };
 
-            data.forEach((episode, index) => {
-                const item = document.createElement('div');
-                item.className = 'episode-item';
-                item.textContent = episode.title;
-                item.onclick = function() {
-                    // 更新当前选中项样式
-                    document.querySelectorAll('.episode-item').forEach(el => {
-                        el.classList.remove('active');
-                    });
-                    this.classList.add('active');
 
-                    // 播放选中剧集
-                    playEpisode(episode, index);
-                };
-                listElement.appendChild(item);
-            });
+    // 等待所有资源加载完成
+    document.addEventListener('DOMContentLoaded', function () {
+        // 弹窗控制逻辑
+        const modal = document.getElementById('settingsModal');
+        const span = document.querySelector('.close');
+        const introRange = document.getElementById('introRange');
+        const outroRange = document.getElementById('outroRange');
+        const introValue = document.getElementById('introValue');
+        const outroValue = document.getElementById('outroValue');
+        const info = document.getElementById('info');
 
-            // 获取当前播放索引并滚动到该位置
-            let currentIndex = {currentIndex};
-
-            const items = document.querySelectorAll('.episode-item');
-            if (items.length > currentIndex) {
-                items[currentIndex].classList.add('active');
-                items[currentIndex].scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest'
-                });
-            }
+        introRange.value = intro_duration;
+        outroRange.value = outro_duration;
+        introValue.innerHTML = intro_duration;
+        outroValue.innerHTML = outro_duration;
+        introRange.oninput = () => {
+            introValue.innerHTML = introRange.value;
+        }
+        outroRange.oninput = () => {
+            outroValue.innerHTML = outroRange.value;
         }
 
-        // 播放指定剧集
-        function playEpisode(episode, index) {
-            if (window.artplayer) {
-                window.artplayer.switchUrl(episode.url);
-                window.artplayer.play();
-
-                // 通知Python端
+        const saveSettings = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                // 更新全局时长参数
+                intro_duration = parseInt(introRange.value);
+                outro_duration = parseInt(outroRange.value);
                 if (window.pywebview && window.pywebview.api) {
-                    window.pywebview.api.playEpisode(index);
+                    window.pywebview.api.save_subscription_data(intro_duration, outro_duration);
                 }
             }
         };
+        span.onclick = () => {
+            modal.style.display = 'none'
+            saveSettings();
+        };
+        window.onclick = saveSettings
+        // 初始化播放器
+        const art = new Artplayer({
+            container: '.artplayer-app',
+            url: videoUrl,
+            autoplay: true,
+            isLive: false,
+            muted: false,
+            pip: true,
+            autoSize: true,
+            autoMini: false,
+            screenshot: true,
+            setting: true,
+            loop: true,
+            flip: true,
+            playbackRate: true,
+            aspectRatio: true,
+            fullscreen: true,
+            fullscreenWeb: true,
+            subtitleOffset: true,
+            miniProgressBar: true,
+            mutex: true,
+            backdrop: true,
+            playsInline: true,
+            autoPlayback: true,
+            airplay: true,
+            theme: '#23ade5',
+            customType: {
+                m3u8: function (video, url, art) {
+                    if (Hls.isSupported()) {
+                        const hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(video);
+                        art.on('destroy', () => hls.destroy());
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = url;
+                    } else {
+                        art.notice.show = '不支持播放m3u8格式';
+                    }
+                }
+            },
+            controls: [
+                {
+                    position: 'right',
+                    html: '<svg t="1747519179512" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8173" width="16" height="16"><path d="M0 160v704q0 66.304 46.848 113.152T160 1024h704q66.304 0 113.152-46.848T1024 864v-704q0-66.304-46.848-113.152T864 0h-704Q93.696 0 46.848 46.848T0 160z m92.16 771.84Q64 903.808 64 864v-704q0-39.744 28.16-67.84Q120.192 64 160 64h704q39.744 0 67.84 28.16 28.16 28.096 28.16 67.84v704q0 39.744-28.16 67.84-28.096 28.16-67.84 28.16h-704q-39.744 0-67.84-28.16z" fill="#ffffff" p-id="8174"></path><path d="M416 512q0 56.128-53.376 104.192l42.752 47.616Q480 596.608 480 512q0-84.672-74.624-151.808l-42.752 47.616Q416 455.808 416 512z" fill="#ffffff" p-id="8175"></path><path d="M430.848 539.008l352 224A32 32 0 0 0 800 768h0.384a32 32 0 0 0 31.616-32v-0.384a32 32 0 0 0-14.848-26.624L507.584 512l309.568-196.992A32 32 0 0 0 832 288v-0.832A32 32 0 0 0 800 256h-1.28a32 32 0 0 0-15.872 4.992l-352 224a32 32 0 0 0 0 54.016zM410.496 442.496Q448 404.992 448 352t-37.504-90.496Q372.992 224 320 224t-90.496 37.504Q192 299.008 192 352t37.504 90.496Q267.008 480 320 480t90.496-37.504z m-45.248-135.744Q384 325.504 384 352t-18.752 45.248Q346.496 416 320 416t-45.248-18.752Q256 378.496 256 352t18.752-45.248Q293.504 288 320 288t45.248 18.752zM410.496 762.496Q448 724.992 448 672t-37.504-90.496Q372.992 544 320 544t-90.496 37.504Q192 619.008 192 672t37.504 90.496Q267.008 800 320 800t90.496-37.504z m-45.248-135.744Q384 645.504 384 672t-18.752 45.248Q346.496 736 320 736t-45.248-18.752Q256 698.496 256 672t18.752-45.248Q293.504 608 320 608t45.248 18.752z" fill="#ffffff" p-id="8176"></path></svg>',
+                    click: function () {
+                        modal.style.display = 'block';
+                    },
+                },
+            ]
+        });
+
+        // 存储播放器实例
+        window.artplayer = art;
 
 
-    </script>
+        // 播放器准备就绪回调
+        art.on('ready', () => {
+            if (window.pywebview && window.pywebview.api) {
+                window.pywebview.api.onPlayerReady();
+            }
+            jumpOver(art)
+            // 启动 OCR 捕获
+            startOCRCapture(art);
+        })
+
+        // 时间更新监听
+        art.on('video:timeupdate', () => {
+            const currentTime = art.currentTime;
+            const duration = art.duration;
+
+            // 跳过片尾
+            if (duration - currentTime < outro_duration) {
+                console.log('跳过片尾', duration - currentTime)
+                nextEpisode();
+            }
+            // 触发保存播放进度
+            if (window.pywebview && window.pywebview.api) {
+                let video = video_list[currentIndex]
+                window.pywebview.api.save_play_history(currentTime, video.title, currentIndex);
+            }
+        });
+        art.on('subtitleBeforeUpdate', (cues) => {
+            info.innerHTML = cues.map((cue) => cue.text).join('\n');
+        });
+        art.on('restart', (url) => {
+            jumpOver(art)
+        });
+        // 销毁时清理资源
+        art.on('destroy', () => {
+            clearInterval(ocrInterval);
+            ocrWorker?.terminate();
+        });
+
+        function jumpOver(art) {
+            if (last_play_info > intro_duration) {
+                // 调到历史播放进度
+                art.seek = intro_duration;
+                setTimeout(() => {
+                    last_play_info = 0
+                }, 1000)
+            } else {
+                // 跳过片头
+                art.seek = intro_duration;
+            }
+        }
+    });
+
+    // 播放指定剧集
+    function playEpisode(episode, index) {
+        currentIndex = index;
+        if (window.artplayer) {
+            window.artplayer.switchUrl(episode.url);
+            window.artplayer.play();
+            // 通知Python端
+            if (window.pywebview && window.pywebview.api) {
+                window.pywebview.api.playEpisode(index);
+            }
+        }
+    }
+
+    function nextEpisode() {
+        if (currentIndex > video_list.length) {
+            currentIndex++;
+            playEpisode(video_list[currentIndex], currentIndex);
+        }
+    }
+
+
+    function updatePlaylist() {
+        const listElement = document.getElementById('episode-list');
+        listElement.innerHTML = ''
+
+        video_list.forEach((episode, index) => {
+            const item = document.createElement('div');
+            item.className = 'episode-item';
+            item.textContent = episode.title;
+            item.onclick = function () {
+                // 更新当前选中项样式
+                document.querySelectorAll('.episode-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // 播放选中剧集
+                playEpisode(episode, index);
+            };
+            listElement.appendChild(item);
+        });
+
+
+        const items = document.querySelectorAll('.episode-item');
+        if (items.length > currentIndex) {
+            items[currentIndex].classList.add('active');
+            items[currentIndex].scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+
+    }
+
+    updatePlaylist();
+
+
+    // 视频帧捕获和识别
+    async function startOCRCapture(art) {
+        const video = art.template.$video;
+
+        const canvas = document.createElement('canvas');
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.backgroundColor = '#ffffff';
+
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        console.log('OCR ocrWorker');
+        // 新增 OCR 相关变量
+        try {
+            const {createWorker} = Tesseract
+            const ocrWorker = await createWorker();
+            // await ocrWorker.loadLanguage('eng');  // 确保语言包加载
+            await ocrWorker.initialize('eng');
+        } catch (error) {
+            console.log(error);
+        }
+        console.log('OCR worker ready');
+
+        // 设置截图频率（每秒2次）
+        ocrInterval = setInterval(async () => {
+            if (video.paused || video.ended) return;
+            try {
+                // 2. 截取字幕区域
+                const regionHeight = Math.floor(video.videoHeight * OCR_CONFIG.region.height);
+                const regionY = Math.floor(video.videoHeight * OCR_CONFIG.region.y);
+                // 1. 捕获视频帧
+                canvas.width = video.videoWidth / 2;
+                canvas.height = regionHeight / 2;
+
+                ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, regionY / 2, canvas.width / 2, regionHeight / 2);
+
+
+                // const imageData = ctx.getImageData(
+                //     0,
+                //     regionY,
+                //     canvas.width,
+                //     regionHeight
+                // );
+                //
+                console.log('截取字幕区域', canvas.toDataURL('image/png'))
+                // 3. OCR 识别
+
+
+                const {data: {text}} = await ocrWorker.recognize(canvas);
+                console.log('text', text)
+                updateSubtitleDisplay(text);
+            } catch (error) {
+                console.log('error', error)
+            }
+
+        }, 5000);
+    }
+
+    function updateSubtitleDisplay(text) {
+        const infoElement = document.getElementById('info');
+        // 简单处理换行和空格
+        const formattedText = text
+            .replace(/\n+/g, '\n')
+            .trim();
+
+        // 对比新旧文本避免频繁更新
+        if (infoElement.textContent !== formattedText) {
+            infoElement.textContent = formattedText;
+        }
+    }
+
+
+</script>
+
 </body>
 </html>

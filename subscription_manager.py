@@ -156,14 +156,10 @@ class SubscriptionManager(tk.Toplevel):
             if hasattr(self.parent, 'load_config'):
                 self.parent.load_config()
 
-        except requests.exceptions.RequestException as e:
-            self.parent.logger.error(f"网络请求失败: {str(e)}")
-            messagebox.showerror("网络错误", f"无法连接服务器: {e.__class__.__name__}")
         except json.JSONDecodeError as e:
             self.parent.logger.error(f"JSON解析失败: {str(e)}")
             messagebox.showerror("数据错误", "获取的订阅数据格式不正确")
         except Exception as e:
-            self.parent.logger.error(f"未知错误: {traceback.format_exc()}")
             messagebox.showerror("错误", f"发生未预期错误: {str(e)}")
         finally:
             self.parent.status_var.set("就绪")
