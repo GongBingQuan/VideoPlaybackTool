@@ -151,7 +151,7 @@
         }
 
         .modal-content {
-            background: #2a2a2a;
+            background: #ffffff;
             padding: 20px;
             border-radius: 8px;
             width: 400px;
@@ -224,7 +224,7 @@
             <h4>时间设置</h4>
             <div class="time-control">
                 <label>片头时长：<span id="introValue">0</span>秒</label>
-                <input type="range" id="introRange" min="0" max="180" value="0" class="slider">
+                <input type="range" id="introRange" min="0" max="240" value="0" class="slider">
             </div>
             <div class="time-control">
                 <label>片尾时长：<span id="outroValue"><script></script></span>秒</label>
@@ -340,6 +340,21 @@
                         modal.style.display = 'block';
                     },
                 },
+                 {
+                    position: 'left',
+                    html: '<svg t="1747588953162" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5937" width="16" height="16"><path d="M56.576 944.896V79.104C56.576 35.328 92.16 0 135.68 0h15.104c43.776 0 79.36 35.328 79.36 79.104v271.872L810.752 14.08C826.88 4.864 845.056 0 863.488 0c57.6 0.256 104.192 47.104 103.936 104.704V919.04c0 18.432-4.864 36.608-14.08 52.736a104.2944 104.2944 0 0 1-142.592 38.144L230.144 673.024v271.872c0 43.776-35.584 79.104-79.36 79.104H135.68c-43.52 0-79.104-35.328-79.104-79.104z" p-id="5938" fill="#ffffff"></path></svg>',
+                    click: function () {
+                        previousEpisode()
+                    },
+                },
+                {
+                    position: 'left',
+                    html: '<svg t="1747588908889" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4862" width="16" height="16"><path d="M967.423772 79.104472v865.791568c0 43.775978-35.327982 79.10396-79.10396 79.10396h-15.103993c-43.775978 0-79.10396-35.327982-79.10396-79.10396V673.024175L213.248149 1009.920007c-16.127992 9.215995-34.303983 14.079993-52.735973 14.079993a104.345548 104.345548 0 0 1-103.935948-104.703948V104.96046c0-18.431991 4.863998-36.607982 14.079993-52.735974A104.294348 104.294348 0 0 1 213.248149 14.080505l580.86371 336.895832V79.104472A78.847961 78.847961 0 0 1 873.215819 0.000512h15.103993c43.519978 0 79.10396 35.327982 79.10396 79.10396z" p-id="4863" fill="#ffffff"></path></svg>',
+                    click: function () {
+                        nextEpisode()
+                    },
+                },
+
             ]
         });
 
@@ -390,10 +405,10 @@
         });
 
         function jumpOver(art) {
-            console.log('跳过片头', last_play_info, intro_duration)
+            console.log('跳过片头', last_play_info.current_time, intro_duration,last_play_info.current_time > intro_duration)
             if (last_play_info.current_time > intro_duration) {
                 // 调到历史播放进度
-                art.seek = intro_duration;
+                art.seek = last_play_info.current_time;
                 setTimeout(() => {
                     last_play_info.current_time = 0
                 }, 1000)
@@ -542,6 +557,12 @@
     function nextEpisode() {
         if (currentIndex < video_list.length) {
             let index = currentIndex + 1;
+            playEpisode(video_list[index], index);
+        }
+    }
+    function previousEpisode() {
+        if (currentIndex < video_list.length) {
+            let index = currentIndex - 1;
             playEpisode(video_list[index], index);
         }
     }

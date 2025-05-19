@@ -845,7 +845,7 @@ class VideoPlayer(tk.Tk):
                     try:
 
                         # 创建播放器窗口
-                        VideoPlayerWindow(self, subscription_data)
+                        VideoPlayerWindow(self,self.check_updates, subscription_data)
                     except Exception as e:
                         logger.error(f"创建播放器窗口失败: {str(e)}")
                         messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")

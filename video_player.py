@@ -1,10 +1,14 @@
 import os
 import subprocess
 import sys
+import threading
+
 import webview
 import logging
 import json
 from datetime import datetime, timedelta
+from tkinter import ttk, messagebox, Toplevel
+
 
 class JSBridge:
 
@@ -98,7 +102,7 @@ class JSBridge:
         print("Player ready")
 
 
-class VideoPlayerWindow():
+class VideoPlayerWindow(Toplevel):
     logger = None
 
     def __del__(self):
@@ -107,10 +111,12 @@ class VideoPlayerWindow():
             if hasattr(self, 'webview') and self.webview:
                 self.webview.destroy()
                 self.webview = None
+            self.check_updates()
+            print("Player destroyed")
         except Exception as e:
             self.logger.error(f"销毁webview实例失败: {str(e)}")
 
-    def __init__(self, parent, subscription_data):
+    def __init__(self, parent, check_updates,subscription_data):
         """初始化视频播放器窗口
         
         参数:
@@ -125,6 +131,7 @@ class VideoPlayerWindow():
         self.auto_hide_timer = None
         self.controls_visible = True
         self.parent = parent
+        self.check_updates = check_updates
 
         # 从订阅数据中提取必要信息
         self.subscription_data = subscription_data
@@ -243,7 +250,7 @@ class VideoPlayerWindow():
             text_select=True
         )
         # 启动webview
-        webview.start(debug=False)
+        webview.start(gui='edgechromium',http_server=True)
 
 
 
