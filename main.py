@@ -2,14 +2,19 @@ import tkinter as tk
 import traceback
 from tkinter import ttk, messagebox
 import json
-import os
 import logging
 from datetime import datetime
 from video_player import VideoPlayerWindow
 from crawler import VideoCrawler
 from subscription_manager import SubscriptionManager
 import threading
-
+import os
+import subprocess
+import socket
+import time
+import atexit
+import signal
+import sys
 # 初始化日志系统
 logging.basicConfig(
     level=logging.INFO,
@@ -950,8 +955,51 @@ class VideoPlayer(tk.Tk):
             messagebox.showerror("错误", f"保存播放历史失败: {str(e)}")
 
 
+
+
+def is_api_ready(port=9009, timeout=5):
+    """检查API端口是否可用"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            with socket.create_connection(('localhost', port), timeout=1):
+                return True
+        except (socket.timeout, ConnectionRefusedError):
+            time.sleep(0.5)
+    return False
+
+def cleanup():
+    """退出时清理api进程"""
+    if 'api_process' in globals() and api_process.poll() is None:
+        api_process.terminate()
+        print("已关闭API服务")
+
 if __name__ == '__main__':
-    status = os.system("python api.py")
-    print('启动',status)
-    vp = VideoPlayer()
-    vp.mainloop()
+    # 注册退出处理
+    atexit.register(cleanup)
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+    
+    # 启动API服务
+    if os.path.exists('./api.exe'):
+        try:
+            api_process = subprocess.Popen(['./api.exe'])
+            print("正在启动API服务...")
+            
+            if is_api_ready():
+                print("API服务启动成功")
+            else:
+                print("API服务启动失败")
+                api_process.terminate()
+                sys.exit(1)
+                
+        except Exception as e:
+            print(f"启动API失败: {str(e)}")
+            sys.exit(1)
+    
+    # 启动主程序
+    try:
+        vp = VideoPlayer()
+        vp.mainloop()
+    finally:
+        # 确保程序退出时清理
+        cleanup()

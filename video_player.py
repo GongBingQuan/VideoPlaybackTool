@@ -1,7 +1,4 @@
 import os
-import subprocess
-import sys
-import threading
 
 import webview
 import logging
@@ -190,7 +187,7 @@ class VideoPlayerWindow(Toplevel):
         """初始化webview和播放器"""
         try:
             # 尝试从模板文件读取HTML内容
-            template_path = os.path.join(os.path.dirname(__file__), 'video_player.html')
+            template_path = 'video_player.html'
             with open(template_path, 'r', encoding='utf-8') as f:
                 html = f.read()
             # 读取JS文件并嵌入
@@ -221,25 +218,12 @@ class VideoPlayerWindow(Toplevel):
             html = html.replace('{video_list}', json.dumps(self.video_list, ensure_ascii=False))
             html = html.replace('{intro_duration}', str(self.intro_duration))
             html = html.replace('{outro_duration}', str(self.outro_duration))
+            html = html.replace('{video_name}', self.subscription_data.get('title', ''))
         except Exception as e:
             self.logger.error(f"读取HTML模板失败: {str(e)}, 使用内置HTML")
             # 回退到内置HTML
             html = f"""<!DOCTYPE html><html><head><!-- 简化的HTML内容作为回退 --></head><body>
-                <div id="container"><div id="player-container"><div class="artplayer-app"></div></div></div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {{
-                        const art = new Artplayer({{
-                            container: '.artplayer-app',
-                            url: '{self.video_url}',
-                            // 简化的配置
-                        }});
-                        art.on('ready', () => {{
-                            if (window.pywebview && window.pywebview.api) {{
-                                window.pywebview.api.onPlayerReady();
-                            }}
-                        }});
-                    }});
-                </script>
+                未读到HTML
             </body></html>"""
         self.webview = webview.create_window(
             f"{self.subscription_data.get('title', '')}",
@@ -250,7 +234,7 @@ class VideoPlayerWindow(Toplevel):
             text_select=True
         )
         # 启动webview
-        webview.start(gui='edgechromium',http_server=True)
+        webview.start(debug=True)
 
 
 
