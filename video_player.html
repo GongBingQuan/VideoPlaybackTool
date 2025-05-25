@@ -337,12 +337,18 @@
                     videoPath = 'http://localhost:9009/hls/'+encodeURIComponent(videoName)+'/'+encodeURIComponent(video_list[currentIndex].title)+'/'+videoUrl
                     if (Hls.isSupported()) {
                         const hls = new Hls({
-                            enableWorker: true, // worker支持
-                            maxBufferLength: 120,  // 最大缓存时长（秒），建议设为视频总时长
-                            maxMaxBufferLength: 7200, // 允许动态扩展的缓存上限
-                            // autoStartLoad: false,   // 关闭自动加载，手动控制缓存逻辑
-                            levelTargetDuration: 5,       // 目标缓冲时长5秒
-                            maxBufferSize: 6000 * 1000 * 1000 // 60MB
+                            enableWorker: true,
+                            maxBufferLength: 30,       // 减少最大缓存时长到30秒
+                            maxMaxBufferLength: 60,    // 设置绝对上限60秒
+                            levelTargetDuration: 3,    // 降低目标缓冲时长
+                            maxBufferSize: 30 * 1024 * 1024, // 减少到30MB
+                            backBufferLength: 10,      // 保留10秒回放缓冲区
+                            lowLatencyMode: false,     // 禁用低延迟模式
+                            enableSoftwareAES: true,   // 启用软件解密减少内存压力
+                            fragLoadingTimeOut: 10000, // 10秒分片加载超时
+                            fragLoadingMaxRetry: 3,    // 最大重试3次
+                            fragLoadingRetryDelay: 1000, // 重试间隔1秒
+                            manifestLoadingTimeOut: 10000 // 10秒清单加载超时
                         });
                         hls.loadSource(videoPath);
                         hls.attachMedia(video);

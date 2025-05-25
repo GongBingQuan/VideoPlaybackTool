@@ -1,212 +1,176 @@
-2025-05-26 00:32:07,528 - INFO - 日志系统初始化完成
-2025-05-26 00:32:07,551 - INFO - 开始初始化视频播放器
-2025-05-26 00:32:07,565 - INFO - 开始创建标签页
-2025-05-26 00:32:07,572 - INFO - 开始创建视频列表界面
-2025-05-26 00:32:07,590 - INFO - 开始更新剧集列表
-2025-05-26 00:32:07,590 - INFO - 剧集列表更新完成，显示所有剧集
-2025-05-26 00:32:07,590 - INFO - 视频列表界面创建完成
-2025-05-26 00:32:07,602 - INFO - 标签页创建完成
-2025-05-26 00:32:07,602 - INFO - 开始加载配置文件
-2025-05-26 00:32:07,605 - INFO - 配置文件加载成功
-2025-05-26 00:32:07,605 - INFO - 视频播放器初始化完成
-2025-05-26 00:32:08,613 - INFO - 跳过更新 仙逆: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 万界至尊: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 吞噬星空: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 一念永恒第三季: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 遮天: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 完美世界: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 斗罗大陆Ⅱ绝世唐门: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 斗破苍穹 年番: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 剑道第一仙: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 凡人修仙传: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 牧神记: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 最强升级: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 永生: 距离上次更新不足1小时
-2025-05-26 00:32:08,613 - INFO - 跳过更新 神印王座剧场版：伊莱克斯传奇: 距离上次更新不足1小时
-2025-05-26 00:32:08,625 - INFO - 开始加载配置文件
-2025-05-26 00:32:08,628 - INFO - 配置文件加载成功
-2025-05-26 00:32:08,628 - INFO - 开始更新剧集列表
-2025-05-26 00:32:08,630 - INFO - 剧集列表更新完成，显示所有剧集
-2025-05-26 00:32:09,584 - INFO - 成功保存播放历史: 凡人修仙传{'last_update': '2025-05-26 00:32:09', 'total_episodes': 0, 'url': 'https://www.moduzy5.com/vod/4538/', 'episode_number': 144, 'last_played': '第143集', 'last_played_time': 753.236682}
-2025-05-26 00:32:09,584 - INFO - 正在播放: 9, URL: https://www.moduzy5.com/vod/4538/
-2025-05-26 00:32:09,585 - INFO - Player正在播放: 凡人修仙传
-2025-05-26 00:32:09,585 - INFO - 找到播放历史记录: 第145集, 时间点: 753.236682ms
-2025-05-26 00:32:09,585 - INFO - 从历史文件加载播放历史: 第145集, 时间点: 753.236682ms
-2025-05-26 00:32:09,585 - INFO - 视频播放器初始化完成, 参数: {'video_url': 'https://play.modujx11.com/20250517/G8YViQJK/index.m3u8', 'video_title': '凡人修仙传 - 第143集', 'video_list_length': 146, 'current_index': 145}
-2025-05-26 00:32:09,585 - INFO - video_list: [{'title': '第01集', 'url': 'https://play.modujx10.com/20230907/Mbq8hdmq/index.m3u8'}, {'title': '第02集', 'url': 'https://play.modujx10.com/20230907/QvkK5cw1/index.m3u8'}, {'title': '第03集', 'url': 'https://play.modujx10.com/20230907/73PWifvT/index.m3u8'}, {'title': '第04集', 'url': 'https://play.modujx10.com/20230907/hL9rni15/index.m3u8'}, {'title': '第05集', 'url': 'https://play.modujx10.com/20230907/fOOJEBoW/index.m3u8'}, {'title': '第06集', 'url': 'https://play.modujx10.com/20230907/xl0Wk5m2/index.m3u8'}, {'title': '第07集', 'url': 'https://play.modujx10.com/20230907/s7k5muvg/index.m3u8'}, {'title': '第08集', 'url': 'https://play.modujx10.com/20230907/Zswvz7Sv/index.m3u8'}, {'title': '第09集', 'url': 'https://play.modujx10.com/20230907/gk55DQk7/index.m3u8'}, {'title': '第10集', 'url': 'https://play.modujx10.com/20230907/s6VFN9jf/index.m3u8'}, {'title': '第11集', 'url': 'https://play.modujx10.com/20230907/cjyi2EHV/index.m3u8'}, {'title': '第12集', 'url': 'https://play.modujx10.com/20230907/NoB3vKRr/index.m3u8'}, {'title': '第13集', 'url': 'https://play.modujx10.com/20230907/86Grgo4c/index.m3u8'}, {'title': '第14集', 'url': 'https://play.modujx10.com/20230907/OpEfapBo/index.m3u8'}, {'title': '第15集', 'url': 'https://play.modujx10.com/20230907/KWcizUfC/index.m3u8'}, {'title': '第16集', 'url': 'https://play.modujx10.com/20230907/qK1q3iU6/index.m3u8'}, {'title': '第17集', 'url': 'https://play.modujx10.com/20230907/TaxQB8cp/index.m3u8'}, {'title': '第18集', 'url': 'https://play.modujx10.com/20230907/GQtxHOOY/index.m3u8'}, {'title': '第19集', 'url': 'https://play.modujx10.com/20230907/8h53r9Pl/index.m3u8'}, {'title': '第20集', 'url': 'https://play.modujx10.com/20230907/mzQHhXpu/index.m3u8'}, {'title': '第21集', 'url': 'https://play.modujx10.com/20230907/phBRU6gx/index.m3u8'}, {'title': '第22集', 'url': 'https://play.modujx10.com/20230907/sGrxXrrG/index.m3u8'}, {'title': '第23集', 'url': 'https://play.modujx10.com/20230907/vWZYHe83/index.m3u8'}, {'title': '第24集', 'url': 'https://play.modujx10.com/20230907/N3XjFjrs/index.m3u8'}, {'title': '第25集', 'url': 'https://play.modujx10.com/20230907/bZATt1B5/index.m3u8'}, {'title': '第26集', 'url': 'https://play.modujx10.com/20230907/zH8StwEO/index.m3u8'}, {'title': '第27集', 'url': 'https://play.modujx10.com/20230907/gLZIsbns/index.m3u8'}, {'title': '第28集', 'url': 'https://play.modujx10.com/20230907/5hrPPHj1/index.m3u8'}, {'title': '第29集', 'url': 'https://play.modujx10.com/20230907/ahanZG0V/index.m3u8'}, {'title': '第30集', 'url': 'https://play.modujx10.com/20230907/dVikDVoB/index.m3u8'}, {'title': '第31集', 'url': 'https://play.modujx10.com/20230907/u2gCWhGA/index.m3u8'}, {'title': '第32集', 'url': 'https://play.modujx10.com/20230907/aS5am1bL/index.m3u8'}, {'title': '第33集', 'url': 'https://play.modujx10.com/20230907/7YkvqVKb/index.m3u8'}, {'title': '第34集', 'url': 'https://play.modujx10.com/20230907/gl41mC99/index.m3u8'}, {'title': '第35集', 'url': 'https://play.modujx10.com/20230907/DMJ8v4LF/index.m3u8'}, {'title': '第36集', 'url': 'https://play.modujx10.com/20230907/47YwcnWG/index.m3u8'}, {'title': '第37集', 'url': 'https://play.modujx10.com/20230907/cgyZYbKL/index.m3u8'}, {'title': '第38集', 'url': 'https://play.modujx10.com/20230907/htgHbp6m/index.m3u8'}, {'title': '第39集', 'url': 'https://play.modujx10.com/20230907/kvS9TekF/index.m3u8'}, {'title': '第40集', 'url': 'https://play.modujx10.com/20230907/wmEtBupM/index.m3u8'}, {'title': '第41集', 'url': 'https://play.modujx10.com/20230907/LK1tsr1h/index.m3u8'}, {'title': '第42集', 'url': 'https://play.modujx10.com/20230907/4QU7bYpF/index.m3u8'}, {'title': '第43集', 'url': 'https://play.modujx10.com/20230907/7pvwvhlv/index.m3u8'}, {'title': '第44集', 'url': 'https://play.modujx10.com/20230907/3t7tTqmb/index.m3u8'}, {'title': '第45集', 'url': 'https://play.modujx10.com/20230907/na3xuEQd/index.m3u8'}, {'title': '第46集', 'url': 'https://play.modujx10.com/20230907/fiSQvmSk/index.m3u8'}, {'title': '第47集', 'url': 'https://play.modujx10.com/20230907/Gv41LxP6/index.m3u8'}, {'title': '第48集', 'url': 'https://play.modujx10.com/20230907/7HHvqh5J/index.m3u8'}, {'title': '第49集', 'url': 'https://play.modujx10.com/20230907/DQQbk0BH/index.m3u8'}, {'title': '第50集', 'url': 'https://play.modujx10.com/20230907/mhOzj8nv/index.m3u8'}, {'title': '第51集', 'url': 'https://play.modujx10.com/20230907/LOLptv64/index.m3u8'}, {'title': '第52集', 'url': 'https://play.modujx10.com/20230907/0vWHs7Ml/index.m3u8'}, {'title': '第53集', 'url': 'https://play.modujx10.com/20230907/DOJxA26Y/index.m3u8'}, {'title': '第54集', 'url': 'https://play.modujx10.com/20230907/vCo56QA4/index.m3u8'}, {'title': '第55集', 'url': 'https://play.modujx10.com/20230907/qGIliaMu/index.m3u8'}, {'title': '第56集', 'url': 'https://play.modujx10.com/20230907/BYUHVfPR/index.m3u8'}, {'title': '第57集', 'url': 'https://play.modujx10.com/20230907/tFOYf95M/index.m3u8'}, {'title': '第58集', 'url': 'https://play.modujx10.com/20230907/duPrDz1O/index.m3u8'}, {'title': '第59集', 'url': 'https://play.modujx10.com/20230907/cc1pWFrH/index.m3u8'}, {'title': '第60集', 'url': 'https://play.modujx10.com/20230907/hA8pGiZm/index.m3u8'}, {'title': '第61集', 'url': 'https://play.modujx10.com/20230907/eJHBbmMV/index.m3u8'}, {'title': '第62集', 'url': 'https://play.modujx10.com/20230907/KfIJHNnj/index.m3u8'}, {'title': '第63集', 'url': 'https://play.modujx10.com/20230907/ybOdaB4x/index.m3u8'}, {'title': '第64集', 'url': 'https://play.modujx10.com/20230907/M9Grkwkb/index.m3u8'}, {'title': '第65集', 'url': 'https://play.modujx10.com/20230907/p1F3RWYB/index.m3u8'}, {'title': '第66集', 'url': 'https://play.modujx10.com/20230907/4wBbp0jB/index.m3u8'}, {'title': '第67集', 'url': 'https://play.modujx10.com/20230907/rpvEYL3a/index.m3u8'}, {'title': '第68集', 'url': 'https://play.modujx10.com/20230907/FNeaHiQf/index.m3u8'}, {'title': '第69集', 'url': 'https://play.modujx10.com/20230907/ZT4Hw3SX/index.m3u8'}, {'title': '第70集', 'url': 'https://play.modujx10.com/20230907/nBVu3Vsu/index.m3u8'}, {'title': '第71集', 'url': 'https://play.modujx10.com/20230907/patBbAHI/index.m3u8'}, {'title': '第72集', 'url': 'https://play.modujx10.com/20230907/W6wSF19w/index.m3u8'}, {'title': '第73集', 'url': 'https://play.modujx10.com/20230907/tRSHLA66/index.m3u8'}, {'title': '第74集', 'url': 'https://play.modujx10.com/20230907/Ty5db8fE/index.m3u8'}, {'title': '第75集', 'url': 'https://play.modujx10.com/20230907/kq9kbaeG/index.m3u8'}, {'title': '第76集', 'url': 'https://play.modujx10.com/20230907/2OforYnR/index.m3u8'}, {'title': '第77集', 'url': 'https://play.modujx10.com/20231125/m77qUHpk/index.m3u8'}, {'title': '第78集', 'url': 'https://play.modujx10.com/20231202/zchZfdzH/index.m3u8'}, {'title': '第79集', 'url': 'https://play.modujx10.com/20231209/vHL9lwaF/index.m3u8'}, {'title': '第80集', 'url': 'https://play.modujx10.com/20231216/LHX6HX6q/index.m3u8'}, {'title': '第81集', 'url': 'https://play.modujx10.com/20231223/AyGHpNpB/index.m3u8'}, {'title': '第82集', 'url': 'https://play.modujx10.com/20231230/0f8urMRj/index.m3u8'}, {'title': '第83集', 'url': 'https://play.modujx10.com/20240106/SdfkubtB/index.m3u8'}, {'title': '第84集', 'url': 'https://play.modujx10.com/20240113/9CUzrva3/index.m3u8'}, {'title': '第85集', 'url': 'https://play.modujx10.com/20240120/k39Fvr7Z/index.m3u8'}, {'title': '第86集', 'url': 'https://play.modujx10.com/20240127/iwqkzc4h/index.m3u8'}, {'title': '第87集', 'url': 'https://play.modujx10.com/20240203/n0jCoVZ9/index.m3u8'}, {'title': '第88集', 'url': 'https://play.modujx10.com/20240210/P2ZLw4HT/index.m3u8'}, {'title': '第89集', 'url': 'https://play.modujx10.com/20240217/abdNCk6d/index.m3u8'}, {'title': '第90集', 'url': 'https://play.modujx10.com/20240224/OfZCHZpF/index.m3u8'}, {'title': '第91集', 'url': 'https://play.modujx10.com/20240302/ISZtL1xC/index.m3u8'}, {'title': '第92集', 'url': 'https://play.modujx10.com/20240309/t2IlbeYd/index.m3u8'}, {'title': '第93集', 'url': 'https://play.modujx10.com/20240316/0HAAxjzF/index.m3u8'}, {'title': '第94集', 'url': 'https://play.modujx10.com/20240323/wJKa4qi0/index.m3u8'}, {'title': '第95集', 'url': 'https://play.modujx10.com/20240330/SLRKU3F1/index.m3u8'}, {'title': '第96集', 'url': 'https://play.modujx10.com/20240406/nk9fK3MQ/index.m3u8'}, {'title': '第97集', 'url': 'https://play.modujx10.com/20240504/ZkBNLlkA/index.m3u8'}, {'title': '第98集', 'url': 'https://play.modujx10.com/20240504/Fledn62U/index.m3u8'}, {'title': '第99集', 'url': 'https://play.modujx10.com/20240504/W7gXT2zw/index.m3u8'}, {'title': '第100集', 'url': 'https://play.modujx10.com/20240504/UBD4vvU4/index.m3u8'}, {'title': '第101集', 'url': 'https://play.modujx10.com/20240511/gCwjYUAA/index.m3u8'}, {'title': '第102集', 'url': 'https://play.modujx10.com/20240518/5M1HcUDs/index.m3u8'}, {'title': '第103集', 'url': 'https://play.modujx12.com/20240525/orHBysfB/index.m3u8'}, {'title': '第104集', 'url': 'https://play.modujx12.com/20240601/HDqerNXF/index.m3u8'}, {'title': '第105集', 'url': 'https://play.modujx12.com/20240608/yDaKa5eQ/index.m3u8'}, {'title': '第106集', 'url': 'https://play.modujx12.com/20240614/drp9E6N1/index.m3u8'}, {'title': '第107集', 'url': 'https://play.modujx12.com/20240622/eTwzEJjY/index.m3u8'}, {'title': '第108集', 'url': 'https://play.modujx12.com/20240629/3l8M2VKg/index.m3u8'}, {'title': '第109集', 'url': 'https://play.modujx12.com/20240706/lpt5L10l/index.m3u8'}, {'title': '第110集', 'url': 'https://play.modujx13.com/20240713/Lwm6XzRC/index.m3u8'}, {'title': '第111集', 'url': 'https://play.modujx13.com/20240720/fy8Zud5e/index.m3u8'}, {'title': '第112集', 'url': 'https://play.modujx13.com/20240727/IN5Wek1n/index.m3u8'}, {'title': '第113集', 'url': 'https://play.modujx13.com/20240803/b4MSA5iK/index.m3u8'}, {'title': '第114集', 'url': 'https://play.modujx14.com/20240810/vcU4CoVk/index.m3u8'}, {'title': '第115集', 'url': 'https://play.modujx15.com/20240817/CXUPbqz7/index.m3u8'}, {'title': '第116集', 'url': 'https://play.modujx15.com/20240824/BiiJ2YxT/index.m3u8'}, {'title': '第117集', 'url': 'https://play.modujx15.com/20240831/lofDN9nP/index.m3u8'}, {'title': '第118集', 'url': 'https://play.modujx15.com/20240907/seCsk1DT/index.m3u8'}, {'title': '第119集', 'url': 'https://play.modujx15.com/20240914/C2nYdF4m/index.m3u8'}, {'title': '第120集', 'url': 'https://play.modujx16.com/20240921/VcwYHG7S/index.m3u8'}, {'title': '第121集', 'url': 'https://play.modujx16.com/20240928/tDEtW2ay/index.m3u8'}, {'title': '第122集', 'url': 'https://play.modujx16.com/20241005/ekCDMzEJ/index.m3u8'}, {'title': '第123集', 'url': 'https://play.modujx16.com/20241012/vJ0dBQFF/index.m3u8'}, {'title': '第124集', 'url': 'https://play.modujx16.com/20241019/6gOEL1nA/index.m3u8'}, {'title': '虚天战纪', 'url': 'https://play.modujx11.com/20250104/MkjoxH71/index.m3u8'}, {'title': '虚天战纪下', 'url': 'https://play.modujx11.com/20250111/oCc3Rvnk/index.m3u8'}, {'title': '第125集', 'url': 'https://play.modujx11.com/20250118/5Gg0P97M/index.m3u8'}, {'title': '第126集', 'url': 'https://play.modujx11.com/20250118/DjkrPHPo/index.m3u8'}, {'title': '第127集', 'url': 'https://play.modujx11.com/20250125/YTlBxWA7/index.m3u8'}, {'title': '第128集', 'url': 'https://play.modujx11.com/20250201/kUmY425X/index.m3u8'}, {'title': '第129集', 'url': 'https://play.modujx11.com/20250208/yVuou6eS/index.m3u8'}, {'title': '第130集', 'url': 'https://play.modujx11.com/20250215/AIOswc6t/index.m3u8'}, {'title': '第131集', 'url': 'https://play.modujx11.com/20250222/9evq1hKU/index.m3u8'}, {'title': '第132集', 'url': 'https://play.modujx11.com/20250301/rKPVSYdL/index.m3u8'}, {'title': '第133集', 'url': 'https://play.modujx11.com/20250308/Woumn2tj/index.m3u8'}, {'title': '第134集', 'url': 'https://play.modujx11.com/20250315/r3C2RCkr/index.m3u8'}, {'title': '第135集', 'url': 'https://play.modujx11.com/20250322/yCO7rHIH/index.m3u8'}, {'title': '第136集', 'url': 'https://play.modujx11.com/20250329/NsreJiLN/index.m3u8'}, {'title': '第137集', 'url': 'https://play.modujx11.com/20250405/sqOaTG0f/index.m3u8'}, {'title': '第138集', 'url': 'https://play.modujx11.com/20250412/DhMnGnkS/index.m3u8'}, {'title': '第139集', 'url': 'https://play.modujx11.com/20250419/boVoVbbA/index.m3u8'}, {'title': '第140集', 'url': 'https://play.modujx11.com/20250426/dqIQuQNt/index.m3u8'}, {'title': '第141集', 'url': 'https://play.modujx11.com/20250503/1kYGQL9k/index.m3u8'}, {'title': '第142集', 'url': 'https://play.modujx11.com/20250510/UvIFsOrA/index.m3u8'}, {'title': '第143集', 'url': 'https://play.modujx11.com/20250517/G8YViQJK/index.m3u8'}, {'title': '第144集', 'url': 'https://play.modujx11.com/20250524/TC4CCIxc/index.m3u8'}]
-2025-05-26 00:32:10,380 - DEBUG - Using WinForms / Chromium
-2025-05-26 00:32:11,951 - DEBUG - before_load event fired. injecting pywebview object
-2025-05-26 00:32:11,952 - DEBUG - Loading JS files from E:\PycharmProjects\视频网站\.venv\Lib\site-packages\webview\js
-2025-05-26 00:32:11,980 - DEBUG - _pywebviewready event fired
-2025-05-26 00:32:11,988 - DEBUG - loaded event fired
-2025-05-26 00:33:14,589 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:17,375 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:20,055 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:22,702 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:25,312 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:27,972 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:30,757 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:33,375 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:36,299 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:39,976 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:42,355 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:44,900 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:48,168 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:50,164 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:52,883 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:55,549 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:33:58,187 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:00,941 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:04,189 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:06,498 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:09,778 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:12,894 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:15,632 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:18,558 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:21,308 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:24,130 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:27,410 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:30,482 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:34,769 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:37,035 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:39,750 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:42,563 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:45,837 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:48,477 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:51,769 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:55,097 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:34:58,788 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:01,534 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:04,471 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:07,266 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:10,187 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:14,241 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:16,655 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:19,795 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:22,334 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:25,155 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:28,160 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:31,710 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:34,217 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:36,883 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:39,503 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:42,155 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:44,826 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:47,471 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:50,127 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:52,777 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:55,439 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:35:58,090 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:00,776 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:03,406 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:06,061 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:08,722 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:11,388 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:14,055 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:16,708 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:19,356 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:22,024 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:24,672 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:27,326 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:29,979 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:32,639 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:35,300 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:37,949 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:40,608 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:43,263 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:45,922 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:48,586 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:51,235 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:53,887 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:56,557 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:36:59,205 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:01,859 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:04,524 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:07,168 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:09,826 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:12,487 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:15,136 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:17,803 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:20,453 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:23,106 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:25,766 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:28,423 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:31,076 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:33,741 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:36,390 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:39,053 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:41,704 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:44,356 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:47,014 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:49,668 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:52,325 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:54,991 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:37:57,637 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:00,305 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:02,948 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:05,607 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:08,262 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:10,924 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:13,579 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:16,250 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:18,902 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:21,548 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:24,200 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:26,859 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:29,516 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:32,178 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:34,827 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:37,479 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:40,144 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:42,798 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:45,448 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:48,106 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:50,763 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:53,426 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:56,086 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:38:58,729 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:17,166 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:19,850 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:22,644 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:26,152 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:28,849 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:31,300 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:34,224 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:37,509 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:39,871 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:42,645 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:45,471 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:48,755 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:52,577 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:55,926 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:39:58,581 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:01,243 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:04,992 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:08,070 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:10,158 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:13,527 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:16,646 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:23,406 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:26,646 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:29,359 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:33,714 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:35,994 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:39,548 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:44,053 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:47,616 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:50,415 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:53,731 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:56,871 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:40:59,616 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:02,686 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:05,343 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:07,999 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:10,655 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:13,311 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:15,978 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:18,622 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:21,278 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:23,943 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:26,597 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:29,248 - INFO - 保存播放历史: 凡人修仙传
-2025-05-26 00:41:31,920 - INFO - 保存播放历史: 凡人修仙传
+2025-05-26 01:09:51,637 - INFO - 日志系统初始化完成
+2025-05-26 01:09:51,660 - INFO - 开始初始化视频播放器
+2025-05-26 01:09:51,668 - INFO - 开始创建标签页
+2025-05-26 01:09:51,676 - INFO - 开始创建视频列表界面
+2025-05-26 01:09:51,696 - INFO - 开始更新剧集列表
+2025-05-26 01:09:51,697 - INFO - 剧集列表更新完成，显示所有剧集
+2025-05-26 01:09:51,697 - INFO - 视频列表界面创建完成
+2025-05-26 01:09:51,704 - INFO - 标签页创建完成
+2025-05-26 01:09:51,704 - INFO - 开始加载配置文件
+2025-05-26 01:09:51,707 - INFO - 配置文件加载成功
+2025-05-26 01:09:51,708 - INFO - 视频播放器初始化完成
+2025-05-26 01:09:52,715 - INFO - 跳过更新 仙逆: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 万界至尊: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 吞噬星空: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 一念永恒第三季: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 遮天: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 完美世界: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 斗罗大陆Ⅱ绝世唐门: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 斗破苍穹 年番: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 剑道第一仙: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 凡人修仙传: 距离上次更新不足1小时
+2025-05-26 01:09:52,715 - INFO - 跳过更新 牧神记: 距离上次更新不足1小时
+2025-05-26 01:09:52,716 - INFO - 跳过更新 最强升级: 距离上次更新不足1小时
+2025-05-26 01:09:52,716 - INFO - 跳过更新 永生: 距离上次更新不足1小时
+2025-05-26 01:09:52,716 - INFO - 跳过更新 神印王座剧场版：伊莱克斯传奇: 距离上次更新不足1小时
+2025-05-26 01:09:52,726 - INFO - 开始加载配置文件
+2025-05-26 01:09:52,729 - INFO - 配置文件加载成功
+2025-05-26 01:09:52,729 - INFO - 开始更新剧集列表
+2025-05-26 01:09:52,731 - INFO - 剧集列表更新完成，显示所有剧集
+2025-05-26 01:09:57,391 - INFO - 成功保存播放历史: 牧神记{'last_update': '2025-05-26 01:09:57', 'total_episodes': 0, 'url': 'https://www.moduzy5.com/vod/44262/', 'episode_number': 31, 'last_played': '第32集', 'last_played_time': 609.358072}
+2025-05-26 01:09:57,393 - INFO - 正在播放: 10, URL: https://www.moduzy5.com/vod/44262/
+2025-05-26 01:09:57,393 - INFO - Player正在播放: 牧神记
+2025-05-26 01:09:57,393 - INFO - 找到播放历史记录: 第32集, 时间点: 609.358072ms
+2025-05-26 01:09:57,393 - INFO - 从历史文件加载播放历史: 第32集, 时间点: 609.358072ms
+2025-05-26 01:09:57,393 - INFO - 视频播放器初始化完成, 参数: {'video_url': 'https://play.modujx11.com/20250525/cQIZUzsT/index.m3u8', 'video_title': '牧神记 - 第32集', 'video_list_length': 32, 'current_index': 32}
+2025-05-26 01:09:57,394 - INFO - video_list: [{'title': '第01集', 'url': 'https://play.modujx16.com/20241027/MWaiewzm/index.m3u8'}, {'title': '第02集', 'url': 'https://play.modujx16.com/20241027/k12WLrad/index.m3u8'}, {'title': '第03集', 'url': 'https://play.modujx16.com/20241103/5l76aLc7/index.m3u8'}, {'title': '第04集', 'url': 'https://play.modujx16.com/20241110/WrP4YQYs/index.m3u8'}, {'title': '第05集', 'url': 'https://play.modujx16.com/20241117/SjcfZNCD/index.m3u8'}, {'title': '第06集', 'url': 'https://play.modujx16.com/20241124/YS605J3F/index.m3u8'}, {'title': '第07集', 'url': 'https://play.modujx16.com/20241201/qibX48kr/index.m3u8'}, {'title': '第08集', 'url': 'https://play.modujx16.com/20241208/7UHBhfhD/index.m3u8'}, {'title': '第09集', 'url': 'https://play.modujx16.com/20241215/swbANpjZ/index.m3u8'}, {'title': '第10集', 'url': 'https://play.modujx16.com/20241222/9X9pUMdf/index.m3u8'}, {'title': '第11集', 'url': 'https://play.modujx11.com/20241229/Q3WIdhPh/index.m3u8'}, {'title': '第12集', 'url': 'https://play.modujx11.com/20250105/PiOT9Nyy/index.m3u8'}, {'title': '第13集', 'url': 'https://play.modujx11.com/20250112/Bfdj6SVr/index.m3u8'}, {'title': '第14集', 'url': 'https://play.modujx11.com/20250119/IuVpmJ3U/index.m3u8'}, {'title': '第15集', 'url': 'https://play.modujx11.com/20250126/HEmtc6EY/index.m3u8'}, {'title': '第16集', 'url': 'https://play.modujx11.com/20250202/09s3Zxno/index.m3u8'}, {'title': '第17集', 'url': 'https://play.modujx11.com/20250209/1q69bPiE/index.m3u8'}, {'title': '第18集', 'url': 'https://play.modujx11.com/20250216/8cNLwnZV/index.m3u8'}, {'title': '第19集', 'url': 'https://play.modujx11.com/20250223/FsFIObQ2/index.m3u8'}, {'title': '第20集', 'url': 'https://play.modujx11.com/20250302/TmhzAQXc/index.m3u8'}, {'title': '第21集', 'url': 'https://play.modujx11.com/20250309/Rj0cJPpC/index.m3u8'}, {'title': '第22集', 'url': 'https://play.modujx11.com/20250316/DkuGavhe/index.m3u8'}, {'title': '第23集', 'url': 'https://play.modujx11.com/20250323/RaHUSc6n/index.m3u8'}, {'title': '第24集', 'url': 'https://play.modujx11.com/20250330/dunUgRiq/index.m3u8'}, {'title': '第25集', 'url': 'https://play.modujx11.com/20250406/ixp7SCOu/index.m3u8'}, {'title': '第26集', 'url': 'https://play.modujx11.com/20250413/mV9W1O2a/index.m3u8'}, {'title': '第27集', 'url': 'https://play.modujx11.com/20250420/DAvTtyd2/index.m3u8'}, {'title': '第28集', 'url': 'https://play.modujx11.com/20250427/aa32GTM5/index.m3u8'}, {'title': '第29集', 'url': 'https://play.modujx11.com/20250504/Yp4YnxjQ/index.m3u8'}, {'title': '第30集', 'url': 'https://play.modujx11.com/20250511/aZBORTZy/index.m3u8'}, {'title': '第31集', 'url': 'https://play.modujx11.com/20250518/NpnFRnO1/index.m3u8'}, {'title': '第32集', 'url': 'https://play.modujx11.com/20250525/cQIZUzsT/index.m3u8'}]
+2025-05-26 01:09:58,202 - DEBUG - Using WinForms / Chromium
+2025-05-26 01:09:59,769 - DEBUG - before_load event fired. injecting pywebview object
+2025-05-26 01:09:59,770 - DEBUG - Loading JS files from E:\PycharmProjects\视频网站\.venv\Lib\site-packages\webview\js
+2025-05-26 01:09:59,805 - DEBUG - _pywebviewready event fired
+2025-05-26 01:09:59,808 - DEBUG - loaded event fired
+2025-05-26 01:10:45,120 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:10:47,780 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:10:50,446 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:10:53,093 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:10:55,757 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:10:58,411 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:01,059 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:03,729 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:06,371 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:09,029 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:11,685 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:14,344 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:16,997 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:19,660 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:22,309 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:24,979 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:27,633 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:30,278 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:32,940 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:35,591 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:38,245 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:40,902 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:43,561 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:46,221 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:48,878 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:51,527 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:54,192 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:11:56,845 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:00,247 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:03,536 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:06,504 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:08,438 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:11,064 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:14,047 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:16,753 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:19,540 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:23,263 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:25,396 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:28,223 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:31,656 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:34,940 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:38,064 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:40,839 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:43,604 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:46,314 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:49,085 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:51,748 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:54,948 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:12:57,359 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:00,084 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:04,159 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:06,663 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:10,379 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:12,226 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:15,169 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:17,491 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:20,158 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:22,857 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:25,473 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:28,246 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:31,299 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:33,732 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:36,765 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:40,586 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:43,491 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:48,413 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:51,007 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:54,066 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:13:57,026 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:03,255 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:03,360 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:05,063 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:07,615 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:10,480 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:12,933 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:15,590 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:18,236 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:20,937 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:23,554 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:26,207 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:28,860 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:31,517 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:34,269 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:37,059 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:39,483 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:42,143 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:44,801 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:47,451 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:50,112 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:52,766 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:55,418 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:14:58,082 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:00,731 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:03,399 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:06,042 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:08,715 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:11,355 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:14,011 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:16,685 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:19,324 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:21,980 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:24,639 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:27,300 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:29,952 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:32,616 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:35,262 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:37,918 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:40,577 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:43,229 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:45,885 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:48,545 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:51,198 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:53,867 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:56,511 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:15:59,172 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:01,831 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:04,482 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:07,138 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:09,797 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:12,448 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:15,110 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:17,764 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:20,422 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:23,076 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:25,733 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:28,407 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:31,050 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:33,703 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:36,355 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:39,030 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:41,685 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:44,563 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:47,214 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:49,872 - INFO - 保存播放历史: 牧神记
+2025-05-26 01:16:52,535 - INFO - 保存播放历史: 牧神记

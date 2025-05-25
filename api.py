@@ -72,11 +72,12 @@ async def serve_m3u8(video_name: str, episode: str, m3u8_path: str):
             safe_filename = line.split('/')[-1]
             ts_cache_path = CACHE_ROOT / video_name / episode / "ts" / safe_filename
             modified_lines.append(ts_path)
-            future = run_async_in_thread(download_ts, urljoin(SOURCE_DOMAIN, line), ts_cache_path)
-            # 可选：添加回调
-            future.add_done_callback(
-                lambda f: print(f"任务完成，结果: {f.result()}")
-            )
+            if not ts_cache_path.exists():
+                future = run_async_in_thread(download_ts, urljoin(SOURCE_DOMAIN, line), ts_cache_path)
+                # 可选：添加回调
+                future.add_done_callback(
+                    lambda f: print(f"任务完成，结果: {f.result()}，{ts_cache_path}")
+                )
 
             save = True
         else:
@@ -84,7 +85,7 @@ async def serve_m3u8(video_name: str, episode: str, m3u8_path: str):
             # 保存修改后的M3U8
     if save:
         cache_path.mkdir(parents=True, exist_ok=True)
-        await write_file(cache_path / "index.m3u8", '\n'.join(modified_lines))
+        await write_file(cache_path, '\n'.join(modified_lines))
         # 触发异步下载
 
     print('\n'.join(modified_lines))
@@ -126,7 +127,7 @@ async def serve_ts(video_name: str, episode: str, ts_filename: str):
 async def download_ts(ts_url: str, cache_path: Path):
     """增强版TS文件下载，包含请求头和更详细的错误处理"""
     async with SEMAPHORE:
-        print(f"正在下载: {ts_url.split('/')[-1]}")
+        print(f"正在下载: {ts_url}")
 
         # 确保目录存在
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -151,6 +152,7 @@ async def download_ts(ts_url: str, cache_path: Path):
                             async with aiofiles.open(cache_path, 'wb') as f:
                                 async for chunk in resp.content.iter_chunked(1024 * 1024):
                                     await f.write(chunk)
+                                await f.flush()  # 确保数据写入磁盘
                             print(f"下载成功: {cache_path.name}")
                             return True
                         else:
