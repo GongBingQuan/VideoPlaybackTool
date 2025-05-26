@@ -3,7 +3,19 @@ import subprocess
 import sys
 from PyInstaller import __main__ as pyi
 
+def clean_existing_exes():
+    """删除dist目录下已有的可执行文件"""
+    exes = ['api.exe', 'main.exe']
+    for exe in exes:
+        exe_path = os.path.join('dist', exe)
+        if os.path.exists(exe_path):
+            print(f"Removing existing {exe_path}...")
+            os.remove(exe_path)
+
 def build_executables():
+    # 清理旧的可执行文件
+    clean_existing_exes()
+    
     # 确保dist目录存在
     os.makedirs('dist', exist_ok=True)
     
@@ -22,61 +34,14 @@ def build_executables():
         '--name=main',
         '--onefile',
         '--distpath=dist',
+        '-F',
+        '-w',
+        '-i=favicon.ico',  # 使用标准ICO格式图标
         'main.py'
     ])
 
-def create_launcher():
-    # 创建启动脚本
-    launcher_content = """import subprocess
-import sys
-import os
-import signal
 
-def start_processes():
-    # 获取当前脚本所在目录
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 启动api和main
-    api_process = subprocess.Popen([os.path.join(base_dir, 'api.exe')])
-    main_process = subprocess.Popen([os.path.join(base_dir, 'main.exe')])
-    
-    return api_process, main_process
-
-def signal_handler(sig, frame):
-    print('Terminating processes...')
-    api_process.terminate()
-    main_process.terminate()
-    sys.exit(0)
-
-if __name__ == '__main__':
-    api_process, main_process = start_processes()
-    print("Both processes started. Press Ctrl+C to stop.")
-    
-    # 设置信号处理
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-    
-    # 等待进程结束
-    api_process.wait()
-    main_process.wait()
-"""
-    
-    with open(os.path.join('dist', 'launcher.py'), 'w') as f:
-        f.write(launcher_content)
-    
-    # 打包launcher.py
-    print("Building launcher executable...")
-    pyi.run([
-        '--name=launcher',
-        '--onefile',
-        '--distpath=dist',
-        os.path.join('dist', 'launcher.py')
-    ])
-    
-    # 删除临时文件
-    os.remove(os.path.join('dist', 'launcher.py'))
 
 if __name__ == '__main__':
     build_executables()
-    create_launcher()
-    print("Build completed. Use 'dist\\launcher.exe' to start both applications.")
+    print("Build completed")

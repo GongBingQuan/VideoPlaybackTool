@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-26 00:17:21",
+            "last_check": "2025-05-26 05:33:26",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1266,7 +1266,7 @@
                 }
             ],
             "total_episodes": 220,
-            "last_check": "2025-05-26 00:17:21",
+            "last_check": "2025-05-26 05:33:26",
             "update_time": "2025-05-25",
             "intro_duration": 150,
             "outro_duration": 90
@@ -1966,10 +1966,10 @@
                 }
             ],
             "total_episodes": 172,
-            "last_check": "2025-05-26 00:17:21",
+            "last_check": "2025-05-26 05:33:26",
             "update_time": "2025-05-19",
             "intro_duration": 160,
-            "outro_duration": 90
+            "outro_duration": 192
         },
         {
             "title": "一念永恒第三季",
@@ -2178,7 +2178,7 @@
                 }
             ],
             "total_episodes": 50,
-            "last_check": "2025-05-26 00:17:22",
+            "last_check": "2025-05-26 05:33:27",
             "update_time": "2025-05-20"
         },
         {
@@ -2628,7 +2628,7 @@
                 }
             ],
             "total_episodes": 110,
-            "last_check": "2025-05-26 00:17:22",
+            "last_check": "2025-05-26 05:33:27",
             "update_time": "2025-05-20",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3504,7 +3504,7 @@
                 }
             ],
             "total_episodes": 216,
-            "last_check": "2025-05-26 00:17:22",
+            "last_check": "2025-05-26 05:33:27",
             "update_time": "2025-05-22",
             "intro_duration": 147,
             "outro_duration": 151
@@ -3924,8 +3924,10 @@
                 }
             ],
             "total_episodes": 102,
-            "last_check": "2025-05-26 00:17:23",
-            "update_time": "2025-05-23"
+            "last_check": "2025-05-26 05:33:27",
+            "update_time": "2025-05-23",
+            "intro_duration": 124,
+            "outro_duration": 114
         },
         {
             "title": "斗破苍穹 年番",
@@ -4534,7 +4536,7 @@
                 }
             ],
             "total_episodes": 150,
-            "last_check": "2025-05-26 00:17:23",
+            "last_check": "2025-05-26 05:33:27",
             "update_time": "2025-05-24",
             "intro_duration": 195,
             "outro_duration": 174
@@ -5108,7 +5110,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 121,
-            "last_check": "2025-05-26 00:17:23",
+            "last_check": "2025-05-26 05:33:28",
             "update_time": "2025-05-01"
         },
         {
@@ -5704,7 +5706,7 @@
             "total_episodes": 146,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 00:17:23",
+            "last_check": "2025-05-26 05:33:28",
             "update_time": "2025-05-24"
         },
         {
@@ -5844,7 +5846,7 @@
             "total_episodes": 32,
             "intro_duration": 160,
             "outro_duration": 180,
-            "last_check": "2025-05-26 00:17:24",
+            "last_check": "2025-05-26 05:33:28",
             "update_time": "2025-05-25"
         },
         {
@@ -5970,9 +5972,9 @@
                 }
             ],
             "total_episodes": 29,
-            "intro_duration": 150,
-            "outro_duration": 90,
-            "last_check": "2025-05-26 00:17:24",
+            "intro_duration": 117,
+            "outro_duration": 109,
+            "last_check": "2025-05-26 05:33:28",
             "update_time": "2025-05-25"
         },
         {
@@ -6032,7 +6034,7 @@
             "total_episodes": 12,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 00:17:24",
+            "last_check": "2025-05-26 05:33:28",
             "update_time": "2023-09-10"
         },
         {
@@ -6048,7 +6050,7 @@
             "total_episodes": 1,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 00:17:24",
+            "last_check": "2025-05-26 05:33:29",
             "update_time": "2025-04-30"
         }
     ]

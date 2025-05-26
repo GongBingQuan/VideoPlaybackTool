@@ -334,7 +334,6 @@
             },
             customType: {
                 m3u8: function (video, url, art) {
-                    videoPath = 'http://localhost:9009/hls/'+encodeURIComponent(videoName)+'/'+encodeURIComponent(video_list[currentIndex].title)+'/'+videoUrl
                     if (Hls.isSupported()) {
                         const hls = new Hls({
                             enableWorker: true,
@@ -350,7 +349,7 @@
                             fragLoadingRetryDelay: 1000, // 重试间隔1秒
                             manifestLoadingTimeOut: 10000 // 10秒清单加载超时
                         });
-                        hls.loadSource(videoPath);
+                        hls.loadSource(url);
                         hls.attachMedia(video);
                         hls.on(Hls.Events.ERROR, (event, data) => {
                             console.log('hls ERROR', data)
@@ -370,7 +369,7 @@
                             hls.destroy()
                         });
                     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                        video.src = videoPath;
+                        video.src = url;
                     } else {
                         art.notice.show = '不支持播放m3u8格式';
                     }
@@ -663,8 +662,9 @@
     function playEpisode(episode, index) {
         currentIndex = index;
         if (window.artplayer) {
+            videoPath='http://localhost:9009/hls/'+encodeURIComponent(videoName)+'/'+encodeURIComponent(video_list[currentIndex].title)+'/'+episode.url
             window.artplayer.pause();
-            window.artplayer.switchUrl(episode.url);
+            window.artplayer.switchUrl(videoPath);
             window.artplayer.on('ready', () => window.artplayer.play());
             // 通知Python端
             if (window.pywebview && window.pywebview.api) {
