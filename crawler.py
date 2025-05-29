@@ -1,20 +1,30 @@
 import requests
 from bs4 import BeautifulSoup
-import json
 import time
 import random
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
+import json
+import urllib.parse
+
+class APIError(Exception):
+    """API请求或响应处理过程中的错误"""
+    pass
 
 class VideoCrawler:
     def __init__(self):
         # 设置日志
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - %(levelname)s - %(message)s'
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            force=True
         )
         self.logger = logging.getLogger(__name__)
+        # 确保日志记录器级别正确设置
+        self.logger.setLevel(logging.INFO)
+        # 确保根日志记录器级别正确设置
+        logging.getLogger().setLevel(logging.INFO)
 
         # 请求头列表
         self.user_agents = [
@@ -33,11 +43,9 @@ class VideoCrawler:
         """生成随机请求头"""
         return {
             'User-Agent': random.choice(self.user_agents),
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept': 'application/json',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1'
+            'Connection': 'keep-alive'
         }
 
     def fetch_page(self, url: str) -> Optional[str]:
@@ -199,6 +207,142 @@ class VideoCrawler:
                     time.sleep(retry_delay * (attempt + 1))
                 continue
         return None
+
+    def search_videos(self, keyword: str, page: int = 1) -> Dict[str, Any]:
+        """
+        搜索视频
+        :param keyword: 搜索关键词
+        :param page: 页码，默认为1
+        :return: 搜索结果字典
+        """
+        try:
+            # URL编码关键词
+            encoded_keyword = urllib.parse.quote(keyword)
+            
+            # 构建API URL
+            url = f"https://www.mdzyapi.com/api.php/provide/vod/?ac=videolist&pg={page}&wd={encoded_keyword}"
+            
+            # 记录请求信息
+            headers = self._get_random_headers()
+            self.logger.info(f"发送搜索请求: URL={url}")
+            self.logger.info(f"请求头: {headers}")
+
+            # 发送请求，禁用自动解压缩
+            response = self.session.get(
+                url,
+                headers=headers,
+                timeout=self.timeout,
+                stream=True  # 使用流式传输
+            )
+            # 读取原始内容
+            response.raw.decode_content = False
+            response.raise_for_status()
+
+            # 获取响应内容
+            response_text = None
+            encodings = ['utf-8', 'gbk', 'gb2312', 'iso-8859-1']
+            
+            # 尝试不同的编码
+            for encoding in encodings:
+                try:
+                    response_text = response.content.decode(encoding)
+                    self.logger.info(f"成功使用 {encoding} 解码响应内容")
+                    break
+                except UnicodeDecodeError:
+                    self.logger.debug(f"使用 {encoding} 解码失败")
+                    continue
+            
+            if response_text is None:
+                response_text = response.text  # 使用requests的默认解码
+            
+            self.logger.info(f"搜索响应状态码: {response.status_code}")
+            self.logger.info(f"响应头: {dict(response.headers)}")
+            self.logger.info(f"响应编码: {response.encoding}")
+            self.logger.info(f"响应内容: {response_text[:500]}...")  # 只记录前500个字符，避免日志过长
+
+            # 检查响应内容是否为HTML
+            if '<html' in response_text.lower():
+                self.logger.error("API返回了HTML页面而非JSON数据")
+                raise APIError("API返回了HTML页面而非JSON数据")
+            
+            # 记录Content-Type，但不强制要求是application/json
+            content_type = response.headers.get('Content-Type', '').lower()
+            if 'application/json' not in content_type and 'text/json' not in content_type:
+                self.logger.debug(f"响应的Content-Type不是JSON格式: {content_type}")
+
+            try:
+                # 尝试清理响应文本中的BOM标记和其他可能的前缀
+                if response_text.startswith('\ufeff'):
+                    response_text = response_text[1:]
+                
+                # 尝试查找JSON内容的开始位置（处理可能的前缀文本）
+                json_start = response_text.find('{')
+                if json_start > 0:
+                    self.logger.warning(f"JSON数据前有{json_start}个字符的前缀，已移除")
+                    response_text = response_text[json_start:]
+                
+                # 解析JSON响应
+                data = json.loads(response_text)
+                self.logger.info(f"搜索结果: 总数={data.get('total', 0)}, 当前页={data.get('page', 1)}, 总页数={data.get('pagecount', 1)}")
+            except json.JSONDecodeError as e:
+                self.logger.error(f"JSON解析错误: {str(e)}")
+                self.logger.error(f"响应内容类型: {content_type}")
+                # 尝试检测是否为压缩数据
+                if response.headers.get('Content-Encoding') in ['gzip', 'deflate', 'br']:
+                    self.logger.error(f"响应可能是压缩格式: {response.headers.get('Content-Encoding')}")
+                raise APIError(f"API返回了无效的JSON数据: {str(e)}")
+            
+            # 格式化结果
+            result = {
+                "total": int(data.get("total", 0)),
+                "page": int(data.get("page", 1)),
+                "pagecount": int(data.get("pagecount", 1)),
+                "limit": int(data.get("limit", 20)),
+                "videos": []
+            }
+            
+            # 处理视频列表
+            for item in data.get("list", []):
+                video = {
+                    "title": item.get("vod_name", ""),
+                    "type": item.get("type_name", ""),
+                    "year": item.get("vod_year", ""),
+                    "area": item.get("vod_area", ""),
+                    "director": item.get("vod_director", ""),
+                    "actor": item.get("vod_actor", ""),
+                    "pic": item.get("vod_pic", ""),
+                    "remarks": item.get("vod_remarks", ""),
+                    "score": item.get("vod_score", ""),
+                    "play_url": item.get("vod_play_url", ""),
+                    "description": item.get("vod_content", "").replace("<\/p>", "").strip()
+                }
+                result["videos"].append(video)
+            
+            return result
+            
+        except requests.RequestException as e:
+            error_msg = f"搜索请求失败: {str(e)}"
+            self.logger.error(error_msg)
+            return self._create_error_response(page, error_msg)
+        except (json.JSONDecodeError, APIError) as e:
+            error_msg = f"API响应解析失败: {str(e)}"
+            self.logger.error(error_msg)
+            return self._create_error_response(page, error_msg)
+        except Exception as e:
+            error_msg = f"搜索过程中发生未知错误: {str(e)}"
+            self.logger.error(error_msg)
+            return self._create_error_response(page, error_msg)
+
+    def _create_error_response(self, page: int, error_msg: str) -> Dict[str, Any]:
+        """创建统一的错误响应格式"""
+        return {
+            "total": 0,
+            "page": page,
+            "pagecount": 1,
+            "limit": 20,
+            "videos": [],
+            "error": error_msg
+        }
 
 if __name__ == '__main__':
 

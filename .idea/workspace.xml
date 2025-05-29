@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="优化TS下载逻辑并调整HLS播放参数：添加文件存在检查、改进缓存写入和调整缓冲策略">
-      <change afterPath="$PROJECT_DIR$/dist/favicon.ico" afterDir="false" />
+    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制">
+      <change afterPath="$PROJECT_DIR$/download_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/视频网站.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/视频网站.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.py" beforeDir="false" afterPath="$PROJECT_DIR$/build.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/video_player.html" beforeDir="false" afterPath="$PROJECT_DIR$/dist/video_player.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
@@ -70,36 +75,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.api.executor": "Run",
-    "Python.html5_player.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "v2",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "E:/PycharmProjects/视频网站/dist",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.idesettings.debugger.python",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.api.executor&quot;: &quot;Run&quot;,
+    &quot;Python.html5_player.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;v2&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/PycharmProjects/视频网站/dist&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.idesettings.debugger.python&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\PycharmProjects\视频网站\dist" />
+      <recent name="E:\PycharmProjects\视频网站\build\main\localpycs" />
+      <recent name="E:\PycharmProjects\视频网站\build\main" />
       <recent name="E:\PycharmProjects\视频网站" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\PycharmProjects\视频网站\assets" />
       <recent name="E:\PycharmProjects\视频网站\js\6.0.0" />
       <recent name="E:\PycharmProjects\视频网站\js" />
       <recent name="E:\PycharmProjects\视频网站" />
@@ -177,8 +185,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.api" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.api" />
         <item itemvalue="Python.html5_player" />
       </list>
     </recent_temporary>
@@ -237,7 +245,18 @@
       <workItem from="1748197075107" duration="6528000" />
       <workItem from="1748203652917" duration="6034000" />
       <workItem from="1748209769220" duration="105000" />
-      <workItem from="1748238146844" duration="1794000" />
+      <workItem from="1748238146844" duration="7277000" />
+      <workItem from="1748245984558" duration="301000" />
+      <workItem from="1748269274840" duration="2227000" />
+      <workItem from="1748280766851" duration="140000" />
+      <workItem from="1748281053353" duration="11136000" />
+      <workItem from="1748309230321" duration="6569000" />
+      <workItem from="1748349747720" duration="29000" />
+      <workItem from="1748349790355" duration="15823000" />
+      <workItem from="1748402960505" duration="24000" />
+      <workItem from="1748431931320" duration="2331000" />
+      <workItem from="1748481478248" duration="5618000" />
+      <workItem from="1748489502543" duration="698000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -463,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748193780268</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制">
+      <option name="closed" value="true" />
+      <created>1748240045900</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1748240045900</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -508,11 +535,12 @@
     <MESSAGE value="更新播放历史记录并优化下一集播放逻辑：调整仙逆剧集进度和播放器功能" />
     <MESSAGE value="实现HLS流媒体代理和缓存服务：新增异步下载线程和TS文件缓存机制" />
     <MESSAGE value="优化TS下载逻辑并调整HLS播放参数：添加文件存在检查、改进缓存写入和调整缓冲策略" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化TS下载逻辑并调整HLS播放参数：添加文件存在检查、改进缓存写入和调整缓冲策略" />
+    <MESSAGE value="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制" />
+    <option name="LAST_COMMIT_MESSAGE" value="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/$api.coverage" NAME="api 覆盖结果" MODIFIED="1748209460895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$api.coverage" NAME="api 覆盖结果" MODIFIED="1748481557506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$html5_player.coverage" NAME="html5_player 覆盖结果" MODIFIED="1747459888355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1748205019726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1748490201948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

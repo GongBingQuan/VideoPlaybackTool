@@ -12,33 +12,38 @@ def clean_existing_exes():
             print(f"Removing existing {exe_path}...")
             os.remove(exe_path)
 
+
 def build_executables():
-    # 清理旧的可执行文件
     clean_existing_exes()
-    
-    # 确保dist目录存在
     os.makedirs('dist', exist_ok=True)
-    
+    print("当前图标路径:", os.path.abspath('assets/app.ico'))  # 确认路径正确
+    print("文件是否存在:", os.path.exists('assets/app.ico'))  # 返回 True/False
+
+    # 打包main.py（修正后的参数）
+    print("Building main executable...")
+    pyi.run([
+        '--name=main',
+        '--onefile',
+        '--distpath=dist',
+        '--windowed',  # 使用-w的规范写法
+        "--add-data=assets/app.ico;assets"
+        '--icon=assets/app.ico',
+        '--clean',
+        'main.py'
+    ])
+
     # 打包api.py
     print("Building api executable...")
     pyi.run([
         '--name=api',
         '--onefile',
         '--distpath=dist',
+        '--windowed',  # 使用-w的规范写法
+         # '--clean',
         'api.py'
     ])
-    
-    # 打包main.py
-    print("Building main executable...")
-    pyi.run([
-        '--name=main',
-        '--onefile',
-        '--distpath=dist',
-        '-F',
-        '-w',
-        '-i=favicon.ico',  # 使用标准ICO格式图标
-        'main.py'
-    ])
+
+
 
 
 

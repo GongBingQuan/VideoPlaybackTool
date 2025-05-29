@@ -171,10 +171,15 @@ class VideoPlayer(tk.Tk):
             # 播放历史页
             self.history_frame = ttk.Frame(self.notebook)
             self.notebook.add(self.history_frame, text="播放历史")
+            
+            # 搜索页
+            self.search_frame = ttk.Frame(self.notebook)
+            self.notebook.add(self.search_frame, text="搜索视频")
 
             # 创建视频列表和历史记录
             self.create_video_list()
             self.create_history_list()
+            self.create_search_page()
 
             self.logger.info("标签页创建完成")
 
@@ -681,6 +686,355 @@ class VideoPlayer(tk.Tk):
         # 可添加选中项变化时的逻辑
         pass
 
+    def create_search_page(self):
+        """创建搜索页面"""
+        try:
+            # 创建搜索控制区域
+            search_control = ttk.Frame(self.search_frame)
+            search_control.pack(fill=tk.X, padx=10, pady=5)
+
+            # 搜索输入框
+            self.search_entry = ttk.Entry(search_control, width=40)
+            self.search_entry.pack(side=tk.LEFT, padx=5)
+
+            # 搜索按钮
+            self.search_button = ttk.Button(
+                search_control,
+                text="搜索",
+                command=self.perform_search
+            )
+            self.search_button.pack(side=tk.LEFT, padx=5)
+
+            # 状态标签
+            self.search_status_var = tk.StringVar(value="")
+            self.search_status = ttk.Label(
+                search_control,
+                textvariable=self.search_status_var
+            )
+            self.search_status.pack(side=tk.LEFT, padx=5)
+
+            # 创建搜索结果显示区域
+            result_frame = ttk.Frame(self.search_frame)
+            result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+            # 创建搜索结果树形视图
+            columns = ('标题', '类型', '年份', '地区', '导演', '主演', '备注', '评分')
+            self.search_tree = ttk.Treeview(
+                result_frame,
+                columns=columns,
+                show='headings',
+                selectmode='browse'
+            )
+
+            # 设置列标题和宽度
+            column_widths = {
+                '标题': 200, '类型': 80, '年份': 60,
+                '地区': 80, '导演': 100, '主演': 150,
+                '备注': 100, '评分': 60
+            }
+            
+            for col in columns:
+                self.search_tree.heading(col, text=col)
+                self.search_tree.column(col, width=column_widths[col], minwidth=50)
+
+            # 添加滚动条
+            y_scrollbar = ttk.Scrollbar(
+                result_frame,
+                orient=tk.VERTICAL,
+                command=self.search_tree.yview
+            )
+            self.search_tree.configure(yscrollcommand=y_scrollbar.set)
+
+            # 放置组件
+            self.search_tree.grid(row=0, column=0, sticky='nsew')
+            y_scrollbar.grid(row=0, column=1, sticky='ns')
+
+            # 配置grid权重
+            result_frame.grid_columnconfigure(0, weight=1)
+            result_frame.grid_rowconfigure(0, weight=1)
+
+            # 创建分页控制
+            page_control = ttk.Frame(self.search_frame)
+            page_control.pack(fill=tk.X, padx=10, pady=5)
+
+            self.prev_page_btn = ttk.Button(
+                page_control,
+                text="上一页",
+                command=self.prev_search_page,
+                state=tk.DISABLED
+            )
+            self.prev_page_btn.pack(side=tk.LEFT, padx=5)
+
+            self.page_label = ttk.Label(page_control, text="第 1 页")
+            self.page_label.pack(side=tk.LEFT, padx=5)
+
+            self.next_page_btn = ttk.Button(
+                page_control,
+                text="下一页",
+                command=self.next_search_page,
+                state=tk.DISABLED
+            )
+            self.next_page_btn.pack(side=tk.LEFT, padx=5)
+
+            # 绑定双击事件
+            self.search_tree.bind('<Double-1>', self.on_search_result_select)
+
+            # 初始化搜索相关变量
+            self.current_page = 1
+            self.total_pages = 1
+            self.search_results = []
+            
+            # 绑定回车键到搜索功能
+            self.search_entry.bind('<Return>', lambda e: self.perform_search())
+
+        except Exception as e:
+            self.logger.error(f"创建搜索页面失败: {str(e)}")
+            messagebox.showerror("错误", f"创建搜索页面失败: {str(e)}")
+
+    def perform_search(self):
+        """执行搜索"""
+        keyword = self.search_entry.get().strip()
+        if not keyword:
+            messagebox.showwarning("提示", "请输入搜索关键词")
+            return
+
+        try:
+            self.search_status_var.set("搜索中...")
+            self.search_button.configure(state=tk.DISABLED)
+            self.search_tree.delete(*self.search_tree.get_children())
+
+            # 在新线程中执行搜索
+            def search_task():
+                try:
+                    results = self.crawler.search_videos(keyword, self.current_page)
+                    self.after(0, self.update_search_results, results)
+                except Exception as e:
+                    self.after(0, self.handle_search_error, str(e))
+
+            thread = threading.Thread(target=search_task)
+            thread.daemon = True
+            thread.start()
+
+        except Exception as e:
+            self.logger.error(f"搜索失败: {str(e)}")
+            self.search_status_var.set("搜索失败")
+            self.search_button.configure(state=tk.NORMAL)
+            messagebox.showerror("错误", f"搜索失败: {str(e)}")
+
+    def update_search_results(self, results):
+        """更新搜索结果显示"""
+        try:
+            # 从返回的数据中获取视频列表
+            self.search_results = results.get('list', [])
+            self.total_pages = int(results.get('pagecount', 1))
+            total_count = int(results.get('total', 0))
+            current_page = int(results.get('page', 1))
+            
+            # 清空现有结果
+            self.search_tree.delete(*self.search_tree.get_children())
+
+            # 显示新结果
+            for video in self.search_results:
+                # 处理演员和导演信息
+                actors = video.get('vod_actor', '').split(',')
+                directors = video.get('vod_director', '').split(',')
+                
+                # 处理可能的空值
+                values = (
+                    video.get('vod_name', ''),
+                    video.get('type_name', ''),
+                    video.get('vod_year', ''),
+                    video.get('vod_area', ''),
+                    directors[0] if directors else '',  # 只显示第一个导演
+                    actors[0] if actors else '',        # 只显示第一个演员
+                    video.get('vod_remarks', ''),
+                    f"{video.get('vod_score', '0.0')}分"
+                )
+                self.search_tree.insert('', tk.END, values=values)
+
+            # 更新状态和按钮
+            if total_count > 0:
+                self.search_status_var.set(f"找到 {total_count} 个结果")
+            else:
+                self.search_status_var.set("未找到相关视频")
+
+            self.page_label.configure(text=f"第 {current_page} / {self.total_pages} 页")
+            
+            # 更新分页按钮状态
+            self.prev_page_btn.configure(state=tk.NORMAL if current_page > 1 else tk.DISABLED)
+            self.next_page_btn.configure(state=tk.NORMAL if current_page < self.total_pages else tk.DISABLED)
+
+            # 更新当前页码
+            self.current_page = current_page
+
+        except Exception as e:
+            self.logger.error(f"更新搜索结果失败: {str(e)}")
+            messagebox.showerror("错误", f"更新搜索结果失败: {str(e)}")
+        finally:
+            self.search_button.configure(state=tk.NORMAL)
+
+    def handle_search_error(self, error_msg):
+        """处理搜索错误"""
+        self.search_status_var.set("搜索失败")
+        self.search_button.configure(state=tk.NORMAL)
+        messagebox.showerror("搜索错误", f"搜索失败: {error_msg}")
+
+    def prev_search_page(self):
+        """显示上一页搜索结果"""
+        if self.current_page > 1:
+            self.current_page -= 1
+            self.perform_search()
+
+    def next_search_page(self):
+        """显示下一页搜索结果"""
+        if self.current_page < self.total_pages:
+            self.current_page += 1
+            self.perform_search()
+
+    def on_search_result_select(self, event):
+        """处理搜索结果选择事件"""
+        try:
+            selection = self.search_tree.selection()
+            if not selection:
+                return
+
+            item = selection[0]
+            values = self.search_tree.item(item)['values']
+            if not values:
+                return
+
+            # 获取选中的视频信息
+            selected_title = values[0]
+            selected_video = None
+            for video in self.search_results:
+                if video.get('vod_name', '') == selected_title:
+                    selected_video = video
+                    break
+
+            if selected_video:
+                # 显示视频详情
+                self.show_video_details(selected_video)
+            else:
+                messagebox.showwarning("提示", "未找到视频详细信息")
+
+        except Exception as e:
+            self.logger.error(f"处理搜索结果选择失败: {str(e)}")
+            messagebox.showerror("错误", f"无法处理所选视频: {str(e)}")
+
+    def show_video_details(self, video):
+        """显示视频详情对话框"""
+        try:
+            details_window = tk.Toplevel(self)
+            details_window.title(f"视频详情 - {video.get('vod_name', '')}")
+            details_window.geometry("600x400")
+            details_window.transient(self)
+            details_window.grab_set()
+
+            # 创建详情框架
+            frame = ttk.Frame(details_window, padding="10")
+            frame.pack(fill=tk.BOTH, expand=True)
+
+            # 显示视频信息
+            ttk.Label(frame, text=video.get('vod_name', ''), font=('Microsoft YaHei', 14, 'bold')).pack(pady=5)
+            
+            info_text = f"""
+类型：{video.get('type_name', '')}
+年份：{video.get('vod_year', '')}
+地区：{video.get('vod_area', '')}
+导演：{video.get('vod_director', '')}
+主演：{video.get('vod_actor', '')}
+评分：{video.get('vod_score', '0.0')}分
+备注：{video.get('vod_remarks', '')}
+
+简介：
+{video.get('vod_content', '').replace("</p>", "").strip()}
+            """
+            
+            # 创建文本框显示详细信息
+            text_widget = tk.Text(frame, wrap=tk.WORD, height=10)
+            text_widget.pack(fill=tk.BOTH, expand=True, pady=5)
+            text_widget.insert('1.0', info_text)
+            text_widget.configure(state='disabled')
+
+            # 添加滚动条
+            scrollbar = ttk.Scrollbar(frame, command=text_widget.yview)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            text_widget.configure(yscrollcommand=scrollbar.set)
+
+            # 添加播放按钮
+            ttk.Button(
+                frame,
+                text="播放",
+                command=lambda: self.play_search_result(video)
+            ).pack(pady=10)
+
+        except Exception as e:
+            self.logger.error(f"显示视频详情失败: {str(e)}")
+            messagebox.showerror("错误", f"无法显示视频详情: {str(e)}")
+
+    def play_search_result(self, video):
+        """播放搜索结果视频"""
+        try:
+            # 解析播放源
+            play_url = video.get('vod_play_url', '')
+            if not play_url:
+                raise ValueError("未找到播放源")
+
+            episodes = []
+            # 分割播放列表
+            episode_list = play_url.split('#')
+            
+            for episode_info in episode_list:
+                if not episode_info:
+                    continue
+                    
+                # 分离集数信息和URL
+                parts = episode_info.split('$')
+                if len(parts) == 2:
+                    episode_name, url = parts
+                    episodes.append({
+                        'title': episode_name,
+                        'url': url
+                    })
+
+            if not episodes:
+                raise ValueError("未找到可用的播放源")
+
+            # 准备视频播放数据
+            subscription_data = {
+                'title': video.get('vod_name', '未知标题'),
+                'current_index': 0,
+                'episodes': episodes,
+                'intro_duration': 90,
+                'outro_duration': 90,
+                'type': video.get('type_name', ''),
+                'year': video.get('vod_year', ''),
+                'area': video.get('vod_area', ''),
+                'director': video.get('vod_director', ''),
+                'actor': video.get('vod_actor', ''),
+                'description': video.get('vod_content', '').replace("</p>", "").strip()
+            }
+
+            # 创建播放器窗口
+            VideoPlayerWindow(self, self.check_updates, subscription_data)
+
+            # 保存到播放历史
+            self.save_play_history({
+                'title': video.get('vod_name', '未知标题'),
+                'episodes': episodes,
+                'last_played': episodes[0]['title'],
+                'episode_number': 0,
+                'last_played_time': 0,
+                'total_episodes': len(episodes)
+            })
+
+        except ValueError as ve:
+            self.logger.error(f"播放源解析失败: {str(ve)}")
+            messagebox.showerror("错误", f"无法解析播放源: {str(ve)}")
+        except Exception as e:
+            self.logger.error(f"播放视频失败: {str(e)}")
+            messagebox.showerror("错误", f"无法播放视频: {str(e)}")
+
     def resort_episodes(self):
         """重新排序剧集列表（修复列标识符和数据类型问题）"""
         try:
@@ -1002,4 +1356,5 @@ if __name__ == '__main__':
         vp.mainloop()
     finally:
         # 确保程序退出时清理
+        cleanup()
         cleanup()

@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-26 05:33:26",
+            "last_check": "2025-05-29 11:32:52",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1266,7 +1266,7 @@
                 }
             ],
             "total_episodes": 220,
-            "last_check": "2025-05-26 05:33:26",
+            "last_check": "2025-05-29 11:32:53",
             "update_time": "2025-05-25",
             "intro_duration": 150,
             "outro_duration": 90
@@ -1963,11 +1963,15 @@
                 {
                     "title": "第172集",
                     "url": "https://play.modujx11.com/20250519/5C8OSzEl/index.m3u8"
+                },
+                {
+                    "title": "第173集",
+                    "url": "https://play.modujx11.com/20250526/UMXsrPjn/index.m3u8"
                 }
             ],
-            "total_episodes": 172,
-            "last_check": "2025-05-26 05:33:26",
-            "update_time": "2025-05-19",
+            "total_episodes": 173,
+            "last_check": "2025-05-29 11:32:53",
+            "update_time": "2025-05-26",
             "intro_duration": 160,
             "outro_duration": 192
         },
@@ -2175,11 +2179,17 @@
                 {
                     "title": "第50集",
                     "url": "https://play.modujx11.com/20250520/LUcUaiuf/index.m3u8"
+                },
+                {
+                    "title": "第51集",
+                    "url": "https://play.modujx11.com/20250527/jCyI8oIw/index.m3u8"
                 }
             ],
-            "total_episodes": 50,
-            "last_check": "2025-05-26 05:33:27",
-            "update_time": "2025-05-20"
+            "total_episodes": 51,
+            "last_check": "2025-05-29 11:32:53",
+            "update_time": "2025-05-27",
+            "intro_duration": 128,
+            "outro_duration": 125
         },
         {
             "title": "遮天",
@@ -2625,11 +2635,15 @@
                 {
                     "title": "第110集",
                     "url": "https://play.modujx11.com/20250520/oPbTHjOE/index.m3u8"
+                },
+                {
+                    "title": "第111集",
+                    "url": "https://play.modujx11.com/20250527/aHAGz0Bq/index.m3u8"
                 }
             ],
-            "total_episodes": 110,
-            "last_check": "2025-05-26 05:33:27",
-            "update_time": "2025-05-20",
+            "total_episodes": 111,
+            "last_check": "2025-05-29 11:32:54",
+            "update_time": "2025-05-27",
             "intro_duration": 150,
             "outro_duration": 90
         },
@@ -3504,7 +3518,7 @@
                 }
             ],
             "total_episodes": 216,
-            "last_check": "2025-05-26 05:33:27",
+            "last_check": "2025-05-29 11:32:54",
             "update_time": "2025-05-22",
             "intro_duration": 147,
             "outro_duration": 151
@@ -3924,7 +3938,7 @@
                 }
             ],
             "total_episodes": 102,
-            "last_check": "2025-05-26 05:33:27",
+            "last_check": "2025-05-29 11:32:54",
             "update_time": "2025-05-23",
             "intro_duration": 124,
             "outro_duration": 114
@@ -4536,7 +4550,7 @@
                 }
             ],
             "total_episodes": 150,
-            "last_check": "2025-05-26 05:33:27",
+            "last_check": "2025-05-29 11:32:54",
             "update_time": "2025-05-24",
             "intro_duration": 195,
             "outro_duration": 174
@@ -5110,7 +5124,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 121,
-            "last_check": "2025-05-26 05:33:28",
+            "last_check": "2025-05-29 11:32:55",
             "update_time": "2025-05-01"
         },
         {
@@ -5706,7 +5720,7 @@
             "total_episodes": 146,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 05:33:28",
+            "last_check": "2025-05-29 11:32:55",
             "update_time": "2025-05-24"
         },
         {
@@ -5846,7 +5860,7 @@
             "total_episodes": 32,
             "intro_duration": 160,
             "outro_duration": 180,
-            "last_check": "2025-05-26 05:33:28",
+            "last_check": "2025-05-29 11:32:55",
             "update_time": "2025-05-25"
         },
         {
@@ -5974,7 +5988,7 @@
             "total_episodes": 29,
             "intro_duration": 117,
             "outro_duration": 109,
-            "last_check": "2025-05-26 05:33:28",
+            "last_check": "2025-05-29 11:32:55",
             "update_time": "2025-05-25"
         },
         {
@@ -6034,7 +6048,7 @@
             "total_episodes": 12,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 05:33:28",
+            "last_check": "2025-05-29 11:32:55",
             "update_time": "2023-09-10"
         },
         {
@@ -6050,8 +6064,116 @@
             "total_episodes": 1,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-26 05:33:29",
+            "last_check": "2025-05-29 11:32:56",
             "update_time": "2025-04-30"
+        },
+        {
+            "title": "校花的贴身高手",
+            "url": "https://www.moduzy5.com/vod/17424/",
+            "last_update": "2024-07-28",
+            "episodes": [
+                {
+                    "title": "第01集",
+                    "url": "https://play.modujx14.com/20240727/AXLtpo6D/index.m3u8"
+                },
+                {
+                    "title": "第02集",
+                    "url": "https://play.modujx14.com/20240727/CLDlB5rC/index.m3u8"
+                },
+                {
+                    "title": "第03集",
+                    "url": "https://play.modujx14.com/20240727/H7sTEUEK/index.m3u8"
+                },
+                {
+                    "title": "第04集",
+                    "url": "https://play.modujx14.com/20240727/0nS2DFvH/index.m3u8"
+                },
+                {
+                    "title": "第05集",
+                    "url": "https://play.modujx14.com/20240727/sujLQxJg/index.m3u8"
+                },
+                {
+                    "title": "第06集",
+                    "url": "https://play.modujx14.com/20240727/nUaroR7B/index.m3u8"
+                },
+                {
+                    "title": "第07集",
+                    "url": "https://play.modujx14.com/20240727/iObnLeFT/index.m3u8"
+                },
+                {
+                    "title": "第08集",
+                    "url": "https://play.modujx14.com/20240727/PzLhDsrI/index.m3u8"
+                },
+                {
+                    "title": "第09集",
+                    "url": "https://play.modujx14.com/20240727/0Xpf0duP/index.m3u8"
+                },
+                {
+                    "title": "第10集",
+                    "url": "https://play.modujx14.com/20240727/9802TSIy/index.m3u8"
+                },
+                {
+                    "title": "第11集",
+                    "url": "https://play.modujx14.com/20240727/CDC9DUUG/index.m3u8"
+                },
+                {
+                    "title": "第12集",
+                    "url": "https://play.modujx14.com/20240727/5Hqdsesm/index.m3u8"
+                },
+                {
+                    "title": "第13集",
+                    "url": "https://play.modujx14.com/20240727/qgVPGqoa/index.m3u8"
+                },
+                {
+                    "title": "第14集",
+                    "url": "https://play.modujx14.com/20240727/pKNjO6mv/index.m3u8"
+                },
+                {
+                    "title": "第15集",
+                    "url": "https://play.modujx14.com/20240727/dbqy8fjk/index.m3u8"
+                },
+                {
+                    "title": "第16集",
+                    "url": "https://play.modujx14.com/20240727/XTcgS7Db/index.m3u8"
+                },
+                {
+                    "title": "第17集",
+                    "url": "https://play.modujx14.com/20240727/fGUlGxyB/index.m3u8"
+                },
+                {
+                    "title": "第18集",
+                    "url": "https://play.modujx14.com/20240727/4jPxDjFa/index.m3u8"
+                },
+                {
+                    "title": "第19集",
+                    "url": "https://play.modujx14.com/20240727/aUi2fyGp/index.m3u8"
+                },
+                {
+                    "title": "第20集",
+                    "url": "https://play.modujx14.com/20240727/jltHQ2GM/index.m3u8"
+                },
+                {
+                    "title": "第21集",
+                    "url": "https://play.modujx14.com/20240727/OO9BlJMz/index.m3u8"
+                },
+                {
+                    "title": "第22集",
+                    "url": "https://play.modujx14.com/20240727/f0V7g46L/index.m3u8"
+                },
+                {
+                    "title": "第23集",
+                    "url": "https://play.modujx14.com/20240727/hcst3DP4/index.m3u8"
+                },
+                {
+                    "title": "第24集",
+                    "url": "https://play.modujx14.com/20240727/8odtRAcZ/index.m3u8"
+                }
+            ],
+            "total_episodes": 24,
+            "intro_duration": 150,
+            "outro_duration": 90,
+            "last_check": "2025-05-29 11:32:56",
+            "update_time": "2024-07-28"
         }
     ]
 }
