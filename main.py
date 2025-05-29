@@ -718,7 +718,7 @@ class VideoPlayer(tk.Tk):
             result_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
             # 创建搜索结果树形视图
-            columns = ('标题', '类型', '年份', '地区', '导演', '主演', '备注', '评分')
+            columns = ('标题', '类型', '年份', '地区', '导演', '主演', '备注', '评分', '订阅状态')
             self.search_tree = ttk.Treeview(
                 result_frame,
                 columns=columns,
@@ -730,12 +730,16 @@ class VideoPlayer(tk.Tk):
             column_widths = {
                 '标题': 200, '类型': 80, '年份': 60,
                 '地区': 80, '导演': 100, '主演': 150,
-                '备注': 100, '评分': 60
+                '备注': 100, '评分': 60, '订阅状态': 80
             }
             
             for col in columns:
                 self.search_tree.heading(col, text=col)
                 self.search_tree.column(col, width=column_widths[col], minwidth=50)
+
+            # 设置标签样式
+            self.search_tree.tag_configure('subscribed', foreground='green')
+            self.search_tree.tag_configure('unsubscribed', foreground='black')
 
             # 添加滚动条
             y_scrollbar = ttk.Scrollbar(
@@ -753,6 +757,18 @@ class VideoPlayer(tk.Tk):
             result_frame.grid_columnconfigure(0, weight=1)
             result_frame.grid_rowconfigure(0, weight=1)
 
+            # 创建操作按钮区域
+            button_frame = ttk.Frame(self.search_frame)
+            button_frame.pack(fill=tk.X, padx=10, pady=5)
+            
+            # 添加订阅按钮
+            self.subscribe_btn = ttk.Button(
+                button_frame,
+                text="订阅/取消订阅",
+                command=self.toggle_subscription
+            )
+            self.subscribe_btn.pack(side=tk.LEFT, padx=5)
+            
             # 创建分页控制
             page_control = ttk.Frame(self.search_frame)
             page_control.pack(fill=tk.X, padx=10, pady=5)
@@ -850,18 +866,26 @@ class VideoPlayer(tk.Tk):
                 if isinstance(directors, str):
                     directors = directors.split(',')
                 
+                # 检查是否已订阅
+                title = video.get('title', '')
+                is_subscribed = self.is_video_subscribed(title)
+                
                 # 处理可能的空值
                 values = (
-                    video.get('title', ''),
+                    title,
                     video.get('type', ''),
                     video.get('year', ''),
                     video.get('area', ''),
                     directors[0] if directors and len(directors) > 0 else '',  # 只显示第一个导演
                     actors[0] if actors and len(actors) > 0 else '',        # 只显示第一个演员
                     video.get('remarks', ''),
-                    f"{video.get('score', '0.0')}分"
+                    f"{video.get('score', '0.0')}分",
+                    "已订阅" if is_subscribed else "未订阅"
                 )
-                self.search_tree.insert('', tk.END, values=values)
+                
+                # 使用不同的标签来区分订阅状态
+                tag = 'subscribed' if is_subscribed else 'unsubscribed'
+                self.search_tree.insert('', tk.END, values=values, tags=(tag,))
 
             # 更新状态和按钮
             if total_count > 0:
@@ -878,11 +902,142 @@ class VideoPlayer(tk.Tk):
             # 更新当前页码
             self.current_page = current_page
 
+            # 更新订阅按钮状态
+            self.update_subscribe_button_state()
+
         except Exception as e:
             self.logger.error(f"更新搜索结果失败: {str(e)}")
             messagebox.showerror("错误", f"更新搜索结果失败: {str(e)}")
         finally:
             self.search_button.configure(state=tk.NORMAL)
+
+    def toggle_subscription(self):
+        """切换视频的订阅状态"""
+        try:
+            selection = self.search_tree.selection()
+            if not selection:
+                messagebox.showwarning("提示", "请先选择一个视频")
+                return
+
+            item = selection[0]
+            values = self.search_tree.item(item)['values']
+            title = values[0]  # 标题在第一列
+
+            # 查找完整的视频信息
+            selected_video = None
+            for video in self.search_results:
+                if video.get('title') == title:
+                    selected_video = video
+                    break
+
+            if not selected_video:
+                raise ValueError("未找到选中视频的详细信息")
+
+            # 检查当前订阅状态
+            is_subscribed = self.is_video_subscribed(title)
+
+            if is_subscribed:
+                # 取消订阅
+                if messagebox.askyesno("确认", f"确定要取消订阅《{title}》吗？"):
+                    self.unsubscribe_video(title)
+                    messagebox.showinfo("成功", f"已取消订阅《{title}》")
+            else:
+                # 添加订阅
+                subscription_data = {
+                    'title': selected_video.get('title', ''),
+                    'type': selected_video.get('type', ''),
+                    'year': selected_video.get('year', ''),
+                    'area': selected_video.get('area', ''),
+                    'director': selected_video.get('director', []),
+                    'actor': selected_video.get('actor', []),
+                    'description': selected_video.get('description', ''),
+                    'episodes': [],
+                    'total_episodes': 0,
+                    'update_time': datetime.now().strftime("%Y-%m-%d")
+                }
+
+                # 解析播放源
+                play_url = selected_video.get('play_url', '')
+                if not play_url:
+                    raise ValueError("未找到播放源")
+
+                # 解析剧集信息
+                episode_list = play_url.split('#')
+                episodes = []
+                for episode_info in episode_list:
+                    if not episode_info:
+                        continue
+                    parts = episode_info.split('$')
+                    if len(parts) == 2:
+                        episode_name, url = parts
+                        episodes.append({
+                            'title': episode_name.strip(),
+                            'url': url.strip()
+                        })
+
+                if not episodes:
+                    raise ValueError("未找到可播放的剧集")
+
+                subscription_data['episodes'] = episodes
+                subscription_data['total_episodes'] = len(episodes)
+
+                # 添加订阅
+                self.add_subscription(subscription_data)
+                messagebox.showinfo("成功", f"已成功订阅《{title}》")
+
+            # 更新显示
+            self.update_episode_list()  # 更新主列表
+            self.perform_search()  # 刷新搜索结果
+
+        except Exception as e:
+            self.logger.error(f"切换订阅状态失败: {str(e)}")
+            messagebox.showerror("错误", f"操作失败: {str(e)}")
+
+    def unsubscribe_video(self, title):
+        """取消订阅视频"""
+        try:
+            if not isinstance(self.config, dict):
+                self.config = {}
+            
+            if 'subscriptions' not in self.config:
+                self.config['subscriptions'] = []
+            
+            # 移除订阅
+            self.config['subscriptions'] = [
+                sub for sub in self.config['subscriptions']
+                if sub.get('title') != title
+            ]
+            
+            # 保存到文件
+            with open('subscriptions.json', 'w', encoding='utf-8') as f:
+                json.dump(self.config, f, ensure_ascii=False, indent=4)
+                
+            self.logger.info(f"成功取消订阅: {title}")
+            
+        except Exception as e:
+            self.logger.error(f"取消订阅失败: {str(e)}")
+            raise
+
+    def update_subscribe_button_state(self):
+        """更新订阅按钮状态"""
+        try:
+            selection = self.search_tree.selection()
+            if not selection:
+                self.subscribe_btn.configure(state=tk.DISABLED)
+                return
+
+            item = selection[0]
+            values = self.search_tree.item(item)['values']
+            title = values[0]  # 标题在第一列
+            is_subscribed = self.is_video_subscribed(title)
+
+            self.subscribe_btn.configure(
+                text="取消订阅" if is_subscribed else "订阅",
+                state=tk.NORMAL
+            )
+        except Exception as e:
+            self.logger.error(f"更新订阅按钮状态失败: {str(e)}")
+            self.subscribe_btn.configure(state=tk.DISABLED)
 
     def handle_search_error(self, error_msg):
         """处理搜索错误"""
@@ -901,6 +1056,122 @@ class VideoPlayer(tk.Tk):
         if self.current_page < self.total_pages:
             self.current_page += 1
             self.perform_search()
+            
+    def subscribe_selected_video(self):
+        """订阅选中的视频"""
+        try:
+            # 获取选中的项目
+            selection = self.search_tree.selection()
+            if not selection:
+                messagebox.showwarning("提示", "请先选择要订阅的视频")
+                return
+
+            # 获取选中项的标题
+            item = selection[0]
+            values = self.search_tree.item(item)['values']
+            selected_title = values[0]  # 标题在第一列
+
+            # 查找完整的视频信息
+            selected_video = None
+            for video in self.search_results:
+                if video.get('title') == selected_title:
+                    selected_video = video
+                    break
+
+            if not selected_video:
+                raise ValueError("未找到选中视频的详细信息")
+
+            # 检查是否已经订阅
+            if self.is_video_subscribed(selected_title):
+                messagebox.showinfo("提示", f"《{selected_title}》已经在订阅列表中")
+                return
+
+            # 准备订阅数据
+            subscription_data = {
+                'title': selected_video.get('title', ''),
+                'type': selected_video.get('type', ''),
+                'year': selected_video.get('year', ''),
+                'area': selected_video.get('area', ''),
+                'director': selected_video.get('director', []),
+                'actor': selected_video.get('actor', []),
+                'description': selected_video.get('description', ''),
+                'episodes': [],
+                'total_episodes': 0,
+                'update_time': datetime.now().strftime("%Y-%m-%d")
+            }
+
+            # 解析播放源
+            play_url = selected_video.get('play_url', '')
+            if not play_url:
+                raise ValueError("未找到播放源")
+
+            # 解析剧集信息
+            episode_list = play_url.split('#')
+            episodes = []
+            for episode_info in episode_list:
+                if not episode_info:
+                    continue
+                parts = episode_info.split('$')
+                if len(parts) == 2:
+                    episode_name, url = parts
+                    episodes.append({
+                        'title': episode_name.strip(),
+                        'url': url.strip()
+                    })
+
+            if not episodes:
+                raise ValueError("未找到可播放的剧集")
+
+            subscription_data['episodes'] = episodes
+            subscription_data['total_episodes'] = len(episodes)
+
+            # 添加到订阅列表
+            self.add_subscription(subscription_data)
+
+            # 更新UI
+            self.update_episode_list()
+            
+            # 显示成功消息
+            messagebox.showinfo("订阅成功", f"已成功订阅《{selected_title}》")
+            
+        except Exception as e:
+            self.logger.error(f"订阅视频失败: {str(e)}")
+            messagebox.showerror("订阅失败", f"无法订阅视频: {str(e)}")
+
+    def is_video_subscribed(self, title):
+        """检查视频是否已订阅"""
+        try:
+            if not isinstance(self.config, dict):
+                return False
+            subscriptions = self.config.get('subscriptions', [])
+            return any(sub.get('title') == title for sub in subscriptions)
+        except Exception as e:
+            self.logger.error(f"检查视频订阅状态失败: {str(e)}")
+            return False
+
+    def add_subscription(self, subscription_data):
+        """添加新的订阅"""
+        try:
+            # 确保config是字典类型
+            if not isinstance(self.config, dict):
+                self.config = {}
+            
+            # 确保存在subscriptions列表
+            if 'subscriptions' not in self.config:
+                self.config['subscriptions'] = []
+            
+            # 添加新订阅
+            self.config['subscriptions'].append(subscription_data)
+            
+            # 保存到文件
+            with open('subscriptions.json', 'w', encoding='utf-8') as f:
+                json.dump(self.config, f, ensure_ascii=False, indent=4)
+                
+            self.logger.info(f"成功添加订阅: {subscription_data['title']}")
+            
+        except Exception as e:
+            self.logger.error(f"添加订阅失败: {str(e)}")
+            raise
 
     def on_search_result_select(self, event):
         """处理搜索结果选择事件"""
@@ -911,77 +1182,172 @@ class VideoPlayer(tk.Tk):
 
             item = selection[0]
             values = self.search_tree.item(item)['values']
-            if not values:
-                return
+            title = values[0]  # 标题在第一列
 
-            # 获取选中的视频信息
-            selected_title = values[0]
+            # 查找完整的视频信息
             selected_video = None
             for video in self.search_results:
-                if video.get('vod_name', '') == selected_title:
+                if video.get('title') == title:
                     selected_video = video
                     break
 
-            if selected_video:
-                # 显示视频详情
-                self.show_video_details(selected_video)
-            else:
-                messagebox.showwarning("提示", "未找到视频详细信息")
+            if not selected_video:
+                raise ValueError("未找到选中视频的详细信息")
+
+            # 获取播放源
+            play_url = selected_video.get('play_url', '')
+            if not play_url:
+                raise ValueError("未找到播放源")
+
+            # 解析剧集信息
+            episode_list = play_url.split('#')
+            episodes = []
+            for episode_info in episode_list:
+                if not episode_info:
+                    continue
+                parts = episode_info.split('$')
+                if len(parts) == 2:
+                    episode_name, url = parts
+                    episodes.append({
+                        'title': episode_name.strip(),
+                        'url': url.strip()
+                    })
+
+            if not episodes:
+                raise ValueError("未找到可播放的剧集")
+
+            # 显示剧集列表对话框
+            self.show_episode_dialog(title, episodes)
+
+            # 更新订阅按钮状态
+            self.update_subscribe_button_state()
 
         except Exception as e:
             self.logger.error(f"处理搜索结果选择失败: {str(e)}")
-            messagebox.showerror("错误", f"无法处理所选视频: {str(e)}")
+            messagebox.showerror("错误", f"无法播放视频: {str(e)}")
 
-    def show_video_details(self, video):
-        """显示视频详情对话框"""
+    def show_episode_dialog(self, title, episodes):
+        """显示剧集列表对话框"""
         try:
-            details_window = tk.Toplevel(self)
-            details_window.title(f"视频详情 - {video.get('vod_name', '')}")
-            details_window.geometry("600x400")
-            details_window.transient(self)
-            details_window.grab_set()
+            dialog = tk.Toplevel(self)
+            dialog.title(f"选择剧集 - {title}")
+            dialog.geometry("400x600")
+            dialog.transient(self)
+            dialog.grab_set()
 
-            # 创建详情框架
-            frame = ttk.Frame(details_window, padding="10")
+            # 创建框架
+            frame = ttk.Frame(dialog, padding="10")
             frame.pack(fill=tk.BOTH, expand=True)
 
-            # 显示视频信息
-            ttk.Label(frame, text=video.get('vod_name', ''), font=('Microsoft YaHei', 14, 'bold')).pack(pady=5)
-            
-            info_text = f"""
-类型：{video.get('type_name', '')}
-年份：{video.get('vod_year', '')}
-地区：{video.get('vod_area', '')}
-导演：{video.get('vod_director', '')}
-主演：{video.get('vod_actor', '')}
-评分：{video.get('vod_score', '0.0')}分
-备注：{video.get('vod_remarks', '')}
+            # 显示标题
+            ttk.Label(frame, text=title, font=('Microsoft YaHei', 14, 'bold')).pack(pady=5)
 
-简介：
-{video.get('vod_content', '').replace("</p>", "").strip()}
-            """
+            # 创建剧集列表
+            list_frame = ttk.Frame(frame)
+            list_frame.pack(fill=tk.BOTH, expand=True, pady=5)
+
+            # 创建树形视图
+            columns = ('剧集', '播放源')
+            tree = ttk.Treeview(list_frame, columns=columns, show='headings', selectmode='browse')
             
-            # 创建文本框显示详细信息
-            text_widget = tk.Text(frame, wrap=tk.WORD, height=10)
-            text_widget.pack(fill=tk.BOTH, expand=True, pady=5)
-            text_widget.insert('1.0', info_text)
-            text_widget.configure(state='disabled')
+            # 设置列标题和宽度
+            tree.heading('剧集', text='剧集')
+            tree.heading('播放源', text='播放源')
+            tree.column('剧集', width=150, minwidth=100)
+            tree.column('播放源', width=200, minwidth=150)
 
             # 添加滚动条
-            scrollbar = ttk.Scrollbar(frame, command=text_widget.yview)
-            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-            text_widget.configure(yscrollcommand=scrollbar.set)
+            y_scrollbar = ttk.Scrollbar(list_frame, orient=tk.VERTICAL, command=tree.yview)
+            tree.configure(yscrollcommand=y_scrollbar.set)
 
-            # 添加播放按钮
-            ttk.Button(
-                frame,
+            # 放置组件
+            tree.grid(row=0, column=0, sticky='nsew')
+            y_scrollbar.grid(row=0, column=1, sticky='ns')
+
+            # 配置grid权重
+            list_frame.grid_columnconfigure(0, weight=1)
+            list_frame.grid_rowconfigure(0, weight=1)
+
+            # 添加剧集数据
+            for episode in episodes:
+                tree.insert('', tk.END, values=(episode['title'], episode['url']))
+
+            # 添加按钮区域
+            button_frame = ttk.Frame(frame)
+            button_frame.pack(fill=tk.X, pady=10)
+
+            # 播放按钮
+            play_button = ttk.Button(
+                button_frame,
                 text="播放",
-                command=lambda: self.play_search_result(video)
-            ).pack(pady=10)
+                command=lambda: self.play_episode(title, episodes, tree.selection())
+            )
+            play_button.pack(side=tk.LEFT, padx=5)
+
+            # 关闭按钮
+            close_button = ttk.Button(
+                button_frame,
+                text="关闭",
+                command=dialog.destroy
+            )
+            close_button.pack(side=tk.RIGHT, padx=5)
+
+            # 绑定双击事件
+            tree.bind('<Double-1>', lambda e: self.play_episode(title, episodes, tree.selection()))
 
         except Exception as e:
-            self.logger.error(f"显示视频详情失败: {str(e)}")
-            messagebox.showerror("错误", f"无法显示视频详情: {str(e)}")
+            self.logger.error(f"显示剧集列表失败: {str(e)}")
+            messagebox.showerror("错误", f"无法显示剧集列表: {str(e)}")
+
+    def play_episode(self, title, episodes, selection):
+        """播放选中的剧集"""
+        try:
+            if not selection:
+                messagebox.showwarning("提示", "请先选择一个剧集")
+                return
+
+            item = selection[0]
+            tree = self.search_tree.master.winfo_children()[0].winfo_children()[-1]
+            values = tree.item(item)['values']
+            episode_title = values[0]
+
+            # 查找选中的剧集信息
+            selected_episode = None
+            episode_index = 0
+            for i, episode in enumerate(episodes):
+                if episode['title'] == episode_title:
+                    selected_episode = episode
+                    episode_index = i
+                    break
+
+            if not selected_episode:
+                raise ValueError("未找到选中剧集的信息")
+
+            # 准备播放数据
+            subscription_data = {
+                'title': title,
+                'current_index': episode_index,
+                'episodes': episodes,
+                'intro_duration': 90,
+                'outro_duration': 90
+            }
+
+            # 创建播放器窗口
+            VideoPlayerWindow(self, self.check_updates, subscription_data)
+
+            # 保存播放历史
+            self.save_play_history({
+                'title': title,
+                'episodes': episodes,
+                'last_played': episode_title,
+                'episode_number': episode_index,
+                'last_played_time': 0,
+                'total_episodes': len(episodes)
+            })
+
+        except Exception as e:
+            self.logger.error(f"播放剧集失败: {str(e)}")
+            messagebox.showerror("错误", f"无法播放剧集: {str(e)}")
 
     def play_search_result(self, video):
         """播放搜索结果视频"""

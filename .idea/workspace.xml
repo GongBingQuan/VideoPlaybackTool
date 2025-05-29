@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志">
+      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -246,7 +247,8 @@
       <workItem from="1748402960505" duration="24000" />
       <workItem from="1748431931320" duration="2331000" />
       <workItem from="1748481478248" duration="5618000" />
-      <workItem from="1748489502543" duration="2294000" />
+      <workItem from="1748489502543" duration="3662000" />
+      <workItem from="1748497318996" duration="698000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -488,7 +490,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748490402110</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志">
+      <option name="closed" value="true" />
+      <created>1748493669302</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1748493669302</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

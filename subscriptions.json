@@ -4,7 +4,7 @@
         {
             "title": "仙逆",
             "url": "https://www.moduzy5.com/vod/7645/",
-            "last_check": "2025-05-29 11:32:52",
+            "last_check": "2025-05-29 12:59:36",
             "watch_history": {
                 "last_watched": 0,
                 "watched_episodes": []
@@ -1263,11 +1263,15 @@
                 {
                     "title": "第220集",
                     "url": "https://play.modujx11.com/20250525/LcCcZz6o/index.m3u8"
+                },
+                {
+                    "title": "第221集",
+                    "url": "https://play.modujx11.com/20250529/1X7bmaPs/index.m3u8"
                 }
             ],
-            "total_episodes": 220,
-            "last_check": "2025-05-29 11:32:53",
-            "update_time": "2025-05-25",
+            "total_episodes": 221,
+            "last_check": "2025-05-29 12:59:36",
+            "update_time": "2025-05-29",
             "intro_duration": 150,
             "outro_duration": 90
         },
@@ -1970,7 +1974,7 @@
                 }
             ],
             "total_episodes": 173,
-            "last_check": "2025-05-29 11:32:53",
+            "last_check": "2025-05-29 12:59:36",
             "update_time": "2025-05-26",
             "intro_duration": 160,
             "outro_duration": 192
@@ -2186,7 +2190,7 @@
                 }
             ],
             "total_episodes": 51,
-            "last_check": "2025-05-29 11:32:53",
+            "last_check": "2025-05-29 12:59:36",
             "update_time": "2025-05-27",
             "intro_duration": 128,
             "outro_duration": 125
@@ -2642,7 +2646,7 @@
                 }
             ],
             "total_episodes": 111,
-            "last_check": "2025-05-29 11:32:54",
+            "last_check": "2025-05-29 12:59:37",
             "update_time": "2025-05-27",
             "intro_duration": 150,
             "outro_duration": 90
@@ -3518,7 +3522,7 @@
                 }
             ],
             "total_episodes": 216,
-            "last_check": "2025-05-29 11:32:54",
+            "last_check": "2025-05-29 12:59:37",
             "update_time": "2025-05-22",
             "intro_duration": 147,
             "outro_duration": 151
@@ -3938,7 +3942,7 @@
                 }
             ],
             "total_episodes": 102,
-            "last_check": "2025-05-29 11:32:54",
+            "last_check": "2025-05-29 12:59:37",
             "update_time": "2025-05-23",
             "intro_duration": 124,
             "outro_duration": 114
@@ -4550,7 +4554,7 @@
                 }
             ],
             "total_episodes": 150,
-            "last_check": "2025-05-29 11:32:54",
+            "last_check": "2025-05-29 12:59:37",
             "update_time": "2025-05-24",
             "intro_duration": 195,
             "outro_duration": 174
@@ -5124,7 +5128,7 @@
             "total_episodes": 140,
             "intro_duration": 150,
             "outro_duration": 121,
-            "last_check": "2025-05-29 11:32:55",
+            "last_check": "2025-05-29 12:59:38",
             "update_time": "2025-05-01"
         },
         {
@@ -5720,7 +5724,7 @@
             "total_episodes": 146,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-29 11:32:55",
+            "last_check": "2025-05-29 12:59:38",
             "update_time": "2025-05-24"
         },
         {
@@ -5860,7 +5864,7 @@
             "total_episodes": 32,
             "intro_duration": 160,
             "outro_duration": 180,
-            "last_check": "2025-05-29 11:32:55",
+            "last_check": "2025-05-29 12:59:38",
             "update_time": "2025-05-25"
         },
         {
@@ -5988,7 +5992,7 @@
             "total_episodes": 29,
             "intro_duration": 117,
             "outro_duration": 109,
-            "last_check": "2025-05-29 11:32:55",
+            "last_check": "2025-05-29 12:59:38",
             "update_time": "2025-05-25"
         },
         {
@@ -6048,7 +6052,7 @@
             "total_episodes": 12,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-29 11:32:55",
+            "last_check": "2025-05-29 12:59:38",
             "update_time": "2023-09-10"
         },
         {
@@ -6064,7 +6068,7 @@
             "total_episodes": 1,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-29 11:32:56",
+            "last_check": "2025-05-29 12:59:39",
             "update_time": "2025-04-30"
         },
         {
@@ -6172,8 +6176,53 @@
             "total_episodes": 24,
             "intro_duration": 150,
             "outro_duration": 90,
-            "last_check": "2025-05-29 11:32:56",
+            "last_check": "2025-05-29 12:59:39",
             "update_time": "2024-07-28"
+        },
+        {
+            "title": "吞天记",
+            "type": "国产动漫",
+            "year": "2025",
+            "area": "中国大陆",
+            "director": [
+                "内详"
+            ],
+            "actor": [
+                "内详"
+            ],
+            "description": "<p>作品改编自同名小说，作者：风青阳。《吞天记》演绎了少年吴煜从凡人到仙佛的传奇蜕变。</p>",
+            "episodes": [
+                {
+                    "title": "第01集",
+                    "url": "https://play.modujx11.com/20250519/yTiIhzCv/index.m3u8"
+                },
+                {
+                    "title": "第02集",
+                    "url": "https://play.modujx11.com/20250519/7SmdJ1pH/index.m3u8"
+                },
+                {
+                    "title": "第03集",
+                    "url": "https://play.modujx11.com/20250519/PM1p2GkM/index.m3u8"
+                },
+                {
+                    "title": "第04集",
+                    "url": "https://play.modujx11.com/20250519/EN7XFNow/index.m3u8"
+                },
+                {
+                    "title": "第05集",
+                    "url": "https://play.modujx11.com/20250521/CWnFZ24L/index.m3u8"
+                },
+                {
+                    "title": "第06集",
+                    "url": "https://play.modujx11.com/20250526/WEyeUGXE/index.m3u8"
+                },
+                {
+                    "title": "第07集",
+                    "url": "https://play.modujx11.com/20250528/fkKgUwS8/index.m3u8"
+                }
+            ],
+            "total_episodes": 7,
+            "update_time": "2025-05-29"
         }
     ]
 }
