@@ -824,11 +824,17 @@ class VideoPlayer(tk.Tk):
     def update_search_results(self, results):
         """更新搜索结果显示"""
         try:
+            # 记录原始结果以便调试
+            self.logger.debug(f"搜索结果: {json.dumps(results, ensure_ascii=False)}")
+            
             # 从返回的数据中获取视频列表
-            self.search_results = results.get('list', [])
+            self.search_results = results.get('videos', [])
             self.total_pages = int(results.get('pagecount', 1))
             total_count = int(results.get('total', 0))
             current_page = int(results.get('page', 1))
+            
+            self.logger.info(f"搜索结果: 总数={total_count}, 当前页={current_page}, 总页数={self.total_pages}")
+            self.logger.info(f"找到 {len(self.search_results)} 个视频")
             
             # 清空现有结果
             self.search_tree.delete(*self.search_tree.get_children())
@@ -836,19 +842,24 @@ class VideoPlayer(tk.Tk):
             # 显示新结果
             for video in self.search_results:
                 # 处理演员和导演信息
-                actors = video.get('vod_actor', '').split(',')
-                directors = video.get('vod_director', '').split(',')
+                actors = video.get('actor', [])
+                if isinstance(actors, str):
+                    actors = actors.split(',')
+                
+                directors = video.get('director', [])
+                if isinstance(directors, str):
+                    directors = directors.split(',')
                 
                 # 处理可能的空值
                 values = (
-                    video.get('vod_name', ''),
-                    video.get('type_name', ''),
-                    video.get('vod_year', ''),
-                    video.get('vod_area', ''),
-                    directors[0] if directors else '',  # 只显示第一个导演
-                    actors[0] if actors else '',        # 只显示第一个演员
-                    video.get('vod_remarks', ''),
-                    f"{video.get('vod_score', '0.0')}分"
+                    video.get('title', ''),
+                    video.get('type', ''),
+                    video.get('year', ''),
+                    video.get('area', ''),
+                    directors[0] if directors and len(directors) > 0 else '',  # 只显示第一个导演
+                    actors[0] if actors and len(actors) > 0 else '',        # 只显示第一个演员
+                    video.get('remarks', ''),
+                    f"{video.get('score', '0.0')}分"
                 )
                 self.search_tree.insert('', tk.END, values=values)
 
@@ -976,13 +987,16 @@ class VideoPlayer(tk.Tk):
         """播放搜索结果视频"""
         try:
             # 解析播放源
-            play_url = video.get('vod_play_url', '')
+            play_url = video.get('play_url', '')
             if not play_url:
                 raise ValueError("未找到播放源")
 
+            self.logger.info(f"开始处理播放URL: {play_url}")
             episodes = []
+            
             # 分割播放列表
             episode_list = play_url.split('#')
+            self.logger.debug(f"解析到 {len(episode_list)} 个剧集")
             
             for episode_info in episode_list:
                 if not episode_info:
@@ -993,27 +1007,31 @@ class VideoPlayer(tk.Tk):
                 if len(parts) == 2:
                     episode_name, url = parts
                     episodes.append({
-                        'title': episode_name,
-                        'url': url
+                        'title': episode_name.strip(),
+                        'url': url.strip()
                     })
 
             if not episodes:
                 raise ValueError("未找到可用的播放源")
 
+            self.logger.info(f"成功解析 {len(episodes)} 个播放源")
+
             # 准备视频播放数据
             subscription_data = {
-                'title': video.get('vod_name', '未知标题'),
+                'title': video.get('title', '未知标题'),
                 'current_index': 0,
                 'episodes': episodes,
                 'intro_duration': 90,
                 'outro_duration': 90,
-                'type': video.get('type_name', ''),
-                'year': video.get('vod_year', ''),
-                'area': video.get('vod_area', ''),
-                'director': video.get('vod_director', ''),
-                'actor': video.get('vod_actor', ''),
-                'description': video.get('vod_content', '').replace("</p>", "").strip()
+                'type': video.get('type', ''),
+                'year': video.get('year', ''),
+                'area': video.get('area', ''),
+                'director': video.get('director', []),
+                'actor': video.get('actor', []),
+                'description': video.get('description', '').strip()
             }
+
+            self.logger.debug(f"准备播放数据: {json.dumps(subscription_data, ensure_ascii=False)}")
 
             # 创建播放器窗口
             VideoPlayerWindow(self, self.check_updates, subscription_data)

@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制">
-      <change afterPath="$PROJECT_DIR$/download_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
+    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/视频网站.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/视频网站.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.py" beforeDir="false" afterPath="$PROJECT_DIR$/build.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/crawler.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/video_player.html" beforeDir="false" afterPath="$PROJECT_DIR$/dist/video_player.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/video_player.html" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -256,7 +246,7 @@
       <workItem from="1748402960505" duration="24000" />
       <workItem from="1748431931320" duration="2331000" />
       <workItem from="1748481478248" duration="5618000" />
-      <workItem from="1748489502543" duration="698000" />
+      <workItem from="1748489502543" duration="2294000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -490,7 +480,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748240045900</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志">
+      <option name="closed" value="true" />
+      <created>1748490402110</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1748490402110</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -536,11 +534,12 @@
     <MESSAGE value="实现HLS流媒体代理和缓存服务：新增异步下载线程和TS文件缓存机制" />
     <MESSAGE value="优化TS下载逻辑并调整HLS播放参数：添加文件存在检查、改进缓存写入和调整缓冲策略" />
     <MESSAGE value="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制" />
-    <option name="LAST_COMMIT_MESSAGE" value="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制" />
+    <MESSAGE value="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志" />
+    <option name="LAST_COMMIT_MESSAGE" value="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/$api.coverage" NAME="api 覆盖结果" MODIFIED="1748481557506" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$html5_player.coverage" NAME="html5_player 覆盖结果" MODIFIED="1747459888355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1748490201948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$main.coverage" NAME="main 覆盖结果" MODIFIED="1748491174571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

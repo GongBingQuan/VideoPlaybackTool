@@ -301,22 +301,69 @@ class VideoCrawler:
                 "videos": []
             }
             
+            # 记录原始数据结构
+            self.logger.debug(f"API返回的数据结构: {json.dumps(data, ensure_ascii=False, indent=2)}")
+            
             # 处理视频列表
-            for item in data.get("list", []):
-                video = {
-                    "title": item.get("vod_name", ""),
-                    "type": item.get("type_name", ""),
-                    "year": item.get("vod_year", ""),
-                    "area": item.get("vod_area", ""),
-                    "director": item.get("vod_director", ""),
-                    "actor": item.get("vod_actor", ""),
-                    "pic": item.get("vod_pic", ""),
-                    "remarks": item.get("vod_remarks", ""),
-                    "score": item.get("vod_score", ""),
-                    "play_url": item.get("vod_play_url", ""),
-                    "description": item.get("vod_content", "").replace("<\/p>", "").strip()
-                }
-                result["videos"].append(video)
+            video_list = data.get("list", [])
+            if not video_list:
+                self.logger.warning("API返回的数据中没有找到视频列表")
+                return result
+            
+            self.logger.info(f"找到 {len(video_list)} 个视频结果")
+            
+            for item in video_list:
+                try:
+                    # 数据清理和验证
+                    title = item.get("vod_name", "").strip()
+                    if not title:  # 跳过没有标题的项
+                        self.logger.warning("跳过没有标题的视频项")
+                        continue
+                        
+                    video = {
+                        "title": title,
+                        "type": (item.get("type_name", "") or item.get("vod_class", "")).strip(),
+                        "year": str(item.get("vod_year", "")).strip(),
+                        "area": item.get("vod_area", "").strip(),
+                        "director": item.get("vod_director", "").strip(),
+                        "actor": item.get("vod_actor", "").strip(),
+                        "pic": item.get("vod_pic", "").strip(),
+                        "remarks": (item.get("vod_remarks", "") or item.get("vod_tag", "")).strip(),
+                        "score": str(item.get("vod_score", "")).strip(),
+                        "play_url": item.get("vod_play_url", "").strip(),
+                        "description": item.get("vod_content", "").replace("<\/p>", "").replace("\\r", "").replace("\\n", "\n").strip()
+                    }
+                    
+                    # 处理图片URL
+                    if video["pic"] and not video["pic"].startswith(('http://', 'https://')):
+                        video["pic"] = f"https:{video['pic']}" if video["pic"].startswith('//') else f"http://{video['pic']}"
+                    
+                    # 处理演员和导演列表
+                    if video["actor"]:
+                        video["actor"] = [a.strip() for a in video["actor"].split(",") if a.strip()]
+                    if video["director"]:
+                        video["director"] = [d.strip() for d in video["director"].split(",") if d.strip()]
+                    # 添加调试日志
+                    self.logger.debug(f"处理视频信息: {json.dumps(video, ensure_ascii=False)}")
+                    result["videos"].append(video)
+                except Exception as e:
+                    self.logger.error(f"处理视频项时出错: {str(e)}")
+                    continue
+            
+            # 在返回结果前进行最后的验证
+            if not result["videos"]:
+                self.logger.warning("没有找到任何匹配的视频")
+            else:
+                self.logger.info(f"成功处理 {len(result['videos'])} 个视频信息")
+                # 记录第一个视频的详细信息作为示例
+                if result["videos"]:
+                    self.logger.debug(f"第一个视频信息示例: {json.dumps(result['videos'][0], ensure_ascii=False, indent=2)}")
+
+            # 确保所有数值字段都是正确的类型
+            result["total"] = max(len(result["videos"]), int(data.get("total", 0)))
+            result["page"] = max(1, int(data.get("page", 1)))
+            result["pagecount"] = max(1, int(data.get("pagecount", 1)))
+            result["limit"] = max(1, int(data.get("limit", 20)))
             
             return result
             
