@@ -118,6 +118,8 @@ class VideoPlayer(tk.Tk):
 
             self.logger.info("视频播放器初始化完成")
 
+            self.update_episode_list()
+
             # 程序启动后自动检查更新（延迟1秒确保UI就绪）
             self.after(1000, self.auto_check_updates)
 
@@ -324,14 +326,14 @@ class VideoPlayer(tk.Tk):
         )
         self.status_label.pack(side=tk.LEFT, padx=5)
 
-        # 最后更新时间标签
+        # 最后更新周标签
         self.last_update_label = ttk.Label(
             left_frame,
             text="最后更新: 从未"
         )
         self.last_update_label.pack(side=tk.LEFT, padx=5)
 
-        # 加载最后更新时间
+        # 加载最后更新周
         self.load_last_update_time()
 
         # 右侧帮助按钮
@@ -346,7 +348,7 @@ class VideoPlayer(tk.Tk):
         help_button.pack(side=tk.RIGHT, padx=5)
 
     def load_last_update_time(self):
-        """加载并显示最后更新时间"""
+        """加载并显示最后更新周"""
         try:
             if os.path.exists('settings.json'):
                 with open('settings.json', 'r', encoding='utf-8') as f:
@@ -358,7 +360,7 @@ class VideoPlayer(tk.Tk):
                             text=f"最后更新: {last_time.strftime('%Y-%m-%d %H:%M')}"
                         )
         except Exception as e:
-            self.logger.error(f"加载最后更新时间失败: {str(e)}")
+            self.logger.error(f"加载最后更新周失败: {str(e)}")
 
     def show_help(self):
         """显示帮助信息"""
@@ -368,7 +370,7 @@ class VideoPlayer(tk.Tk):
 1. 剧集管理：
    - 双击或选中后按回车播放视频
    - 使用搜索框快速查找剧集
-   - 可按集数或更新时间排序
+   - 可按集数或更新周排序
 
 2. 播放控制：
    - 空格键：播放/暂停
@@ -467,7 +469,7 @@ class VideoPlayer(tk.Tk):
                 except Exception as e:
                     self.logger.error(f"处理更新通知时出错: {str(e)}")
 
-            # 刷新最后更新时间显示
+            # 刷新最后更新周显示
             self.load_last_update_time()
         else:
             error_msg = error if error else "更新失败"
@@ -549,9 +551,9 @@ class VideoPlayer(tk.Tk):
             },
             'columns': {
                 'tree': ('id','title', 'episodes', 'unwatched', 'update_time'),
-                'display': ('序号','剧名','剧集', '未观看', '更新时间'),
-                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '未观看': 30, '更新时间': 90},
-                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '未观看': 30, '更新时间': 90}
+                'display': ('序号','剧名','剧集', '未观看', '更新周'),
+                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '未观看': 30, '更新周': 90},
+                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '未观看': 30, '更新周': 90}
             },
             'padding': {
                 'x_small': 3,
@@ -591,10 +593,10 @@ class VideoPlayer(tk.Tk):
         sort_container = ttk.LabelFrame(control_frame, text="排序方式")
         sort_container.pack(side=tk.RIGHT, padx=self.UI_CONFIG['padding']['small'])
 
-        self.sort_var = tk.StringVar(value="未看集数")
+        self.sort_var = tk.StringVar(value="更新周")
         sort_options = [
             ("未看集数", "未看集数"),
-            ("按更新时间", "更新时间")
+            ("更新周", "更新周")
         ]
 
         for text, value in sort_options:
@@ -1428,7 +1430,7 @@ class VideoPlayer(tk.Tk):
             # 列名映射（与Treeview初始化时的columns参数一致）
             COLUMN_MAP = {
                 "集数": "episodes",
-                "更新时间": "update_time"
+                "更新周": "update_time"
             }
 
             for item in self.tree.get_children():

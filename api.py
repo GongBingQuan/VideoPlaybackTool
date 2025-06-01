@@ -25,10 +25,13 @@ def shutdown_executor():
 
 atexit.register(shutdown_executor)
 
+import time
+
 async def download_ts_file(session, domain, ts_url, video_name, episode, semaphore):
     """下载单个TS文件"""
     async with semaphore:
         try:
+            start_time = time.time()
             # 处理相对路径和绝对路径
             full_url = f"{domain}{ts_url}" if not ts_url.startswith('http') else ts_url
             safe_filename = ts_url.split('/')[-1].split('?')[0]  # 去除查询参数
@@ -45,10 +48,14 @@ async def download_ts_file(session, domain, ts_url, video_name, episode, semapho
                 async with aiofiles.open(ts_cache_path, 'wb') as f:
                     async for chunk in response.content.iter_chunked(8192):
                         await f.write(chunk)
-            logger.info(f"下载完成: {safe_filename}")
+            end_time = time.time()
+            download_time = end_time - start_time
+            logger.info(f"下载完成: {safe_filename}, 耗时: {download_time:.2f}秒")
             return True
         except Exception as e:
-            logger.error(f"下载TS文件失败: {ts_url}, 错误: {str(e)}")
+            end_time = time.time()
+            download_time = end_time - start_time
+            logger.error(f"下载TS文件失败: {ts_url}, 错误: {str(e)}, 耗时: {download_time:.2f}秒")
             return False
 
 
@@ -167,10 +174,10 @@ async def serve_m3u8(video_name: str, episode: str, m3u8_path: str):
     cache_path.mkdir(parents=True, exist_ok=True)
     cache_path = cache_path / 'index.m3u8'
     domain = ''
-    if os.path.isfile(cache_path):
-        return send_from_directory(os.path.dirname(cache_path),
-                                         os.path.basename(cache_path),
-                                         mimetype='application/octet-stream')
+    # if os.path.isfile(cache_path):
+    #     return send_from_directory(os.path.dirname(cache_path),
+    #                                      os.path.basename(cache_path),
+    #                                      mimetype='application/octet-stream')
 
     # 获取文件内容
     if 'http' in m3u8_path:
@@ -243,6 +250,7 @@ async def serve_ts(video_name: str, episode: str, ts_path: str):
                                    mimetype='video/MP2T'), 200
 
     # 4. 开始新下载
+    start_time = time.time()
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(ts_path) as response:
@@ -251,13 +259,17 @@ async def serve_ts(video_name: str, episode: str, ts_path: str):
                     async for chunk in response.content.iter_chunked(8192):
                         await f.write(chunk)
     except Exception as e:
-        print(f"获取错误: {str(e)}")
+        end_time = time.time()
+        download_time = end_time - start_time
+        print(f"获取错误: {str(e)}, 耗时: {download_time:.2f}秒")
         return Response(f"下载错误: {str(e)}", status=500, mimetype='text/plain')
 
 
 
     if cache_path.exists():
-        print(f'获取成功{cache_path}')
+        end_time = time.time()
+        download_time = end_time - start_time
+        print(f'获取成功{cache_path}, 耗时: {download_time:.2f}秒')
         return send_from_directory(os.path.dirname(cache_path),
                                    os.path.basename(cache_path),
                                    mimetype='video/MP2T'), 200

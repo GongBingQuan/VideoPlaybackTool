@@ -8,16 +8,18 @@ from typing import Dict, List, Optional, Any
 import json
 import urllib.parse
 
+
 class APIError(Exception):
     """API请求或响应处理过程中的错误"""
     pass
+
 
 class VideoCrawler:
     def __init__(self):
         # 设置日志
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            format='%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s - %(message)s',
             force=True
         )
         self.logger = logging.getLogger(__name__)
@@ -38,6 +40,25 @@ class VideoCrawler:
         self.timeout = 10
         self.max_retries = 3
         self.retry_delay = 2
+
+    def _safe_parse_date(self, date_str: Optional[str]) -> Optional[str]:
+        """安全地解析日期字符串
+        :param date_str: 日期字符串
+        :return: 格式化的日期字符串（YYYY-MM-DD）或 None
+        """
+        if not date_str:
+            return None
+
+        try:
+            # 移除括号及其内容
+            date_str = date_str.split('(')[0].strip()
+            # 如果包含时间，只取日期部分
+            date_str = date_str.split(' ')[0].strip()
+            # 尝试解析日期
+            return datetime.strptime(date_str, "%Y-%m-%d").strftime("%Y-%m-%d")
+        except (ValueError, IndexError):
+            self.logger.warning(f"无法解析日期: {date_str}")
+            return None
 
     def _get_random_headers(self) -> Dict[str, str]:
         """生成随机请求头"""
@@ -66,79 +87,27 @@ class VideoCrawler:
                 continue
         return None
 
-    def parse_video_info(self, html: str) -> Dict:
-        """解析视频页面信息"""
-        try:
-            soup = BeautifulSoup(html, 'html.parser')
-
-            # 提取剧名和更新状态
-            title_elem = soup.select_one('.content__detail h1.title')
-            if title_elem:
-                # 获取主标题（第一个文本节点）
-                title = next(title_elem.stripped_strings)
-                # 获取更新状态（small标签）
-                status_elem = title_elem.select_one('small')
-                update_status = status_elem.text.strip() if status_elem else ""
-            else:
-                title = "未知剧名"
-                update_status = ""
-
-            # 提取更新时间
-            update_time_elem = soup.select_one('.text-light')
-            if update_time_elem:
-                update_time = update_time_elem.text.replace('更新时间：', '').strip()
-            else:
-                update_time = datetime.now().strftime("%Y-%m-%d")
-
-            # 提取图片地址
-            image_elem = soup.select_one('.content__thumb .thumb img')
-            image_url = image_elem['src'] if image_elem else ""
-
-            # 提取剧集列表
-            episodes = []
-            episode_list = soup.select('.content__playlist li a')
-            for ep in episode_list:
-                # 解析形如 "第01集$https://play.modujx10.com/xxx/index.m3u8" 的文本
-                parts = ep.text.strip().split('$')
-                if len(parts) == 2:
-                    episodes.append({
-                        'title': parts[0].strip(),
-                        'url': parts[1].strip()
-                    })
-
-            return {
-                'title': title,
-                'update_status': update_status,
-                'update_time': update_time,
-                'image_url': image_url,
-                'episodes': episodes,
-                'total_episodes': len(episodes)
-            }
-        except Exception as e:
-            self.logger.error(f"解析页面失败: {str(e)}")
-            return {
-                'title': "解析失败",
-                'update_time': datetime.now().strftime("%Y-%m-%d"),
-                'episodes': [],
-                'total_episodes': 0
-            }
-
     def update_subscriptions(self):
         """更新所有订阅信息"""
         result = {
-            "has_updates": False,
-            "updated_subscriptions": {}
+            "subscriptions": []
         }
-        
+
         try:
             # 读取订阅配置
             with open('subscriptions.json', 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
-            # 记录原始剧集数用于比较
-            original_counts = {sub['title']: len(sub['episodes']) for sub in data['subscriptions']}
+            # 确保config_version存在
+            if 'config_version' not in data:
+                result['config_version'] = data.get('config_version')
 
-            # 更新每个订阅
+            # 记录原始剧集数用于比较
+            original_counts = {sub['title']: len(sub.get('episodes', [])) for sub in data['subscriptions']}
+
+            # 收集需要更新的视频ID
+            video_ids = []
+            update_map = {}  # 用于映射video_id到subscription
             for sub in data['subscriptions']:
                 # 检查最后更新时间是否在1小时内
                 try:
@@ -150,49 +119,107 @@ class VideoCrawler:
                 except (ValueError, KeyError):
                     # 如果last_check不存在或格式错误,继续更新
                     pass
-                self.logger.info(f"正在更新: {sub['url']}")
-                sub_result = {"has_update": False}
 
-                # 获取页面内容
-                html = self.fetch_page(sub['url'])
-                if not html:
-                    result["updated_subscriptions"][sub['title']] = sub_result
+                try:
+                    video_id = str(sub.get('id', ''))  # 确保转换为字符串
+                    if not video_id and sub.get('url'):
+                        # 从URL中提取视频ID
+                        url_parts = sub['url'].split('/')
+                        video_id = url_parts[-1] if url_parts[-1] else url_parts[-2]  # 处理URL末尾可能有/的情况
+                    video_id = str(video_id).strip()  # 确保是字符串并去除空白
+                    video_ids.append(video_id)
+                    sub['id'] = video_id
+                    update_map[video_id] = sub
+                except Exception as e:
+                    self.logger.error(f"解析视频ID失败: {sub.get('url')} - {str(e)}")
+                    continue
+            # 如果没有需要更新的视频，直接返回
+            if not video_ids:
+                return result
+
+            # 批量获取视频详情
+            self.logger.info(f"正在批量更新 {len(video_ids)} 个视频")
+            video_details_list = self.get_video_details_batch(','.join(video_ids))
+
+            for video_info in video_details_list:
+                if not video_info:
+                    self.logger.warning("跳过空的视频信息")
                     continue
 
-                # 解析信息
-                info = self.parse_video_info(html)
+                video_id = str(video_info.get('vod_id', ''))  # 确保转换为字符串
+                sub = update_map.get(video_id)
+                if not sub:
+                    # 尝试数字类型匹配
+                    sub = update_map.get(video_id.strip())
+                if not sub:
+                    self.logger.error(f"找不到视频ID {video_id} 对应的订阅信息")
+                    continue
+                self.logger.info(f"正在更新: {sub.get('id')}--{sub.get('url')}")
+
+                # 处理剧集信息
+                episodes = []
+                if video_info.get('vod_play_url'):
+                    for playlist in video_info['vod_play_url'].split('#'):
+                        if playlist:
+                            play_obj = playlist.split('$')
+                            episodes.append({
+                                'title': play_obj[0],
+                                'url': play_obj[1]
+                            })
+
 
                 # 检查是否有新剧集
-                new_count = len(info['episodes'])
+                new_count = len(episodes)
                 old_count = original_counts.get(sub['title'], 0)
                 has_update = new_count > old_count
 
                 # 更新订阅信息
-                sub['last_check'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                sub['title'] = info['title']
-                sub['update_time'] = info['update_time']
-                sub['episodes'] = info['episodes']
-                sub['total_episodes'] = info['total_episodes']
+                sub.update({
+                    'id': video_id,
+                    'last_check': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'title': video_info['vod_name'],
+                    'update_time': self._safe_parse_date(video_info.get('vod_time')) or self._safe_parse_date(video_info.get('vod_pubdate')) or datetime.now().strftime("%Y-%m-%d"),
+                    'episodes': episodes,
+                    'has_update':has_update,
+                    'total_episodes': len(episodes),
+                    'sub_title': video_info.get('vod_sub', ''),
+                    'type': video_info.get('type_name', ''),
+                    'year': video_info.get('vod_year', ''),
+                    'area': video_info.get('vod_area', ''),
+                    'director': video_info.get('vod_director', '').split(','),
+                    'actor': video_info.get('vod_actor', '').split(','),
+                    'pic': video_info.get('vod_pic', ''),
+                    'description': video_info.get('vod_content', ''),
+                    'vod_status': video_info.get('vod_status', 0),
+                    'vod_remarks': video_info.get('vod_remarks', ''),
+                    'vod_score': video_info.get('vod_score', ''),
+                    'vod_douban_score': video_info.get('vod_douban_score', ''),
+                    'vod_class': video_info.get('vod_class', ''),
+                    'vod_pubdate': video_info.get('vod_pubdate', ''),
+                    'vod_hits': video_info.get('vod_hits', 0),
+                    'vod_duration': video_info.get('vod_duration', ''),
+                    'vod_play_from': video_info.get('vod_play_from', ''),
+                    'vod_play_url': video_info.get('vod_play_url', '')
+                })
 
-                # 记录更新结果
-                sub_result["has_update"] = has_update
-                if has_update:
-                    sub_result["new_episodes"] = new_count - old_count
-                    result["has_updates"] = True
-                result["updated_subscriptions"][sub['title']] = sub_result
+
+                result["subscriptions"].append(sub)
+
+
 
             # 保存更新后的配置
             with open('subscriptions.json', 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=4)
+                json.dump(result, f, ensure_ascii=False, indent=4)
 
             return result
         except Exception as e:
-            self.logger.error(f"更新订阅失败: {str(e)}")
+            self.logger.error(f"更新订阅失败: {str(e)}", exc_info=True)
             return {
                 "has_updates": False,
                 "error": str(e),
                 "updated_subscriptions": {}
             }
+
     def fetch_page_with_retry(self, url: str, max_retries: int = 3, retry_delay: int = 2) -> Optional[str]:
         """获取页面内容，带重试机制"""
         for attempt in range(max_retries):
@@ -218,10 +245,10 @@ class VideoCrawler:
         try:
             # URL编码关键词
             encoded_keyword = urllib.parse.quote(keyword)
-            
+
             # 构建API URL
             url = f"https://www.mdzyapi.com/api.php/provide/vod/?ac=videolist&pg={page}&wd={encoded_keyword}"
-            
+
             # 记录请求信息
             headers = self._get_random_headers()
             self.logger.info(f"发送搜索请求: URL={url}")
@@ -241,7 +268,7 @@ class VideoCrawler:
             # 获取响应内容
             response_text = None
             encodings = ['utf-8', 'gbk', 'gb2312', 'iso-8859-1']
-            
+
             # 尝试不同的编码
             for encoding in encodings:
                 try:
@@ -251,10 +278,10 @@ class VideoCrawler:
                 except UnicodeDecodeError:
                     self.logger.debug(f"使用 {encoding} 解码失败")
                     continue
-            
+
             if response_text is None:
                 response_text = response.text  # 使用requests的默认解码
-            
+
             self.logger.info(f"搜索响应状态码: {response.status_code}")
             self.logger.info(f"响应头: {dict(response.headers)}")
             self.logger.info(f"响应编码: {response.encoding}")
@@ -264,7 +291,7 @@ class VideoCrawler:
             if '<html' in response_text.lower():
                 self.logger.error("API返回了HTML页面而非JSON数据")
                 raise APIError("API返回了HTML页面而非JSON数据")
-            
+
             # 记录Content-Type，但不强制要求是application/json
             content_type = response.headers.get('Content-Type', '').lower()
             if 'application/json' not in content_type and 'text/json' not in content_type:
@@ -274,16 +301,17 @@ class VideoCrawler:
                 # 尝试清理响应文本中的BOM标记和其他可能的前缀
                 if response_text.startswith('\ufeff'):
                     response_text = response_text[1:]
-                
+
                 # 尝试查找JSON内容的开始位置（处理可能的前缀文本）
                 json_start = response_text.find('{')
                 if json_start > 0:
                     self.logger.warning(f"JSON数据前有{json_start}个字符的前缀，已移除")
                     response_text = response_text[json_start:]
-                
+
                 # 解析JSON响应
                 data = json.loads(response_text)
-                self.logger.info(f"搜索结果: 总数={data.get('total', 0)}, 当前页={data.get('page', 1)}, 总页数={data.get('pagecount', 1)}")
+                self.logger.info(
+                    f"搜索结果: 总数={data.get('total', 0)}, 当前页={data.get('page', 1)}, 总页数={data.get('pagecount', 1)}")
             except json.JSONDecodeError as e:
                 self.logger.error(f"JSON解析错误: {str(e)}")
                 self.logger.error(f"响应内容类型: {content_type}")
@@ -291,7 +319,7 @@ class VideoCrawler:
                 if response.headers.get('Content-Encoding') in ['gzip', 'deflate', 'br']:
                     self.logger.error(f"响应可能是压缩格式: {response.headers.get('Content-Encoding')}")
                 raise APIError(f"API返回了无效的JSON数据: {str(e)}")
-            
+
             # 格式化结果
             result = {
                 "total": int(data.get("total", 0)),
@@ -300,18 +328,18 @@ class VideoCrawler:
                 "limit": int(data.get("limit", 20)),
                 "videos": []
             }
-            
+
             # 记录原始数据结构
             self.logger.debug(f"API返回的数据结构: {json.dumps(data, ensure_ascii=False, indent=2)}")
-            
+
             # 处理视频列表
             video_list = data.get("list", [])
             if not video_list:
                 self.logger.warning("API返回的数据中没有找到视频列表")
                 return result
-            
+
             self.logger.info(f"找到 {len(video_list)} 个视频结果")
-            
+
             for item in video_list:
                 try:
                     # 数据清理和验证
@@ -319,8 +347,9 @@ class VideoCrawler:
                     if not title:  # 跳过没有标题的项
                         self.logger.warning("跳过没有标题的视频项")
                         continue
-                        
+
                     video = {
+                        "id": item.get("vod_id"),
                         "title": title,
                         "type": (item.get("type_name", "") or item.get("vod_class", "")).strip(),
                         "year": str(item.get("vod_year", "")).strip(),
@@ -331,13 +360,15 @@ class VideoCrawler:
                         "remarks": (item.get("vod_remarks", "") or item.get("vod_tag", "")).strip(),
                         "score": str(item.get("vod_score", "")).strip(),
                         "play_url": item.get("vod_play_url", "").strip(),
-                        "description": item.get("vod_content", "").replace("<\/p>", "").replace("\\r", "").replace("\\n", "\n").strip()
+                        "description": BeautifulSoup(item.get("vod_content", ""), "html.parser").get_text().replace(
+                            "\\r", "").replace("\\n", "\n").strip()
                     }
-                    
+
                     # 处理图片URL
                     if video["pic"] and not video["pic"].startswith(('http://', 'https://')):
-                        video["pic"] = f"https:{video['pic']}" if video["pic"].startswith('//') else f"http://{video['pic']}"
-                    
+                        video["pic"] = f"https:{video['pic']}" if video["pic"].startswith(
+                            '//') else f"http://{video['pic']}"
+
                     # 处理演员和导演列表
                     if video["actor"]:
                         video["actor"] = [a.strip() for a in video["actor"].split(",") if a.strip()]
@@ -349,7 +380,7 @@ class VideoCrawler:
                 except Exception as e:
                     self.logger.error(f"处理视频项时出错: {str(e)}")
                     continue
-            
+
             # 在返回结果前进行最后的验证
             if not result["videos"]:
                 self.logger.warning("没有找到任何匹配的视频")
@@ -357,41 +388,71 @@ class VideoCrawler:
                 self.logger.info(f"成功处理 {len(result['videos'])} 个视频信息")
                 # 记录第一个视频的详细信息作为示例
                 if result["videos"]:
-                    self.logger.debug(f"第一个视频信息示例: {json.dumps(result['videos'][0], ensure_ascii=False, indent=2)}")
+                    self.logger.debug(
+                        f"第一个视频信息示例: {json.dumps(result['videos'][0], ensure_ascii=False, indent=2)}")
 
             # 确保所有数值字段都是正确的类型
             result["total"] = max(len(result["videos"]), int(data.get("total", 0)))
             result["page"] = max(1, int(data.get("page", 1)))
             result["pagecount"] = max(1, int(data.get("pagecount", 1)))
             result["limit"] = max(1, int(data.get("limit", 20)))
-            
+
             return result
-            
+
         except requests.RequestException as e:
             error_msg = f"搜索请求失败: {str(e)}"
             self.logger.error(error_msg)
-            return self._create_error_response(page, error_msg)
         except (json.JSONDecodeError, APIError) as e:
             error_msg = f"API响应解析失败: {str(e)}"
             self.logger.error(error_msg)
-            return self._create_error_response(page, error_msg)
         except Exception as e:
             error_msg = f"搜索过程中发生未知错误: {str(e)}"
             self.logger.error(error_msg)
-            return self._create_error_response(page, error_msg)
 
-    def _create_error_response(self, page: int, error_msg: str) -> Dict[str, Any]:
-        """创建统一的错误响应格式"""
-        return {
-            "total": 0,
-            "page": page,
-            "pagecount": 1,
-            "limit": 20,
-            "videos": [],
-            "error": error_msg
-        }
+    def get_video_details_batch(self, video_ids: str) -> Any | None:
+        """
+               获取视频详细信息的内部方法
+               :param video_ids: 视频ID，多个ID用逗号分隔
+               :return: 视频详细信息字典
+               """
+        try:
+            # 构建API URL
+            url = f"https://www.mdzyapi.com/api.php/provide/vod/?ac=detail&ids={video_ids}"
+            self.logger.info(url)
 
-if __name__ == '__main__':
+            # 记录请求信息
+            headers = self._get_random_headers()
+            self.logger.info(f"发送视频详情请求: URL={url}")
+            self.logger.info(f"请求头: {headers}")
 
-    crawler = VideoCrawler()
-    crawler.update_subscriptions()
+            # 发送请求
+            response = self.session.get(
+                url,
+                headers=headers,
+                timeout=self.timeout,
+                stream=True
+            )
+            response.raise_for_status()
+
+            # 获取响应内容
+            response_text = None
+            encodings = ['utf-8', 'gbk', 'gb2312', 'iso-8859-1']
+
+            # 尝试不同的编码
+            for encoding in encodings:
+                try:
+                    response_text = response.content.decode(encoding)
+                    self.logger.info(f"成功使用 {encoding} 解码响应内容")
+                    break
+                except UnicodeDecodeError:
+                    continue
+
+            if response_text is None:
+                response_text = response.text
+
+            # 解析JSON响应
+            data = json.loads(response_text).get('list')
+            # self.logger.info(f"更新API: {json.dumps(data)}")
+            return data
+        except Exception as e:
+            self.logger.error(f"处理视频详情时出错: {str(e)}")
