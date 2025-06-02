@@ -550,10 +550,10 @@ class VideoPlayer(tk.Tk):
                 'normal': ('Microsoft YaHei', 10)
             },
             'columns': {
-                'tree': ('id','title', 'episodes', 'unwatched', 'update_time'),
-                'display': ('序号','剧名','剧集', '未观看', '更新周'),
-                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '未观看': 30, '更新周': 90},
-                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '未观看': 30, '更新周': 90}
+                'tree': ('id','title', 'episodes', 'unwatched', 'progress', 'update_time'),
+                'display': ('序号','剧名','剧集', '未观看', '播放进度', '更新周'),
+                'widths': {'序号': 20,'剧名': 90, '剧集': 30, '未观看': 30, '播放进度': 60, '更新周': 90},
+                'min_widths': {'序号': 20,'剧名': 90,'剧集': 30, '未观看': 30, '播放进度': 60, '更新周': 90}
             },
             'padding': {
                 'x_small': 3,
@@ -1442,7 +1442,7 @@ class VideoPlayer(tk.Tk):
                     sort_key = int(values[3])
                 else:
                     # 提取星期几并转为可排序的数字（周一=0，周日=6）
-                    weekday_str = values[4]
+                    weekday_str = values[5]
                     weekday_num = list(self.cn_week.values()).index(weekday_str)
                     sort_key = weekday_num
 
@@ -1482,11 +1482,17 @@ class VideoPlayer(tk.Tk):
                     history=play_history.get(video.get('title', ''),{})
                     en_week=datetime.strptime(video.get('update_time', ''), "%Y-%m-%d").strftime("%A")
 
+                    # 计算播放进度
+                    total_episodes = video['total_episodes']
+                    watched_episodes = history.get('episode_number', 0)
+                    progress = round((watched_episodes / total_episodes * 100), 1) if total_episodes > 0 else 0
+                    
                     self.tree.insert('', tk.END, values=(
                         f"{index:03d}",  # 格式化序号为3位数
                         episode_title,
                         f"{video['total_episodes']}",
                         f"{video['total_episodes']-history.get('episode_number',0)-1}",  # 显示未观看集数
+                        f"{progress}%",  # 显示播放进度百分比
                         self.cn_week[en_week]
                     ), tags=(str(episode_num),))
 
@@ -1565,10 +1571,6 @@ class VideoPlayer(tk.Tk):
 
             if selected_video:
                 try:
-                    # 验证视频URL
-                    if not selected_video.get('url'):
-                        raise ValueError(f"视频URL为空 - 剧集: {episode_title}")
-
                     # 保存当前集数信息
                     self.config['current_episode'] = current_index
                     
@@ -1584,13 +1586,18 @@ class VideoPlayer(tk.Tk):
                         'outro_duration': selected_video.get('outro_duration', 90),
                     }
 
-                    self.logger.info(f"正在播放: {current_index}, URL: {selected_video.get('url', '')}")
+                    self.logger.info(f"正在播放: {current_index}, URL: {selected_video.get('title', '')}")
                     self.logger.debug(f"视频信息: {json.dumps(subscription_data, ensure_ascii=False, indent=2)}")
 
                     try:
 
-                        # 创建播放器窗口
-                        VideoPlayerWindow(self,self.check_updates, subscription_data)
+                        try:
+                            # 创建播放器窗口并绑定关闭事件
+                            VideoPlayerWindow(self, self.check_updates, subscription_data)
+                            self.on_player_close()
+                        except Exception as e:
+                            self.logger.error(f"创建播放器窗口失败: {str(e)}")
+                            messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")
                     except Exception as e:
                         logger.error(f"创建播放器窗口失败: {str(e)}")
                         messagebox.showerror("错误", f"无法创建播放器窗口: {str(e)}")
@@ -1616,6 +1623,13 @@ class VideoPlayer(tk.Tk):
             messagebox.showwarning("警告", "请先选择一个视频")
         except Exception as e:
             messagebox.showerror("错误", f"播放视频时出错: {str(e)}")
+
+    def on_player_close(self):
+        """处理播放器窗口关闭事件"""
+        try:
+            self.update_episode_list()
+        except Exception as e:
+            self.logger.error(f"关闭播放器窗口时出错: {str(e)}")
 
     def save_play_history(self, video, current_time=None):
         """保存播放历史
@@ -1666,6 +1680,9 @@ class VideoPlayer(tk.Tk):
                 'last_update': now,
                 'total_episodes': len(self.config.get('episodes', [])),
                 'url': video.get('url', ''),
+                'episode_number': episode_number,
+                'progress': round((episode_number / len(self.config.get('episodes', []))) * 100, 1)
+                if len(self.config.get('episodes', [])) > 0 else 0
             })
 
             # 确保目录存在

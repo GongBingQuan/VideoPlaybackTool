@@ -1,114 +1,127 @@
 {
-  "仙逆": {
-    "last_played": "第90集",
-    "last_played_time": 1265.91439,
-    "last_update": "2025-05-27 02:17:35",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/7645/",
-    "episode_number": 89
-  },
-  "万界至尊": {
-    "last_update": "2025-05-26T15:37:43.562618",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/8852/",
-    "last_played": "第220集",
-    "last_played_time": 317.078561,
-    "episode_number": 219
-  },
-  "吞噬星空": {
-    "last_update": "2025-05-28T00:55:13.327356",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/8692/",
-    "last_played": "第173集",
-    "last_played_time": 216.766543,
-    "episode_number": 172
-  },
-  "完美世界": {
-    "last_update": "2025-05-26T05:33:23.940116",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/7644/",
-    "last_played": "第216集",
-    "last_played_time": 712.041643,
-    "episode_number": 215
-  },
-  "遮天": {
-    "last_update": "2025-05-27T23:47:49.856683",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/7887/",
-    "last_played": "第111集",
-    "last_played_time": 1059.042141,
-    "episode_number": 110
-  },
-  "斗破苍穹 年番": {
-    "last_update": "2025-05-28T00:44:38.123644",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/1264/",
-    "last_played": "第148集",
-    "last_played_time": 1133.549506,
-    "episode_number": 149
-  },
-  "斗罗大陆Ⅱ绝世唐门": {
-    "last_update": "2025-05-28T20:03:42.761491",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/7656/",
-    "last_played": "第102集",
-    "last_played_time": 1100.22529,
-    "episode_number": 101
-  },
-  "剑道第一仙": {
-    "last_update": "2025-05-27 04:30:23",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/7704/",
-    "last_played": "第140集",
-    "last_played_time": 177.396605,
-    "episode_number": 139
-  },
-  "一念永恒第三季": {
-    "last_update": "2025-05-28T00:08:21.887734",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/10690/",
-    "episode_number": 50,
-    "last_played": "第51集",
-    "last_played_time": 1066.98492
-  },
-  "凡人修仙传": {
-    "last_update": "2025-06-02T01:53:59.243386",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/4538/",
-    "episode_number": 146,
-    "last_played": "第145集",
-    "last_played_time": 191.486826
-  },
-  "牧神记": {
-    "last_update": "2025-05-26T01:16:52.535200",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/44262/",
-    "episode_number": 31,
-    "last_played": "第32集",
-    "last_played_time": 837.607643
-  },
-  "最强升级": {
-    "last_update": "2025-05-27T02:10:04.608294",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/51551/",
-    "episode_number": 28,
-    "last_played": "第29集",
-    "last_played_time": 195.820715
-  },
-  "永生": {
-    "last_update": "2025-05-26T05:26:51.357700",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/4615/",
-    "episode_number": 11,
-    "last_played": "第12集",
-    "last_played_time": 170.645285
-  },
-  "神印王座剧场版：伊莱克斯传奇": {
-    "last_update": "2025-05-25 18:24:52",
-    "total_episodes": 0,
-    "url": "https://www.moduzy5.com/vod/54973/",
-    "episode_number": 0,
-    "last_played": "正片",
-    "last_played_time": 3021.965208
-  }
+    "仙逆": {
+        "last_played": "第91集",
+        "last_played_time": 1304.350917,
+        "last_update": "2025-06-02 05:38:34",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7645/",
+        "episode_number": 1,
+        "progress": 0
+    },
+    "万界至尊": {
+        "last_update": "2025-05-26T15:37:43.562618",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/8852/",
+        "last_played": "第220集",
+        "last_played_time": 317.078561,
+        "episode_number": 219
+    },
+    "吞噬星空": {
+        "last_update": "2025-05-28T00:55:13.327356",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/8692/",
+        "last_played": "第173集",
+        "last_played_time": 216.766543,
+        "episode_number": 172
+    },
+    "完美世界": {
+        "last_update": "2025-06-02T04:11:25.194046",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7644/",
+        "last_played": "第217集",
+        "last_played_time": 760.074538,
+        "episode_number": 216
+    },
+    "遮天": {
+        "last_update": "2025-05-27T23:47:49.856683",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7887/",
+        "last_played": "第111集",
+        "last_played_time": 1059.042141,
+        "episode_number": 110
+    },
+    "斗破苍穹 年番": {
+        "last_update": "2025-06-02 05:35:35",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/1264/",
+        "last_played": "第148集",
+        "last_played_time": 1133.549506,
+        "episode_number": 1,
+        "progress": 0
+    },
+    "斗罗大陆Ⅱ绝世唐门": {
+        "last_update": "2025-06-02 05:36:48",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7656/",
+        "last_played": "第102集",
+        "last_played_time": 1100.22529,
+        "episode_number": 1,
+        "progress": 0
+    },
+    "剑道第一仙": {
+        "last_update": "2025-06-02T05:34:03.041900",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/7704/",
+        "last_played": "第02集",
+        "last_played_time": 179.710845,
+        "episode_number": 1,
+        "progress": 0
+    },
+    "一念永恒第三季": {
+        "last_update": "2025-05-28T00:08:21.887734",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/10690/",
+        "episode_number": 50,
+        "last_played": "第51集",
+        "last_played_time": 1066.98492
+    },
+    "凡人修仙传": {
+        "last_update": "2025-06-02T03:40:22.344072",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/4538/",
+        "episode_number": 146,
+        "last_played": "第145集",
+        "last_played_time": 1135.284529
+    },
+    "牧神记": {
+        "last_update": "2025-06-02T04:33:58.603927",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/44262/",
+        "episode_number": 32,
+        "last_played": "第33集",
+        "last_played_time": 1150.368992
+    },
+    "最强升级": {
+        "last_update": "2025-05-27T02:10:04.608294",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/51551/",
+        "episode_number": 28,
+        "last_played": "第29集",
+        "last_played_time": 195.820715
+    },
+    "永生": {
+        "last_update": "2025-05-26T05:26:51.357700",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/4615/",
+        "episode_number": 11,
+        "last_played": "第12集",
+        "last_played_time": 170.645285
+    },
+    "神印王座剧场版：伊莱克斯传奇": {
+        "last_update": "2025-05-25 18:24:52",
+        "total_episodes": 0,
+        "url": "https://www.moduzy5.com/vod/54973/",
+        "episode_number": 0,
+        "last_played": "正片",
+        "last_played_time": 3021.965208
+    },
+    "吞天记": {
+        "last_update": "2025-06-02T05:27:11.931458",
+        "total_episodes": 0,
+        "url": "",
+        "episode_number": 5,
+        "progress": 0,
+        "last_played": "第06集",
+        "last_played_time": 147.744265
+    }
 }

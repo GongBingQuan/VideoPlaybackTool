@@ -108,7 +108,6 @@ class VideoPlayerWindow(Toplevel):
             if hasattr(self, 'webview') and self.webview:
                 self.webview.destroy()
                 self.webview = None
-            self.check_updates()
             print("Player destroyed")
         except Exception as e:
             self.logger.error(f"销毁webview实例失败: {str(e)}")
@@ -234,7 +233,7 @@ class VideoPlayerWindow(Toplevel):
             text_select=True
         )
         # 启动webview
-        webview.start(debug=True)
+        webview.start(debug=False)
 
 
 
