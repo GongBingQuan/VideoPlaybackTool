@@ -4,15 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="实现视频订阅功能并优化搜索界面：新增订阅状态列、订阅按钮和剧集管理功能">
+    <list default="true" id="441e081a-1b73-446e-9c72-93a550f449ea" name="更改" comment="优化系统资源管理和播放历史功能：实现动态并发控制、添加播放进度显示并增强错误处理">
+      <change afterPath="$PROJECT_DIR$/hooks/hook-beautifulsoup4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CopilotChatHistory.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.py" beforeDir="false" afterPath="$PROJECT_DIR$/build.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/video_player.html" beforeDir="false" afterPath="$PROJECT_DIR$/dist/video_player.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/play_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/play_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/subscriptions.json" beforeDir="false" afterPath="$PROJECT_DIR$/subscriptions.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/video_player.log" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/video_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/video_player.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,34 +69,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.api.executor&quot;: &quot;Run&quot;,
-    &quot;Python.html5_player.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;v2&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/PycharmProjects/视频网站/cache/凡人修仙传/第145集&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.idesettings.debugger.python&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.api.executor": "Run",
+    "Python.html5_player.executor": "Run",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "v2",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/PycharmProjects/视频网站/dist",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.idesettings.debugger.python",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;sqlite&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\PycharmProjects\视频网站\cache\凡人修仙传\第145集" />
       <recent name="E:\PycharmProjects\视频网站\dist" />
+      <recent name="E:\PycharmProjects\视频网站\cache\凡人修仙传\第145集" />
       <recent name="E:\PycharmProjects\视频网站\build\main\localpycs" />
       <recent name="E:\PycharmProjects\视频网站\build\main" />
       <recent name="E:\PycharmProjects\视频网站" />
@@ -107,7 +108,7 @@
       <recent name="E:\PycharmProjects\视频网站" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.api">
     <configuration name="api" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="视频网站" />
       <option name="ENV_FILES" value="" />
@@ -179,8 +180,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.api" />
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.html5_player" />
       </list>
     </recent_temporary>
@@ -252,6 +253,7 @@
       <workItem from="1748481478248" duration="5618000" />
       <workItem from="1748489502543" duration="3662000" />
       <workItem from="1748497318996" duration="698000" />
+      <workItem from="1748839459048" duration="4408000" />
     </task>
     <task id="LOCAL-00001" summary="初始化">
       <option name="closed" value="true" />
@@ -509,7 +511,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748800500810</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="优化系统资源管理和播放历史功能：实现动态并发控制、添加播放进度显示并增强错误处理">
+      <option name="closed" value="true" />
+      <created>1748839501433</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1748839501433</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -557,7 +567,8 @@
     <MESSAGE value="重构HLS代理服务并优化缓存机制：改进域名处理、广告过滤和并发控制" />
     <MESSAGE value="重构HLS下载服务并优化并发处理：引入线程池管理、改进M3U8解析和增强错误日志" />
     <MESSAGE value="实现视频订阅功能并优化搜索界面：新增订阅状态列、订阅按钮和剧集管理功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现视频订阅功能并优化搜索界面：新增订阅状态列、订阅按钮和剧集管理功能" />
+    <MESSAGE value="优化系统资源管理和播放历史功能：实现动态并发控制、添加播放进度显示并增强错误处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化系统资源管理和播放历史功能：实现动态并发控制、添加播放进度显示并增强错误处理" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/$api.coverage" NAME="api 覆盖结果" MODIFIED="1748811646174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

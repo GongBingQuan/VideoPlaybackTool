@@ -59,7 +59,7 @@
         "progress": 0
     },
     "剑道第一仙": {
-        "last_update": "2025-06-02T05:34:03.041900",
+        "last_update": "2025-06-02 13:21:15",
         "total_episodes": 0,
         "url": "https://www.moduzy5.com/vod/7704/",
         "last_played": "第02集",
@@ -76,12 +76,13 @@
         "last_played_time": 1066.98492
     },
     "凡人修仙传": {
-        "last_update": "2025-06-02T03:40:22.344072",
+        "last_update": "2025-06-02 13:21:47",
         "total_episodes": 0,
         "url": "https://www.moduzy5.com/vod/4538/",
-        "episode_number": 146,
+        "episode_number": 1,
         "last_played": "第145集",
-        "last_played_time": 1135.284529
+        "last_played_time": 1135.284529,
+        "progress": 0
     },
     "牧神记": {
         "last_update": "2025-06-02T04:33:58.603927",
